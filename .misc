@@ -1,0 +1,6 @@
+
+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
+npm i mongoose
+npm i @elastic/elasticsearch
+
+sudo chown -R 1000:1000 ./docker-volumes/elasticsearch-data
