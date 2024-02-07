@@ -4,3 +4,6 @@ npm i mongoose
 npm i @elastic/elasticsearch
 
 sudo chown -R 1000:1000 ./docker-volumes/elasticsearch-data
+
+import { toUpperCase } from "@fadedreams7org1/mpclib";
+console.log(toUpperCase("aaa"));

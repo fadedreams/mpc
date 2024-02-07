@@ -1,0 +1,40 @@
+{
+  "name": "alert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && ts-node ./build/app.js",
+    "build2": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && tsx ./build/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fadedreams7org1/mpclib": "^0.1.1",
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.4.1",
+    "ejs": "^3.1.9",
+    "email-templates": "^11.1.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.3.0",
+    "nodemailer": "^6.9.9",
+    "pino-pretty": "^10.3.1",
+    "typescript": "^5.3.3",
+    "typescript-transform-paths": "^3.4.6",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.4",
+    "@types/ejs": "^3.1.5",
+    "@types/email-templates": "^10.0.4",
+    "@types/express": "^4.17.21",
+    "@types/nodemailer": "^6.4.14",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.8",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.0"
+  }
+}
