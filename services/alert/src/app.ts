@@ -1,15 +1,27 @@
-// console.log("testing")
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { Logger } from 'winston';
-import { config } from '@alert/config';
 import express, { Express } from 'express';
-import { start } from '@alert/server';
+import { Config } from '@alert/config';
+import { AlertServer } from './alertServer';
 
-const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alertApp', 'debug');
+class AlertApp {
+  private readonly config: Config;
+  private readonly alertServer: AlertServer;
+  private readonly log: Logger;
 
-function initialize(): void {
-  const app: Express = express();
-  start(app);
-  log.info('alert Service Initialized');
+  constructor(config: Config) {
+    this.config = config;
+    this.alertServer = new AlertServer(config);
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alertApp', 'debug');
+  }
+
+  initialize(): void {
+    const app: Express = express();
+    this.alertServer.start(app);
+    this.log.info('alert Service Initialized');
+  }
 }
-initialize();
+
+const config = Config.getInstance();
+const alertApp = new AlertApp(config);
+alertApp.initialize();
