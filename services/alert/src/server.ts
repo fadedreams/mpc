@@ -3,6 +3,7 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 
+import { checkConnection } from '@alert/es';
 import { Application } from 'express';
 import { config } from '@alert/config';
 import { healthRoutes } from '@alert/routes';
@@ -22,12 +23,13 @@ async function startQueues(): Promise<void> {
 }
 
 function startElasticSearch(): void {
+  checkConnection();
 }
 
 function startServer(app: Application): void {
   try {
     const httpServer: http.Server = new http.Server(app);
-    log.info(`Worker with process id of ${process.pid} on notification server has started`);
+    log.info(`Worker with process id of ${process.pid} on alert server has started`);
     httpServer.listen(SERVER_PORT, () => {
       log.info(`alert server running on port ${SERVER_PORT}`);
     });
