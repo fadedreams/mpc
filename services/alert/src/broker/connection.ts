@@ -4,7 +4,7 @@ import { winstonLogger } from '@fadedreams7org1/mpclib';
 import client, { Channel, Connection } from 'amqplib';
 import { Logger } from 'winston';
 
-const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationQueueConnection', 'debug');
+const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alertQueueConnection', 'debug');
 
 async function createConnection(): Promise<Channel | undefined> {
   try {

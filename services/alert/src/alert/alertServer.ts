@@ -3,6 +3,7 @@ import http from 'http';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { ElasticSearchService } from './elasticSearchService';
 import { AlertQueueConnection } from '@alert/broker/alertQueueConnection';
+import { EmailConsumer } from '@alert/broker/emailConsumer';
 import { Application } from 'express';
 import { Config } from '@alert/config';
 import { healthRoutes } from '@alert/alert/routes';
@@ -13,15 +14,18 @@ export class AlertServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
-  private readonly alertQueueConnection!: AlertQueueConnection;
+  private readonly alertQueueConnection: AlertQueueConnection;
+  // private readonly emailConsumer: EmailConsumer;
 
   constructor(
     private readonly config: Config,
-    private readonly elasticSearchService: ElasticSearchService
+    private readonly elasticSearchService: ElasticSearchService,
+    private readonly emailConsumer: EmailConsumer
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alert', 'debug');
     this.SERVER_PORT = 4001;
     this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.emailConsumer = new EmailConsumer(this.config);
 
   }
 
@@ -33,9 +37,11 @@ export class AlertServer {
   }
 
   private async startQueues(): Promise<void> {
-
     const emailChannel: Channel = await this.alertQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
+    await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-alert', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    const msg = JSON.stringify({ username: 'test' });
+    emailChannel.publish('mpc-email-alert', 'auth-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
     // await consumeOrderEmailMessages(emailChannel);
   }
