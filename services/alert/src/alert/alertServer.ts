@@ -2,20 +2,27 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { ElasticSearchService } from './elasticSearchService';
+import { AlertQueueConnection } from '@alert/broker/alertQueueConnection';
 import { Application } from 'express';
 import { Config } from '@alert/config';
-import { healthRoutes } from '@alert/routes';
+import { healthRoutes } from '@alert/alert/routes';
 import { Logger } from 'winston';
+import client, { Channel, Connection } from 'amqplib';
 
 export class AlertServer {
   private readonly log: Logger;
-  private readonly elasticSearchService: ElasticSearchService;
+  // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
+  private readonly alertQueueConnection!: AlertQueueConnection;
 
-  constructor(private readonly config: Config) {
+  constructor(
+    private readonly config: Config,
+    private readonly elasticSearchService: ElasticSearchService
+  ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alert', 'debug');
-    this.elasticSearchService = new ElasticSearchService(config);
     this.SERVER_PORT = 4001;
+    this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+
   }
 
   start(app: Application): void {
@@ -26,7 +33,11 @@ export class AlertServer {
   }
 
   private async startQueues(): Promise<void> {
-    // Add your queue startup logic here
+
+    const emailChannel: Channel = await this.alertQueueConnection.createConnection() as Channel;
+    // const emailChannel: Channel = await createConnection() as Channel;
+    // await consumeAuthEmailMessages(emailChannel);
+    // await consumeOrderEmailMessages(emailChannel);
   }
 
   private startElasticSearch(): void {
@@ -44,5 +55,6 @@ export class AlertServer {
       this.log.log('error', 'Alert Service startServer() method:', error);
     }
   }
+
 }
 

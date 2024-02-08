@@ -2,16 +2,17 @@ import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { Logger } from 'winston';
 import express, { Express } from 'express';
 import { Config } from '@alert/config';
-import { AlertServer } from './alertServer';
+import { AlertServer } from './alert/alertServer';
+import { ElasticSearchService } from './alert/elasticSearchService';
 
 class AlertApp {
   private readonly config: Config;
   private readonly alertServer: AlertServer;
   private readonly log: Logger;
 
-  constructor(config: Config) {
+  constructor(config: Config, elasticSearchService: ElasticSearchService) {
     this.config = config;
-    this.alertServer = new AlertServer(config);
+    this.alertServer = new AlertServer(config, elasticSearchService);
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alertApp', 'debug');
   }
 
@@ -23,5 +24,6 @@ class AlertApp {
 }
 
 const config = Config.getInstance();
-const alertApp = new AlertApp(config);
+const elasticSearchService = new ElasticSearchService(config);
+const alertApp = new AlertApp(config, elasticSearchService);
 alertApp.initialize();
