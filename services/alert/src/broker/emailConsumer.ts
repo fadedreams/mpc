@@ -6,15 +6,18 @@ import { Logger } from 'winston';
 // import { createConnection } from '@alert/queues/connection';
 // import { sendEmail } from '@alert/queues/mail.transport';
 import { AlertQueueConnection } from '@alert/broker/alertQueueConnection';
+import { MailTransportHelper } from '@alert/utils';
 
 
 class EmailConsumer {
   private readonly log: Logger;
   private readonly alertQueueConnection: AlertQueueConnection;
+  private readonly mailTransportHelper: MailTransportHelper;
 
   constructor(private readonly config: Config) {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'emailConsumer', 'debug');
-    this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'emailConsumer', 'debug'),
+      this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost'),
+      this.mailTransportHelper = new MailTransportHelper(this.config);
   }
 
   async consumeEmailMessages(channel: Channel, exchangeName: string, routingKey: string, queueName: string, template: string): Promise<void> {
@@ -28,23 +31,16 @@ class EmailConsumer {
       const mpcQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
       await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
 
+      // await this.mailTransportHelper.sendEmail("t@t.com");
       channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
         console.log("consumed ", msg?.content.toString());
+        const messageData = JSON.parse(msg!.content.toString());
+        console.log(messageData.username);
+        // this.log.info("Sending email to: " + messageData.username, "receiver: " + messageData.receiver);
+        // this.mailTransportHelper.sendEmail(messageData.receiver);
         channel.ack(msg!);
       });
-      // channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-      //   const messageData = JSON.parse(msg!.content.toString());
-      //   const locals: IEmailLocals = {
-      //     appLink: `${this.config.CLIENT_URL}`,
-      //     appIcon: 'https://placehold.co/600x400/000000/FFFFFF.png',
-      //     username: messageData.username,
-      //     // add other properties based on the specific email type
-      //   };
 
-      // await sendEmail
-
-      // channel.ack(msg!);
-      // });
     } catch (error) {
       this.log.log('error', `alertService EmailConsumer consumeEmailMessages() method error: ${error}`);
     }

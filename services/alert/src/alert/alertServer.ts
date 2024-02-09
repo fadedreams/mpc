@@ -26,7 +26,6 @@ export class AlertServer {
     this.SERVER_PORT = 4001;
     this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
-
   }
 
   start(app: Application): void {
@@ -40,8 +39,10 @@ export class AlertServer {
     const emailChannel: Channel = await this.alertQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-alert', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    await this.emailConsumer.consumeOrderEmailMessages(emailChannel);
     const msg = JSON.stringify({ username: 'test' });
     emailChannel.publish('mpc-email-alert', 'auth-email', Buffer.from(msg));
+    emailChannel.publish('mpc-order-alert', 'order-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
     // await consumeOrderEmailMessages(emailChannel);
   }
