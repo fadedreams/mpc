@@ -13,7 +13,7 @@ export class Config {
   public ELASTIC_SEARCH_URL: string | undefined;
   public EMAIL_HOST: string | undefined;
 
-  private constructor() {
+  constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.CLIENT_URL = process.env.CLIENT_URL || '';
     this.SENDER_EMAIL = process.env.SENDER_EMAIL || '';

@@ -1,0 +1,12 @@
+
+import { Application } from 'express';
+import { Config } from '@alert/config';
+import { ElasticSearchService } from '@alert/alert/elasticSearchService';
+import { AlertQueueConnection } from '@alert/broker/alertQueueConnection';
+import { EmailConsumer } from '@alert/broker/emailConsumer';
+import { AlertServer } from '@alert/alert/alertServer';
+
+jest.mock('@alert/alert/elasticSearchService');
+jest.mock('@alert/broker/alertQueueConnection');
+jest.mock('@alert/broker/emailConsumer');
+
