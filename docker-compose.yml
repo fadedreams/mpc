@@ -22,42 +22,42 @@ services:
     environment:
     - REDIS_HOSTS=local:redis_container:6379
   
-  mongodb:
-    container_name: mongodb_container
-    image: mongo:jammy
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - ./docker-volumes/data:/data/db
+  # mongodb:
+  #   container_name: mongodb_container
+  #   image: mongo:jammy
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - ./docker-volumes/data:/data/db
   
-  mysql:
-    container_name: mysql_container
-    image: mysql:8.0.36-bullseye
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      - MYSQL_USER=mpc
-      - MYSQL_DATABASE=mpc
-      - MYSQL_ROOT_PASSWORD=mpc
-      - MYSQL_PASSWORD=mpc
-    ports:
-      - '3306:3306'
-    volumes:
-      - ./docker-volumes/mysql:/var/lib/mysql
+  # mysql:
+  #   container_name: mysql_container
+  #   image: mysql:8.0.36-bullseye
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   restart: always
+  #   environment:
+  #     - MYSQL_USER=mpc
+  #     - MYSQL_DATABASE=mpc
+  #     - MYSQL_ROOT_PASSWORD=mpc
+  #     - MYSQL_PASSWORD=mpc
+  #   ports:
+  #     - '3306:3306'
+  #   volumes:
+  #     - ./docker-volumes/mysql:/var/lib/mysql
   
-  postgres:
-    container_name: postgres_container
-    image: postgres:12.17-bullseye
-    restart: always
-    environment:
-      - POSTGRES_USER=mpc
-      - POSTGRES_PASSWORD=mpc
-      - POSTGRES_DB=mpc
-    ports:
-      - '5432:5432'
-    volumes:
-      - ./docker-volumes/postgres:/var/lib/postgresql
+  # postgres:
+  #   container_name: postgres_container
+  #   image: postgres:12.17-bullseye
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=mpc
+  #     - POSTGRES_PASSWORD=mpc
+  #     - POSTGRES_DB=mpc
+  #   ports:
+  #     - '5432:5432'
+  #   volumes:
+  #     - ./docker-volumes/postgres:/var/lib/postgresql
   
   rabbitmq:
     container_name: rabbitmq_container
@@ -96,19 +96,60 @@ services:
     networks:
       - elastic
   
-  kibana:
-    container_name: kibana_container
-    image: docker.elastic.co/kibana/kibana:8.11.0
+  # kibana:
+  #   container_name: kibana_container
+  #   image: docker.elastic.co/kibana/kibana:8.11.0
+  #   restart: always
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
+  #   ports:
+  #     - 5601:5601
+  #   networks:
+  #     - elastic
+  #   volumes:
+  #     - ./kibana.yml/:/usr/share/kibana/config/kibana.yml:ro
+  #   depends_on: 
+  #     - elasticsearch
+
+  # alert:
+  #   container_name: alert_container
+  #   build:
+  #     context: ./services/alert/
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 3001:3001
+  #   env_file: ./services/alert/.env
+  #   environment:
+  #     - ENABLE_APM=0
+  #     - NODE_ENV=development
+  #     - CLIENT_URL=http://localhost:3000
+  #     - RABBITMQ_ENDPOINT=amqp://mpc:mpc@rabbitmq_container:5672
+  #     - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
+  #     - ELASTIC_APM_SERVER_URL=http://localhost:8200
+  #     - ELASTIC_APM_SECRET_TOKEN=
+  #   depends_on:
+  #     - elasticsearch
+  #
+
+  a1:
+    container_name: alert_container
+    build:
+      context: ./services/alert/
+      dockerfile: Dockerfile
     restart: always
-    environment:
-      - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
     ports:
-      - 5601:5601
-    networks:
-      - elastic
-    volumes:
-      - ./kibana.yml/:/usr/share/kibana/config/kibana.yml:ro
-    depends_on: 
+      - 3000:3000
+    env_file: ./services/alert/.env
+    environment:
+      - ENABLE_APM=0
+      - NODE_ENV=development
+      - CLIENT_URL=http://localhost:3000
+      - RABBITMQ_ENDPOINT=amqp://mpc:mpc@rabbitmq_container:5672
+      - ELASTIC_SEARCH_URL=http://elasticsearch_container:9200
+      - ELASTIC_APM_SERVER_URL=http://localhost:8200
+      - ELASTIC_APM_SECRET_TOKEN=
+    depends_on:
       - elasticsearch
 
 networks:

@@ -1,0 +1,24 @@
+FROM node:21-alpine3.18
+
+# Unset proxy environment variables
+RUN unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY no_proxy
+
+WORKDIR /app
+
+COPY package.json ./
+
+RUN npm cache clean --force
+# Install pnpm 7.20
+RUN npm install -g pnpm@7.20
+
+# Install project dependencies
+RUN pnpm install --only=prod
+
+COPY tsconfig.json ./
+COPY src ./src
+RUN ls -a
+RUN pnpm install -g tsx
+
+EXPOSE 3001
+
+CMD [ "npm", "run", "dev" ]
