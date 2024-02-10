@@ -13,21 +13,15 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +43 ~/nodeprj/mpc/services/alert/package.json
-badd +3 src/app.ts
+badd +22 ~/nodeprj/mpc/services/alert/src/app.ts
+badd +8 package.json
+badd +60 ~/nodeprj/mpc/services/alert/src/alert/alertServer.ts
 argglobal
 %argdel
 $argadd .
-edit ~/nodeprj/mpc/services/alert/package.json
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
+edit package.json
 argglobal
-balt src/app.ts
+balt ~/nodeprj/mpc/services/alert/src/alert/alertServer.ts
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -38,11 +32,11 @@ setlocal fdn=20
 setlocal fen
 2
 normal! zo
-let s:l = 33 - ((17 * winheight(0) + 11) / 22)
+let s:l = 8 - ((7 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 33
+keepjumps 8
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
@@ -51,8 +45,6 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)

@@ -13,24 +13,21 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +15 services/alert/src/test/es.test.ts
-badd +29 services/alert/src/alert/alertServer.ts
-badd +13 services/alert/jest.config.ts
-badd +1 ~/nodeprj/mpc/services/alert/src/config/index.ts
-badd +29 services/alert/tsconfig.json
+badd +22 services/alert/src/app.ts
+badd +67 ~/nodeprj/mpc/services/alert/src/alert/alertServer.ts
+badd +126 docker-compose.yml
+badd +13 services/alert/Dockerfile
+badd +22 services/alert/Dockerfile.prod
+badd +21 services/alert/package.json
+badd +22 services/alert/build/src/app.js
+badd +1 ~/nodeprj/mpc/services/alert/build/src/config/index.d.ts
+badd +39 services/alert/tsconfig.json
 argglobal
 %argdel
 $argadd .
-edit services/alert/src/test/es.test.ts
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
+edit services/alert/package.json
 argglobal
-balt services/alert/src/alert/alertServer.ts
+balt services/alert/build/src/app.js
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -39,14 +36,14 @@ setlocal fdl=99
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-7
+2
 normal! zo
-let s:l = 15 - ((14 * winheight(0) + 15) / 31)
+let s:l = 3 - ((2 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 15
-normal! 038|
+keepjumps 3
+normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -54,8 +51,6 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)

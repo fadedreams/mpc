@@ -13,19 +13,17 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 ~/nodeprj/mpc/services/a1/src/app.ts
-badd +1 ~/nodeprj/mpc/services/alert/src/config2/index.ts
-badd +1 package.json
-badd +13 Dockerfile
-badd +9 ~/nodeprj/mpc/services/alert/package.json
-badd +4 ~/nodeprj/mpc/services/alert/Dockerfile
-badd +3 ~/nodeprj/mpc/services/alert/src/app2.ts
+badd +5 ~/nodeprj/mpc/services/a1/package.json
+badd +5 build/src/app.js
+badd +2 src/app.ts
+badd +121 tsconfig.json
+badd +1 src/config/index.ts
 argglobal
 %argdel
 $argadd .
-edit package.json
+edit tsconfig.json
 argglobal
-balt Dockerfile
+balt src/app.ts
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -36,11 +34,13 @@ setlocal fdn=20
 setlocal fen
 2
 normal! zo
-let s:l = 1 - ((0 * winheight(0) + 11) / 22)
+3
+normal! zo
+let s:l = 31 - ((17 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 31
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
