@@ -1,6 +1,5 @@
 import path from 'path';
 import nodemailer, { Transporter } from 'nodemailer';
-import Email from 'email-templates';
 import { IEmailLocals, winstonLogger } from '@fadedreams7org1/mpclib';
 import { Logger } from 'winston';
 import { Config } from '@alert/config';

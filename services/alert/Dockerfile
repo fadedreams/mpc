@@ -1,13 +1,22 @@
+FROM node:21-alpine3.18 as builder
+RUN unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY no_proxy
+WORKDIR /app
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY src ./src
+RUN npm install -g npm@latest
+RUN npm install   # Add this line to generate package-lock.json
+RUN npm run build
+
 FROM node:21-alpine3.18
 
 WORKDIR /app
-COPY tsconfig*.json ./
-COPY package.json ./
-COPY src ./src
-
-RUN npm install -g pnpm && pnpm install --only=prod
-RUN ls -a
+RUN apk add --no-cache curl
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY --from=builder /app/package*.json ./   # Copy package files from builder stage
+RUN npm install -g pm2 npm@latest
+RUN npm ci --production
 
 EXPOSE 3001
-
-CMD [ "pnpm", "run", "dev" ]
+CMD [ "npm", "run", "build" ]
