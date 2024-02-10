@@ -1,12 +1,11 @@
 {
   "name": "alert",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "tsx -r tsconfig-paths/register src/app.ts",
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && tsx src/app.ts",
+    "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json && tsx src/app.ts",
     "dev2": "nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c",
     "build2": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && ts-node ./build/app.js",
     "build3": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && tsx ./build/app.js",

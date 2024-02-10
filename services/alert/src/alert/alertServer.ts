@@ -23,7 +23,7 @@ export class AlertServer {
     private readonly emailConsumer: EmailConsumer
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'alert', 'debug');
-    this.SERVER_PORT = 4001;
+    this.SERVER_PORT = 3001;
     this.alertQueueConnection = new AlertQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
   }

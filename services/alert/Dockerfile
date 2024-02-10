@@ -8,6 +8,6 @@ COPY src ./src
 RUN npm install -g pnpm && pnpm install --only=prod
 RUN ls -a
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD [ "pnpm", "run", "dev" ]

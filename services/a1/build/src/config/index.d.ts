@@ -1,1 +1,1 @@
-export declare function logConfigMessage(): void;
+export declare const logConfigMessage: () => void;

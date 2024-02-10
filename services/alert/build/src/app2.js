@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const config_1 = require("./config");
+const config2_1 = require("./config2");
 const app = (0, express_1.default)();
 const port = 3000;
-(0, config_1.logConfigMessage)();
+(0, config2_1.logConfigMessage)();
 app.get('/', (req, res) => {
     res.send('Hello, this is a simple Express app!');
 });
