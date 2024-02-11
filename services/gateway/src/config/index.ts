@@ -12,6 +12,8 @@ export class Config {
   public RABBITMQ_ENDPOINT: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
   public EMAIL_HOST: string | undefined;
+  public SECRET_KEY_ONE: string | undefined;
+  public SECRET_KEY_TWO: string | undefined;
 
   constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
@@ -21,6 +23,8 @@ export class Config {
     this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     this.EMAIL_HOST = process.env.EMAIL_HOST || '';
+    this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || '';
+    this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || '';
 
   }
 

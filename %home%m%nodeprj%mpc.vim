@@ -13,21 +13,14 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +22 services/alert/src/app.ts
-badd +67 ~/nodeprj/mpc/services/alert/src/alert/alertServer.ts
-badd +126 docker-compose.yml
-badd +13 services/alert/Dockerfile
-badd +22 services/alert/Dockerfile.prod
-badd +21 services/alert/package.json
-badd +22 services/alert/build/src/app.js
-badd +1 ~/nodeprj/mpc/services/alert/build/src/config/index.d.ts
-badd +39 services/alert/tsconfig.json
+badd +21 services/gateway/src/app.ts
+badd +31 services/alert/src/app.ts
+badd +67 services/gateway/src/gateway/gatewayServer.ts
 argglobal
 %argdel
 $argadd .
-edit services/alert/package.json
+edit services/gateway/src/app.ts
 argglobal
-balt services/alert/build/src/app.js
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -36,13 +29,11 @@ setlocal fdl=99
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-2
-normal! zo
-let s:l = 3 - ((2 * winheight(0) + 11) / 22)
+let s:l = 13 - ((8 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 3
+keepjumps 13
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'

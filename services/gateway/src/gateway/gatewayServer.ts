@@ -10,6 +10,12 @@ import { healthRoutes } from '@gateway/gateway/routes';
 import { Logger } from 'winston';
 import client, { Channel, Connection } from 'amqplib';
 
+import cookieSession from 'cookie-session';
+import cors from 'cors';
+import hpp from 'hpp';
+import helmet from 'helmet';
+import compression from 'compression';
+
 export class gatewayServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
@@ -23,7 +29,7 @@ export class gatewayServer {
     private readonly emailConsumer: EmailConsumer
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gateway', 'debug');
-    this.SERVER_PORT = 3001;
+    this.SERVER_PORT = 3000;
     this.gatewayQueueConnection = new gatewayQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
   }
@@ -33,6 +39,46 @@ export class gatewayServer {
     app.use('', healthRoutes());
     this.startQueues();
     this.startElasticSearch();
+  }
+
+  private initMiddleware(app: Application): void {
+    app.set('trust proxy', 1);
+    app.use(
+      cookieSession({
+        name: 'session',
+        keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
+        maxAge: 24 * 7 * 3600000,
+        secure: false,
+        sameSite: 'lax'
+        // secure: this.config.NODE_ENV !== 'development',
+        // ...(this.config.NODE_ENV !== 'development' && {
+        //   sameSite: 'none'
+        // })
+      })
+    );
+    app.use(hpp());
+    // app.use(helmet());
+    app.use(cors({
+      // origin: this.config.CLIENT_URL,
+      origin: '*',
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    }));
+
+    // Middleware to set security headers manually
+    app.use((req, res, next) => {
+      // Set Strict-Transport-Security header
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000');
+      // Set X-Content-Type-Options header
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      // Set X-Frame-Options header
+      res.setHeader('X-Frame-Options', 'DENY');
+      // Set X-XSS-Protection header
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+      // Call the next middleware in the stack
+      next();
+    });
+
   }
 
   private async startQueues(): Promise<void> {
