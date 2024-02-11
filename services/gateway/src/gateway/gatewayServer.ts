@@ -94,8 +94,8 @@ export class gatewayServer {
   private errorHandler(app: Application): void {
     app.use('*', (req: Request, res: Response, next: NextFunction) => {
       const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-      this.log.log('error', `${fullUrl} endpoint does not exist.`, '');
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'The endpoint called does not exist.' });
+      this.log.log('error', `${fullUrl} Endpoint is not present.`, '');
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'The requested endpoint is not available' });
       next();
     });
 
@@ -106,13 +106,14 @@ export class gatewayServer {
       }
 
       if (isAxiosError(error)) {
-        this.log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
+        this.log.log('error', ` Error from Axios in the GatewayService. - ${error?.response?.data?.comingFrom}:`, error);
         res.status(error?.response?.data?.statusCode ?? 500).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
       }
 
       next();
     });
   }
+
   private async startQueues(): Promise<void> {
     const emailChannel: Channel = await this.gatewayQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
@@ -132,7 +133,7 @@ export class gatewayServer {
   private startServer(app: Application): void {
     try {
       const httpServer: http.Server = new http.Server(app);
-      this.log.info(`Worker with process id of ${process.pid} on gateway server has started`);
+      this.log.info(`Gateway server has initiated with process id ${process.pid}`);
       httpServer.listen(this.SERVER_PORT, () => {
         this.log.info(`gateway server running on port ${this.SERVER_PORT}`);
       });
