@@ -1,20 +1,21 @@
 import 'express-async-errors';
 import http from 'http';
-import { winstonLogger } from '@fadedreams7org1/mpclib';
+import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
+import { isAxiosError } from 'axios';
 import { ElasticSearchService } from './elasticSearchService';
 import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
 import { EmailConsumer } from '@gateway/broker/emailConsumer';
-import { Application } from 'express';
 import { Config } from '@gateway/config';
-import { healthRoutes } from '@gateway/gateway/routes';
 import { Logger } from 'winston';
 import client, { Channel, Connection } from 'amqplib';
-
+import { Application, Request, Response, json, urlencoded, NextFunction } from 'express';
 import cookieSession from 'cookie-session';
 import cors from 'cors';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import compression from 'compression';
+import { initializeGatewayRoutes } from './routes';
+import { StatusCodes } from 'http-status-codes';
 
 export class gatewayServer {
   private readonly log: Logger;
@@ -36,7 +37,9 @@ export class gatewayServer {
 
   start(app: Application): void {
     this.startServer(app);
-    app.use('', healthRoutes());
+    this.initMiddleware(app);
+    this.routesMiddleware(app);
+    this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
   }
@@ -79,8 +82,37 @@ export class gatewayServer {
       next();
     });
 
+    app.use(compression());
+    app.use(json({ limit: '200mb' }));
+    app.use(urlencoded({ extended: true, limit: '200mb' }));
   }
 
+  private routesMiddleware(app: Application): void {
+    initializeGatewayRoutes(app);
+  }
+
+  private errorHandler(app: Application): void {
+    app.use('*', (req: Request, res: Response, next: NextFunction) => {
+      const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+      this.log.log('error', `${fullUrl} endpoint does not exist.`, '');
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'The endpoint called does not exist.' });
+      next();
+    });
+
+    app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
+      if (error instanceof CustomError) {
+        this.log.log('error', `GatewayService ${error.comingFrom}:`, error);
+        res.status(error.statusCode).json(error.serializeErrors());
+      }
+
+      if (isAxiosError(error)) {
+        this.log.log('error', `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`, error);
+        res.status(error?.response?.data?.statusCode ?? 500).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
+      }
+
+      next();
+    });
+  }
   private async startQueues(): Promise<void> {
     const emailChannel: Channel = await this.gatewayQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;

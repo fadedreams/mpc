@@ -1,6 +1,7 @@
 
+// console.log("I am config");
 import express from 'express';
-import { logConfigMessage } from '@gateway/config2';
+import { logConfigMessage } from '@gateway/config2_test';
 import { Config } from '@gateway/config';
 const app = express();
 const port = 3000;
