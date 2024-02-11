@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node -r tsconfig-paths/register src/app.ts",
+    "dev": "tsx -r tsconfig-paths/register src/app.ts",
     "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json && ts-node ./build/src/app.js",
     "start": "pm2 start ./build/src/app.js -i 5 --attach --watch",
     "stop": "pm2 stop all",

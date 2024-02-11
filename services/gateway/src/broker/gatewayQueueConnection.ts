@@ -15,11 +15,11 @@ export class gatewayQueueConnection {
     try {
       const connection: Connection = await client.connect(this.rabbitmqEndpoint);
       const channel: Channel = await connection.createChannel();
-      this.log.info('gateway server connected to queue successfully...');
+      this.log.info('gateway server connected to queue successfully... ', this.rabbitmqEndpoint);
       this.closeConnection(channel, connection);
       return channel;
     } catch (error) {
-      this.log.log('error', 'gatewayService error createConnection() method:', error);
+      this.log.log(`gatewayService error createConnection() method: ${this.rabbitmqEndpoint}`, error);
       return undefined;
     }
   }
@@ -33,7 +33,7 @@ export class gatewayQueueConnection {
 }
 
 // Dependency Injection
-// const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayQueueConnection', 'debug');
+// const log: Logger = winstonLogger(`${ config.ELASTIC_SEARCH_URL }`, 'gatewayQueueConnection', 'debug');
 // const rabbitmqEndpoint: string = config.RABBITMQ_ENDPOINT;
 //
 // const gatewayQueueConnection = new gatewayQueueConnection(log, rabbitmqEndpoint);

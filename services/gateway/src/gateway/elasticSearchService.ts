@@ -7,13 +7,14 @@ import { Logger } from 'winston';
 export class ElasticSearchService {
   private readonly log: Logger;
   private readonly elasticSearchClient: Client;
-  private readonly _config: Config;
+  private readonly config: Config;
 
   constructor(config: Config) {
-    this._config = config;
+    this.config = config;
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayElasticSearchServer', 'debug');
     this.elasticSearchClient = new Client({
-      node: `${config.ELASTIC_SEARCH_URL}`
+      // node: `${config.ELASTIC_SEARCH_URL}`
+      node: 'http://localhost:9200'
     });
   }
 
@@ -25,7 +26,7 @@ export class ElasticSearchService {
         this.log.info(`gatewayService Elasticsearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
-        this.log.error('Connection to Elasticsearch failed. Retrying...');
+        this.log.error(`Connection to Elasticsearch failed. Retrying... ${this.config.ELASTIC_SEARCH_URL}`);
         this.log.log('error', 'gatewayService checkConnection() method:', error);
       }
     }
