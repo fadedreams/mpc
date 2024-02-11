@@ -1,0 +1,146 @@
+import 'express-async-errors';
+import http from 'http';
+import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
+import { isAxiosError } from 'axios';
+import { ElasticSearchService } from './elasticSearchService';
+import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
+import { EmailConsumer } from '@gateway/broker/emailConsumer';
+import { Config } from '@gateway/config';
+import { Logger } from 'winston';
+import client, { Channel, Connection } from 'amqplib';
+import { Application, Request, Response, json, urlencoded, NextFunction } from 'express';
+import cookieSession from 'cookie-session';
+import cors from 'cors';
+import hpp from 'hpp';
+import helmet from 'helmet';
+import compression from 'compression';
+import { initializeGatewayRoutes } from './routes';
+import { StatusCodes } from 'http-status-codes';
+
+export class gatewayServer {
+  private readonly log: Logger;
+  // private readonly elasticSearchService: ElasticSearchService;
+  private readonly SERVER_PORT: number;
+  private readonly gatewayQueueConnection: gatewayQueueConnection;
+  // private readonly emailConsumer: EmailConsumer;
+
+  constructor(
+    private readonly config: Config,
+    private readonly elasticSearchService: ElasticSearchService,
+    private readonly emailConsumer: EmailConsumer
+  ) {
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gateway', 'debug');
+    this.SERVER_PORT = 3000;
+    this.gatewayQueueConnection = new gatewayQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.emailConsumer = new EmailConsumer(this.config);
+  }
+
+  start(app: Application): void {
+    this.startServer(app);
+    this.initMiddleware(app);
+    this.routesMiddleware(app);
+    this.errorHandler(app);
+    this.startQueues();
+    this.startElasticSearch();
+  }
+
+  private initMiddleware(app: Application): void {
+    app.set('trust proxy', 1);
+    app.use(
+      cookieSession({
+        name: 'session',
+        keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
+        maxAge: 24 * 7 * 3600000,
+        secure: false,
+        sameSite: 'lax'
+        // secure: this.config.NODE_ENV !== 'development',
+        // ...(this.config.NODE_ENV !== 'development' && {
+        //   sameSite: 'none'
+        // })
+      })
+    );
+    app.use(hpp());
+    // app.use(helmet());
+    app.use(cors({
+      // origin: this.config.CLIENT_URL,
+      origin: '*',
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    }));
+
+    // Middleware to set security headers manually
+    app.use((req, res, next) => {
+      // Set Strict-Transport-Security header
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000');
+      // Set X-Content-Type-Options header
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      // Set X-Frame-Options header
+      res.setHeader('X-Frame-Options', 'DENY');
+      // Set X-XSS-Protection header
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+      // Call the next middleware in the stack
+      next();
+    });
+
+    app.use(compression());
+    app.use(json({ limit: '200mb' }));
+    app.use(urlencoded({ extended: true, limit: '200mb' }));
+  }
+
+  private routesMiddleware(app: Application): void {
+    initializeGatewayRoutes(app);
+  }
+
+  private errorHandler(app: Application): void {
+    app.use('*', (req: Request, res: Response, next: NextFunction) => {
+      const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+      this.log.log('error', `${fullUrl} Endpoint is not present.`, '');
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'The requested endpoint is not available' });
+      next();
+    });
+
+    app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
+      if (error instanceof CustomError) {
+        this.log.log('error', `GatewayService ${error.comingFrom}:`, error);
+        res.status(error.statusCode).json(error.serializeErrors());
+      }
+
+      if (isAxiosError(error)) {
+        this.log.log('error', ` Error from Axios in the GatewayService. - ${error?.response?.data?.comingFrom}:`, error);
+        res.status(error?.response?.data?.statusCode ?? 500).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
+      }
+
+      next();
+    });
+  }
+
+  private async startQueues(): Promise<void> {
+    const emailChannel: Channel = await this.gatewayQueueConnection.createConnection() as Channel;
+    // const emailChannel: Channel = await createConnection() as Channel;
+    await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-gateway', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    await this.emailConsumer.consumeOrderEmailMessages(emailChannel);
+    const msg = JSON.stringify({ username: 'test' });
+    emailChannel.publish('mpc-email-gateway', 'auth-email', Buffer.from(msg));
+    emailChannel.publish('mpc-order-gateway', 'order-email', Buffer.from(msg));
+    // await consumeAuthEmailMessages(emailChannel);
+    // await consumeOrderEmailMessages(emailChannel);
+  }
+
+  private startElasticSearch(): void {
+    this.elasticSearchService.checkConnection();
+  }
+
+  private startServer(app: Application): void {
+    try {
+      const httpServer: http.Server = new http.Server(app);
+      this.log.info(`Gateway server has initiated with process id ${process.pid}`);
+      httpServer.listen(this.SERVER_PORT, () => {
+        this.log.info(`gateway server running on port ${this.SERVER_PORT}`);
+      });
+    } catch (error) {
+      this.log.log('error', 'gateway Service startServer() method:', error);
+    }
+  }
+
+}
+

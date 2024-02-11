@@ -1,0 +1,12 @@
+
+import { Application } from 'express';
+import { Config } from '@gateway/config';
+import { ElasticSearchService } from '@gateway/gateway/elasticSearchService';
+import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
+import { EmailConsumer } from '@gateway/broker/emailConsumer';
+import { gatewayServer } from '@gateway/gateway/gatewayServer';
+
+jest.mock('@gateway/gateway/elasticSearchService');
+jest.mock('@gateway/broker/gatewayQueueConnection');
+jest.mock('@gateway/broker/emailConsumer');
+
