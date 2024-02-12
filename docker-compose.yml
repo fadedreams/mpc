@@ -180,7 +180,7 @@ services:
   #     - SECRET_KEY_TWO=secret
   #     - AUTH_BASE_URL=http://localhost:3002
   #     - USERS_BASE_URL=http://localhost:3003
-  #     - JOB_BASE_URL=http://localhost:3004
+  #     - ITEM_BASE_URL=http://localhost:3004
   #     - MSG_BASE_URL=http://localhost:3005
   #     - BUY_BASE_URL=http://localhost:3006
   #     - ANALYSYS_BASE_URL=http://localhost:3007

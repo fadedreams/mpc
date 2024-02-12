@@ -1,3 +1,5 @@
+
+
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,13 +21,13 @@ export class Config {
   public SECRET_KEY_TWO: string | undefined;
   public GATEWAY_JWT_TOKEN: string | undefined;
   public JWT_TOKEN: string | undefined;
-  public AUTH_BASE_URL: string | undefined;
-  public USERS_BASE_URL: string | undefined;
-  public JOB_BASE_URL: string | undefined;
-  public MSG_BASE_URL: string | undefined;
-  public ITEM_BASE_URL: string | undefined;
-  public ANALYSIS_BASE_URL: string | undefined;
-  public REDIS_HOST: string | undefined;
+  public AUTH_JWT_TOKEN: string | undefined;
+
+  public API_GATEWAY_URL: string | undefined;
+  public MYSQL_DB: string | undefined;
+  public CLOUD_NAME: string | undefined;
+  public CLOUD_API_KEY: string | undefined;
+  public CLOUD_API_SECRET: string | undefined;
 
   constructor() {
     this.ENABLE_APM = process.env.ENABLE_APM || '0';
@@ -38,17 +40,16 @@ export class Config {
     this.EMAIL_HOST = process.env.EMAIL_HOST || 'smtp.ethereal.email';
     this.ELASTIC_APM_SERVER_URL = process.env.ELASTIC_APM_SERVER_URL || 'http://localhost:8200';
     this.ELASTIC_APM_SECRET_TOKEN = process.env.ELASTIC_APM_SECRET_TOKEN || '';
-    this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || 'secret';
-    this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || 'secret';
+    this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || '';
+    this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || '';
     this.GATEWAY_JWT_TOKEN = process.env.GATEWAY_JWT_TOKEN || 'secret';
     this.JWT_TOKEN = process.env.JWT_TOKEN || 'secret';
-    this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
-    this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
-    this.ITEM_BASE_URL = process.env.JOB_BASE_URL || '';
-    this.MSG_BASE_URL = process.env.MSG_BASE_URL || '';
-    this.BUY_BASE_URL = process.env.BUY_BASE_URL || '';
-    this.ANALYSIS_BASE_URL = process.env.ANALYSYS_BASE_URL || '';
-    this.REDIS_HOST = process.env.REDIS_HOST || 'redis://localhost:6379';
+    this.AUTH_JWT_TOKEN = process.env.AUTH_JWT_TOKEN || 'secret';
+    this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || 'http://localhost:3000';
+    this.MYSQL_DB = process.env.MYSQL_DB || '';
+    this.CLOUD_NAME = process.env.CLOUD_NAME || '';
+    this.CLOUD_API_KEY = process.env.CLOUD_API_KEY || '';
+    this.CLOUD_API_SECRET = process.env.CLOUD_API_SECRET || '';
   }
 
   public static getInstance(): Config {
@@ -58,3 +59,4 @@ export class Config {
     return Config.instance;
   }
 }
+export const configInstance = Config.getInstance();
