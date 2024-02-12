@@ -1,0 +1,6 @@
+CREATE DATABASE mpc;
+-- create the users for each database
+CREATE USER 'mpc'@'%' IDENTIFIED BY 'mpc';
+GRANT CREATE, ALTER, INDEX, LOCK TABLES, REFERENCES, UPDATE, DELETE, DROP, SELECT, INSERT ON `mpc`.* TO 'mpc'@'%';
+
+FLUSH PRIVILEGES;
