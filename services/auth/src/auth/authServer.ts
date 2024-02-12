@@ -16,6 +16,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { initializeauthRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
+import { verify } from 'jsonwebtoken';
+import { IAuthPayload } from './middleware/express.d';
 
 export class authServer {
   private readonly log: Logger;
@@ -79,6 +81,15 @@ export class authServer {
       // Set X-XSS-Protection header
       res.setHeader('X-XSS-Protection', '1; mode=block');
       // Call the next middleware in the stack
+      next();
+    });
+
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+      if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+        const payload: IAuthPayload = verify(token, this.config.JWT_TOKEN!) as IAuthPayload;
+        req.currentUser = payload;
+      }
       next();
     });
 

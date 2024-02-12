@@ -46,19 +46,19 @@ export class gatewayServer {
 
   private initMiddleware(app: Application): void {
     app.set('trust proxy', 1);
-    app.use(
-      cookieSession({
-        name: 'session',
-        keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
-        maxAge: 24 * 7 * 3600000,
-        secure: false,
-        sameSite: 'lax'
-        // secure: this.config.NODE_ENV !== 'development',
-        // ...(this.config.NODE_ENV !== 'development' && {
-        //   sameSite: 'none'
-        // })
-      })
-    );
+    // app.use(
+    //   cookieSession({
+    //     name: 'session',
+    //     keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
+    //     maxAge: 24 * 7 * 3600000,
+    //     secure: false,
+    //     sameSite: 'lax'
+    //     // secure: this.config.NODE_ENV !== 'development',
+    //     // ...(this.config.NODE_ENV !== 'development' && {
+    //     //   sameSite: 'none'
+    //     // })
+    //   })
+    // );
     app.use(hpp());
     // app.use(helmet());
     app.use(cors({
@@ -85,6 +85,7 @@ export class gatewayServer {
     app.use(compression());
     app.use(json({ limit: '200mb' }));
     app.use(urlencoded({ extended: true, limit: '200mb' }));
+
   }
 
   private routesMiddleware(app: Application): void {
