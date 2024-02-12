@@ -103,24 +103,11 @@ export class authServer {
   }
 
   private errorHandler(app: Application): void {
-    app.use('*', (req: Request, res: Response, next: NextFunction) => {
-      const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-      this.log.log('error', `${fullUrl} Endpoint is not present.`, '');
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'The requested endpoint is not available' });
-      next();
-    });
-
     app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
+      this.log.log('error', `AuthService ${error.comingFrom}:`, error);
       if (error instanceof CustomError) {
-        this.log.log('error', `authService ${error.comingFrom}:`, error);
         res.status(error.statusCode).json(error.serializeErrors());
       }
-
-      if (isAxiosError(error)) {
-        this.log.log('error', ` Error from Axios in the authService. - ${error?.response?.data?.comingFrom}:`, error);
-        res.status(error?.response?.data?.statusCode ?? 500).json({ message: error?.response?.data?.message ?? 'Error occurred.' });
-      }
-
       next();
     });
   }
