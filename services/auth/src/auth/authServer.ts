@@ -3,7 +3,7 @@ import http from 'http';
 import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
 import { isAxiosError } from 'axios';
 import { ElasticSearchService } from './elasticSearchService';
-import { authQueueConnection } from '@auth/broker/authQueueConnection';
+import { RabbitMQManager } from '@auth/broker/rabbitMQManager';
 import { EmailConsumer } from '@auth/broker/emailConsumer';
 import { Config } from '@auth/config';
 import { Logger } from 'winston';
@@ -23,7 +23,7 @@ export class authServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
-  private readonly authQueueConnection: authQueueConnection;
+  private readonly rabbitMQManager: RabbitMQManager;
   // private readonly emailConsumer: EmailConsumer;
 
   constructor(
@@ -33,7 +33,7 @@ export class authServer {
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'auth', 'debug');
     this.SERVER_PORT = 3000;
-    this.authQueueConnection = new authQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
   }
 
@@ -113,7 +113,7 @@ export class authServer {
   }
 
   private async startQueues(): Promise<void> {
-    const emailChannel: Channel = await this.authQueueConnection.createConnection() as Channel;
+    const emailChannel: Channel = await this.rabbitMQManager.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
     await this.emailConsumer.consumeOrderEmailMessages(emailChannel);

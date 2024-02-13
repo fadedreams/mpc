@@ -35,7 +35,7 @@ services:
   #   volumes:
   #     - ./docker-volumes/data:/data/db
   
-  mysql2:
+  mysql:
     # container_name: mysql_container
     image: mysql:8.0.36-bullseye
     command: --default-authentication-plugin=mysql_native_password

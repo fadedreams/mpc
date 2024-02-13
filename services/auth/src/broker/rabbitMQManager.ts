@@ -3,7 +3,7 @@ import client, { Channel, Connection } from 'amqplib';
 import { Logger } from 'winston';
 
 
-export class AuthQueueConnection {
+export class RabbitMQManager {
   private readonly log: Logger;
   private readonly rabbitmqEndpoint: string;
   private connection!: Connection;
@@ -14,10 +14,11 @@ export class AuthQueueConnection {
     this.rabbitmqEndpoint = rabbitmqEndpoint;
   }
 
-  async createConnection(): Promise<void> {
+  async createConnection(): Promise<Channel | void> {
     try {
       this.connection = await client.connect(this.rabbitmqEndpoint);
       this.channel = await this.connection.createChannel();
+      return this.channel;
       this.log.info('auth server connected to queue successfully... ', this.rabbitmqEndpoint);
     } catch (error) {
       this.log.log(`authService error createConnection() method: ${this.rabbitmqEndpoint}`, error);
@@ -28,9 +29,28 @@ export class AuthQueueConnection {
     return this.channel;
   }
 
+  async publishDirectMessage(
+    exchangeName: string,
+    routingKey: string,
+    message: string,
+    logMessage: string
+  ): Promise<void> {
+    try {
+      if (!this.channel) {
+        this.channel = await this.connection.createChannel();
+      }
+      await this.channel.assertExchange(exchangeName, 'direct');
+      this.channel.publish(exchangeName, routingKey, Buffer.from(message));
+      this.log.info(logMessage);
+    } catch (error) {
+      this.log.log('error', 'AuthService Provider publishDirectMessage() method error:', error);
+    }
+  }
+
   async closeConnection(): Promise<void> {
     try {
       if (this.channel) {
+
         await this.channel.close();
       }
       if (this.connection) {

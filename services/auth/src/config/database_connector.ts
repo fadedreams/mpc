@@ -22,11 +22,11 @@ class DatabaseConnector {
     try {
       await this.sequelize.authenticate();
       // Check if database exists
-      const [results] = await this.sequelize.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${process.env.MYSQL_DB}'`);
-      if (results.length === 0) {
-        // Database does not exist, create it
-        await this.sequelize.query(`CREATE DATABASE IF NOT EXISTS ${process.env.MYSQL_DB}`);
-      }
+      // const [results] = await this.sequelize.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${process.env.MYSQL_DB}'`);
+      // if (results.length === 0) {
+      //   // Database does not exist, create it
+      //   await this.sequelize.query(`CREATE DATABASE IF NOT EXISTS ${process.env.MYSQL_DB}`);
+      // }
 
       this.log.info('Connected to MySQL database!');
     } catch (error) {
