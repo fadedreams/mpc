@@ -15,7 +15,7 @@ const config: Config.InitialOptions = {
       isolatedModules: true,
     },
   },
-  testMatch: ['<rootDir>/src/**/test/*.ts'],
+  testMatch: ['<rootDir>/src/**/*.test.ts'],
   collectCoverageFrom: ['src/**/*.ts', '!src/**/test/*.ts?(x)', '!**/node_modules/**'],
   coverageThreshold: {
     global: {
