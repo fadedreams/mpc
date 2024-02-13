@@ -25,7 +25,7 @@ class EmailConsumer {
       let channel: Channel | undefined = undefined;
 
       if (!channel) {
-        await this.rabbitMQManager.createConnection();
+        await this.rabbitMQManager.initialize();
         channel = this.rabbitMQManager.getChannel();
       }
 

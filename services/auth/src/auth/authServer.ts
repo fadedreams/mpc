@@ -32,7 +32,7 @@ export class authServer {
     private readonly emailConsumer: EmailConsumer
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'auth', 'debug');
-    this.SERVER_PORT = 3000;
+    this.SERVER_PORT = 3002;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
   }
@@ -113,7 +113,8 @@ export class authServer {
   }
 
   private async startQueues(): Promise<void> {
-    const emailChannel: Channel = await this.rabbitMQManager.createConnection() as Channel;
+    await this.rabbitMQManager.initialize();
+    const emailChannel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
     await this.emailConsumer.consumeOrderEmailMessages(emailChannel);

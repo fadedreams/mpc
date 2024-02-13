@@ -10,7 +10,6 @@ import { IAuthBuyerMessageDetails, IAuthDocument } from '@auth/auth/middleware/e
 import { Config } from '@auth/config';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authService', 'debug');
-const authChannel: string = 'your_auth_channel_name';  // Replace with your actual channel name
 
 export class AuthUserService {
   private log: Logger;
@@ -21,12 +20,10 @@ export class AuthUserService {
     this.rbmqmanager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
   }
 
-  private async publishBuyerUpdateMessage(result: Model): Promise<void> {
+  async publishBuyerUpdateMessage(result: Model): Promise<void> {
     const messageDetails: IAuthBuyerMessageDetails = {
       username: result.dataValues.username!,
       email: result.dataValues.email!,
-      profilePicture: result.dataValues.profilePicture!,
-      country: result.dataValues.country!,
       createdAt: result.dataValues.createdAt!,
       type: 'auth',
     };
@@ -37,6 +34,29 @@ export class AuthUserService {
       JSON.stringify(messageDetails),
       'Buyer details sent to buyer service.'
     );
+  }
+
+  async publishDirectMessage(messageDetails: String): Promise<void> {
+    await this.rbmqmanager.publishDirectMessage(
+      'mpc-buyer-update',
+      'user-buyer',
+      JSON.stringify(messageDetails),
+      'Buyer details sent to buyer service.'
+    );
+  }
+
+  async publishBuyerUpdateMessageByAuthId(authId: number): Promise<void> {
+    try {
+      const result: Model = await AuthModel.findOne({
+        where: { id: authId },
+        attributes: {
+          exclude: ['password'],
+        },
+      }) as Model;
+      await this.publishBuyerUpdateMessage(result);
+    } catch (error) {
+      this.log.error(error);
+    }
   }
 
   public async createAuthUser(data: IAuthDocument): Promise<IAuthDocument | undefined> {

@@ -22,8 +22,6 @@ describe('AuthUserService', () => {
       dataValues: {
         username: 'testUsername',
         email: 'test@example.com',
-        profilePicture: 'test.jpg',
-        country: 'testCountry',
         createdAt: '2022-01-01T00:00:00.000Z',
       },
     } as unknown as Model;
@@ -37,8 +35,6 @@ describe('AuthUserService', () => {
       JSON.stringify({
         username: 'testUsername',
         email: 'test@example.com',
-        profilePicture: 'test.jpg',
-        country: 'testCountry',
         createdAt: '2022-01-01T00:00:00.000Z',
         type: 'auth',
       }),

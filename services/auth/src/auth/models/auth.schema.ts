@@ -20,19 +20,7 @@ const AuthModel: ModelDefined<IAuthDocument, AuthUserCreationAttributes> = seque
     type: DataTypes.STRING,
     allowNull: false
   },
-  profilePublicId: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
   email: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  country: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  profilePicture: {
     type: DataTypes.STRING,
     allowNull: false
   },
