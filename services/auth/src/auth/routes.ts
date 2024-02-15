@@ -28,5 +28,8 @@ export function initRoutes(app: Application) {
     await authController.loginUser(req, res);
   });
 
+  router.get('/currentuser', async (req: Request, res: Response) => {
+    await authController.currentUser(req, res);
+  });
   app.use(BASE_PATH, router);
 }

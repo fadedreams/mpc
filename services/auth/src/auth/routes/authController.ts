@@ -91,6 +91,16 @@ class AuthController {
     const userData: IAuthDocument = omit(existingUser, ['password']);
     res.status(StatusCodes.OK).json({ message: 'User login successfully', user: userData, token: userJWT });
   }
+
+  public async currentUser(req: Request, res: Response): Promise<void> {
+    let user = null;
+    const existingUser: IAuthDocument | undefined = await this.authService.getAuthUserById(req.currentUser!.id);
+    if (Object.keys(existingUser!).length) {
+      user = existingUser;
+    }
+    res.status(StatusCodes.OK).json({ message: 'Authenticated user', user });
+  }
+
 }
 
 export default AuthController;
