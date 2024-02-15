@@ -37,6 +37,8 @@ class AuthClient extends ApiClient {
   }
 
   async signUp(body: IAuth): Promise<AxiosResponse> {
+
+    console.log("signUp in authClient.ts");
     const response: AxiosResponse = await authAxios.post('/signup', body);
     return response;
   }

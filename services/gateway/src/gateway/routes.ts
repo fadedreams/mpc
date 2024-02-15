@@ -21,6 +21,7 @@ export function initRoutes(app: Application) {
   });
 
   router.post('/signup', async (req: Request, res: Response) => {
+    console.log("signup in routes.ts");
     await authController.create(req, res);  // Call the create method
   });
 

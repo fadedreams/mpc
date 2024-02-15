@@ -21,9 +21,9 @@ export class Config {
   public JWT_TOKEN: string | undefined;
   public AUTH_BASE_URL: string | undefined;
   public USERS_BASE_URL: string | undefined;
-  public JOB_BASE_URL: string | undefined;
-  public MSG_BASE_URL: string | undefined;
   public ITEM_BASE_URL: string | undefined;
+  public MSG_BASE_URL: string | undefined;
+  public BUY_BASE_URL: string | undefined;
   public ANALYSIS_BASE_URL: string | undefined;
   public REDIS_HOST: string | undefined;
 
@@ -44,9 +44,9 @@ export class Config {
     this.JWT_TOKEN = process.env.JWT_TOKEN || 'secret';
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
-    this.ITEM_BASE_URL = process.env.JOB_BASE_URL || '';
+    this.ITEM_BASE_URL = process.env.ITEM_BASE_URL || '';
     this.MSG_BASE_URL = process.env.MSG_BASE_URL || '';
-    this.BUY_BASE_URL = process.env.BUY_BASE_URL || '';
+    this.BUY_BASE_URL = process.env.ITEM_BASE_URL || '';
     this.ANALYSIS_BASE_URL = process.env.ANALYSYS_BASE_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || 'redis://localhost:6379';
   }
