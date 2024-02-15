@@ -58,3 +58,4 @@ export class Config {
     return Config.instance;
   }
 }
+export const configInstance = Config.getInstance();

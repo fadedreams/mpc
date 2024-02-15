@@ -6,7 +6,7 @@ const router: Router = express.Router();
 
 const BASE_PATH = '/api/v1/auth';
 
-export function initializeauthRoutes(app: Application) {
+export function initRoutes(app: Application) {
   const authController = new AuthController();  // Create an instance of AuthController
 
   router.get('/auth-health', (_req: Request, res: Response) => {

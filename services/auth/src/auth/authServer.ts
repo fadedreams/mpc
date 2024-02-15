@@ -14,7 +14,7 @@ import cors from 'cors';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import compression from 'compression';
-import { initializeauthRoutes } from './routes';
+import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from './middleware/express.d';
@@ -99,7 +99,7 @@ export class authServer {
   }
 
   private routesMiddleware(app: Application): void {
-    initializeauthRoutes(app);
+    initRoutes(app);
   }
 
   private errorHandler(app: Application): void {

@@ -1,12 +1,28 @@
 
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { AuthController } from './authController';
 
 const router: Router = express.Router();
+const BASE_PATH = '/api/gateway/v1';
 
-export function initializeGatewayRoutes(app: Application): Router {
-  router.get('/gateway-health', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('gateway service is healthy and OK.');
+export function initRoutes(app: Application) {
+  const authController = new AuthController();
+
+  router.get('/auth-health', (_req: Request, res: Response) => {
+    res.status(StatusCodes.OK).send('auth service is healthy and OK.');
   });
-  return router;
+  router.get('/test', (_req: Request, res: Response) => {
+    res.status(StatusCodes.OK).send('test');
+  });
+
+  router.get('/test2', (_req: Request, res: Response) => {
+    res.status(StatusCodes.OK).send('test');
+  });
+
+  router.post('/signup', async (req: Request, res: Response) => {
+    await authController.create(req, res);  // Call the create method
+  });
+
+  app.use(BASE_PATH, router);
 }
