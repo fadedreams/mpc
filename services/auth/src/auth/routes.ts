@@ -1,6 +1,7 @@
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import AuthController from '@auth/auth/routes/authController';  // Adjust the import path based on your project structure
+import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
 
@@ -20,6 +21,11 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
+
+  router.get('/currentuser', async (req: Request, res: Response) => {
+    await authController.currentUser(req, res);
+  });
+
   router.post('/signup', async (req: Request, res: Response) => {
     await authController.createUser(req, res);
   });
@@ -28,8 +34,13 @@ export function initRoutes(app: Application) {
     await authController.loginUser(req, res);
   });
 
-  router.get('/currentuser', async (req: Request, res: Response) => {
-    await authController.currentUser(req, res);
-  });
+  //gatewaymdl
+  // router.post('/signup', verifyGatewayRequest, async (req: Request, res: Response) => {
+  //   await authController.createUser(req, res);
+  // });
+  //
+  // router.post('/signin', verifyGatewayRequest, async (req: Request, res: Response) => {
+  //   await authController.loginUser(req, res);
+  // });
   app.use(BASE_PATH, router);
 }
