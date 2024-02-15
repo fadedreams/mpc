@@ -16,13 +16,19 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
-  router.get('/test2', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('test2');
-  });
-
   router.post('/signup', async (req: Request, res: Response) => {
     console.log("signup in routes.ts");
-    await authController.create(req, res);
+    await authController.createUser(req, res);
+  });
+
+  router.post('/signin', async (req: Request, res: Response) => {
+    console.log("signin in routes.ts");
+    await authController.loginUser(req, res);
+  });
+
+  router.get('/currentuser', async (req: Request, res: Response) => {
+    console.log("currentuser in routes.ts");
+    await authController.currentUser(req, res);
   });
 
   app.use(BASE_PATH, router);

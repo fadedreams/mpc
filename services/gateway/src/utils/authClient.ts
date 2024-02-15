@@ -16,28 +16,7 @@ class AuthClient extends ApiClient {
     return response;
   }
 
-  async getRefreshToken(username: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.get(`/refresh-token/${username}`);
-    return response;
-  }
-
-  async changePassword(currentPassword: string, newPassword: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.put('/change-password', { currentPassword, newPassword });
-    return response;
-  }
-
-  async verifyEmail(token: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.put('/verify-email', { token });
-    return response;
-  }
-
-  async resendEmail(data: { userId: number, email: string }): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.post('/resend-email', data);
-    return response;
-  }
-
   async signUp(body: IAuth): Promise<AxiosResponse> {
-
     console.log("signUp in authClient.ts");
     const response: AxiosResponse = await authAxios.post('/signup', body);
     return response;
@@ -45,16 +24,6 @@ class AuthClient extends ApiClient {
 
   async signIn(body: IAuth): Promise<AxiosResponse> {
     const response: AxiosResponse = await authAxios.post('/signin', body);
-    return response;
-  }
-
-  async forgotPassword(email: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.put('/forgot-password', { email });
-    return response;
-  }
-
-  async resetPassword(token: string, password: string, confirmPassword: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.put(`/reset-password/${token}`, { password, confirmPassword });
     return response;
   }
 
@@ -68,10 +37,41 @@ class AuthClient extends ApiClient {
     return response;
   }
 
-  async seed(count: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.put(`/seed/${count}`);
-    return response;
-  }
+  // async getRefreshToken(username: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.get(`/refresh-token/${username}`);
+  //   return response;
+  // }
+
+  // async changePassword(currentPassword: string, newPassword: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.put('/change-password', { currentPassword, newPassword });
+  //   return response;
+  // }
+
+  // async verifyEmail(token: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.put('/verify-email', { token });
+  //   return response;
+  // }
+
+  // async resendEmail(data: { userId: number, email: string }): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.post('/resend-email', data);
+  //   return response;
+  // }
+
+  // async forgotPassword(email: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.put('/forgot-password', { email });
+  //   return response;
+  // }
+
+  // async resetPassword(token: string, password: string, confirmPassword: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.put(`/reset-password/${token}`, { password, confirmPassword });
+  //   return response;
+  // }
+
+
+  // async seed(count: string): Promise<AxiosResponse> {
+  //   const response: AxiosResponse = await authAxios.put(`/seed/${count}`);
+  //   return response;
+  // }
 }
 
 export const authClient: AuthClient = new AuthClient();
