@@ -21,7 +21,11 @@ export function initRoutes(app: Application) {
   });
 
   router.post('/signup', async (req: Request, res: Response) => {
-    await authController.create(req, res);  // Call the create method
+    await authController.createUser(req, res);
+  });
+
+  router.post('/signin', async (req: Request, res: Response) => {
+    await authController.loginUser(req, res);
   });
 
   app.use(BASE_PATH, router);

@@ -1,12 +1,15 @@
 import { Request, Response } from 'express';
 import { AuthUserService } from '@auth/auth/authUserService';
 import { IAuthDocument, IEmailMessageDetails } from '@auth/auth/middleware/express.d';
-import { BadRequestError, firstLetterUppercase, lowerCase } from '@fadedreams7org1/mpclib';
+import { BadRequestError, firstLetterUppercase, lowerCase, isEmail } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@auth/config';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { signupSchema } from '@auth/auth/schemas/signup';
+import { loginSchema } from '@auth/auth/schemas/signin';
 import { StatusCodes } from 'http-status-codes';
+import { AuthModel } from '@auth/auth/models/auth.schema';
+import { omit } from 'lodash';
 
 class AuthController {
   private authService: AuthUserService;
@@ -15,8 +18,7 @@ class AuthController {
     this.authService = new AuthUserService(config);
   }
 
-  public async create(req: Request, res: Response): Promise<void> {
-    // await this.authService.publishDirectMessage(JSON.stringify("testing rb"));
+  public async createUser(req: Request, res: Response): Promise<void> {
     try {
       const { username, email, password } = req.body;
       console.info(username, email, password);
@@ -59,6 +61,35 @@ class AuthController {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
+
+  }
+
+  public async loginUser(req: Request, res: Response): Promise<void> {
+    const { error } = await Promise.resolve(loginSchema.validate(req.body));
+    if (error?.details) {
+      throw new BadRequestError(error.details[0].message, 'SignIn loginUser() method error');
+    }
+    const { username, password } = req.body;
+    const isValidEmail: boolean = isEmail(username);
+    let existingUser: IAuthDocument | undefined;
+    if (!isValidEmail) {
+
+      existingUser = await this.authService.getUserByUsername(username);
+    } else {
+      existingUser = await this.authService.getUserByEmail(username);
+    }
+
+    if (!existingUser) {
+      throw new BadRequestError('Invalid credentials', 'SignIn read() method error');
+    }
+
+    const passwordsMatch: boolean = await AuthModel.prototype.comparePassword(password, existingUser.password);
+    if (!passwordsMatch) {
+      throw new BadRequestError('Invalid credentials', 'SignIn read() method error');
+    }
+    const userJWT: string = this.authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
+    const userData: IAuthDocument = omit(existingUser, ['password']);
+    res.status(StatusCodes.OK).json({ message: 'User login successfully', user: userData, token: userJWT });
   }
 }
 

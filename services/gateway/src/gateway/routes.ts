@@ -17,12 +17,12 @@ export function initRoutes(app: Application) {
   });
 
   router.get('/test2', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('test');
+    res.status(StatusCodes.OK).send('test2');
   });
 
   router.post('/signup', async (req: Request, res: Response) => {
     console.log("signup in routes.ts");
-    await authController.create(req, res);  // Call the create method
+    await authController.create(req, res);
   });
 
   app.use(BASE_PATH, router);
