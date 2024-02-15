@@ -11,7 +11,16 @@ class AuthClient extends ApiClient {
     authAxios = this.axios;
   }
 
-  async getCurrentUser(): Promise<AxiosResponse> {
+  async getCurrentUser(authorizationHeader?: string): Promise<AxiosResponse> {
+    // authAxios.defaults.headers['Authorization'] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJhQGEuY29tIiwidXNlcm5hbWUiOiJBIiwiaWF0IjoxNzA3OTg3MTQxfQ.YNRZ2NpkUJKfGhkyluP25cnTj2fCCaF71wTccOhhjRo`;
+    if (!authorizationHeader) {
+      throw new Error('Authorization header is missing');
+    }
+    const [bearer, token] = authorizationHeader.split(' ');
+    // if (bearer !== 'Bearer' || !token) {
+    //   throw new Error('Invalid Authorization header format');
+    // }
+    authAxios.defaults.headers['Authorization'] = `Bearer ${token}`;
     const response: AxiosResponse = await authAxios.get('/currentuser');
     return response;
   }

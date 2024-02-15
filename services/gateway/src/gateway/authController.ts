@@ -17,12 +17,12 @@ export class AuthController {
     console.log("loginUser in AuthController.ts");
     const response: AxiosResponse = await authClient.signIn(req.body);
     req.session = { jwt: response.data.token };
-    res.status(StatusCodes.CREATED).json({ message: response.data.message, user: response.data.user });
+    res.status(StatusCodes.CREATED).json({ message: response.data.message, user: response.data.user, token: response.data.token });
   }
 
-  public async currentUser(req: Request, res: Response): Promise<void> {
+  public async currentUser(req: Request, res: Response, authorizationHeader?: string): Promise<void> {
     console.log("currentUser in AuthController.ts");
-    const response: AxiosResponse = await authClient.getCurrentUser();
+    const response: AxiosResponse = await authClient.getCurrentUser(authorizationHeader);
     res.status(StatusCodes.OK).json({ message: response.data.message, user: response.data.user });
   }
 

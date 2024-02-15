@@ -89,6 +89,7 @@ export class gatewayServer {
 
     app.use((req: Request, _res: Response, next: NextFunction) => {
       if (req.session?.jwt) {
+        console.log("req.session.jwt", req.session?.jwt);
         authAxios.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
       }
       next();

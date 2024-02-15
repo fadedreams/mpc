@@ -28,7 +28,8 @@ export function initRoutes(app: Application) {
 
   router.get('/currentuser', async (req: Request, res: Response) => {
     console.log("currentuser in routes.ts");
-    await authController.currentUser(req, res);
+    const authorizationHeader = req.headers.authorization;
+    await authController.currentUser(req, res, authorizationHeader);
   });
 
   app.use(BASE_PATH, router);
