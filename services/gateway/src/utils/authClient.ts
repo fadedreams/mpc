@@ -39,11 +39,13 @@ class AuthClient extends ApiClient {
   async getItems(query: string, from: string, size: string, type: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await authAxios.get(`/search/item/${from}/${size}/${type}?${query}`);
     return response;
+
   }
 
   async getItem(itemId: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await authAxios.get(`/search/item/${itemId}`);
     return response;
+
   }
 
   // async getRefreshToken(username: string): Promise<AxiosResponse> {
