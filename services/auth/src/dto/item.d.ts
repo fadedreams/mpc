@@ -26,7 +26,7 @@ export interface ICreateItem extends Record<string, ItemType> {
 
 export interface ISellerItem {
   _id?: string | ObjectId;
-  id?: string | ObjectId; // Updated from gigId to itemId
+  id?: string | ObjectId; // Updated from itemId to itemId
   sellerId?: string | ObjectId;
   title: string;
   username?: string;

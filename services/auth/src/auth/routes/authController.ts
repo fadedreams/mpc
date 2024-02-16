@@ -101,6 +101,8 @@ class AuthController {
     res.status(StatusCodes.OK).json({ message: 'Authenticated user', user });
   }
 
+
+
 }
 
 export default AuthController;
