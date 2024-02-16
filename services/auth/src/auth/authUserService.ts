@@ -6,7 +6,7 @@ import { sign } from 'jsonwebtoken';
 import { omit } from 'lodash';
 import { Model, Op } from 'sequelize';
 import { AuthModel } from '@auth/auth/models/auth.schema';
-import { IAuthBuyerMessageDetails, IAuthDocument } from '@auth/auth/middleware/express.d';
+import { IAuthBuyerMessageDetails, IAuthDocument } from '@auth/dto/auth.d';
 import { Config } from '@auth/config';
 
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authService', 'debug');

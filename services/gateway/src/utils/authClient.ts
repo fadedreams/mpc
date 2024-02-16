@@ -41,8 +41,8 @@ class AuthClient extends ApiClient {
     return response;
   }
 
-  async getItem(gigId: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await authAxios.get(`/search/item/${gigId}`);
+  async getItem(itemId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await authAxios.get(`/search/item/${itemId}`);
     return response;
   }
 

@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 
-
-declare global {
-  namespace Express {
-    interface Request {
-      currentUser?: IAuthPayload;
-    }
-  }
-}
-
 export interface IAuthPayload {
   id: number;
   username: string;
   email: string;
   iat?: number;
+}
+
+
+declare global {
+  namespace Express {
+    interface Request {
+      currentUser;
+    }
+  }
 }
 
 export interface IAuth {

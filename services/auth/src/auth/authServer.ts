@@ -17,7 +17,7 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload } from './middleware/express.d';
+import { IAuthPayload } from '@auth/dto/auth.d';
 
 export class authServer {
   private readonly log: Logger;
@@ -127,6 +127,7 @@ export class authServer {
 
   private startElasticSearch(): void {
     this.elasticSearchService.checkConnection();
+    this.elasticSearchService.createIndex('items');
   }
 
   private startServer(app: Application): void {

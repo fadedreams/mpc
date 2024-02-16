@@ -1,7 +1,7 @@
 
 import { Config } from '@auth/config';
 import { BadRequestError, NotAuthorizedError } from '@fadedreams7org1/mpclib';
-import { IAuthPayload } from './express.d';
+import { IAuthPayload } from '@auth/dto/auth.d';
 
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';

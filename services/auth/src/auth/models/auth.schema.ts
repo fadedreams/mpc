@@ -3,7 +3,7 @@ import { databaseConnector } from '@auth/config/database_connector';
 const sequelize = databaseConnector.getSequelizeInstance();
 
 // Now you can use 'sequelize' for database operations.
-import { IAuthDocument } from '@auth/auth/middleware/express';
+import { IAuthDocument } from '@auth/dto/auth.d';
 import { compare, hash } from 'bcryptjs';
 import { DataTypes, Model, ModelDefined, Optional } from 'sequelize';
 

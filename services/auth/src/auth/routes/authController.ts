@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthUserService } from '@auth/auth/authUserService';
-import { IAuthDocument, IEmailMessageDetails } from '@auth/auth/middleware/express.d';
+import { IAuthDocument, IEmailMessageDetails } from '@auth/dto/auth.d';
 import { BadRequestError, firstLetterUppercase, lowerCase, isEmail } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@auth/config';
 import { sign } from 'jsonwebtoken';

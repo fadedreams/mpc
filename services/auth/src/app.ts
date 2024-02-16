@@ -26,6 +26,6 @@ class authApp {
 
 const config = Config.getInstance();
 const emailConsumer = new EmailConsumer(config);
-const elasticSearchService = new ElasticSearchService(config);
+const elasticSearchService = new ElasticSearchService();
 const auth_app = new authApp(config, elasticSearchService, emailConsumer);
 auth_app.initialize();
