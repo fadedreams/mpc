@@ -54,6 +54,12 @@ export function initRoutes(app: Application) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send('Internal Server Error');
     }
   });
+
+  // router.post('/test3', async (req: Request, res: Response) => {
+  //   console.log("signup in routes.ts");
+  //   await authController.test(req, res);
+  // });
+
   router.post('/signup', async (req: Request, res: Response) => {
     console.log("signup in routes.ts");
     await authController.createUser(req, res);
@@ -61,7 +67,14 @@ export function initRoutes(app: Application) {
 
   router.post('/signin', async (req: Request, res: Response) => {
     console.log("signin in routes.ts");
-    await authController.loginUser(req, res);
+    try {
+      await authController.loginUser(req, res);
+      // Set the status code in the route handler
+    } catch (error) {
+      // Handle any errors that might occur during login
+      console.error("Error during login:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+    }
   });
 
   router.get('/currentuser', async (req: Request, res: Response) => {
@@ -70,18 +83,18 @@ export function initRoutes(app: Application) {
     await authController.currentUser(req, res, authorizationHeader);
   });
 
-  router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
-    await searchController.items(req, res);
-  });
+  // router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
+  //   await searchController.items(req, res);
+  // });
 
   // router.get('/auth/search/item/:itemId', async (req: Request, res: Response) => {
   //   await searchController.itemById(req, res);
   // });
 
-  router.get('/search', async (req: Request, res: Response) => {
-    console.log('route.ts /search');
-    await searchController.itemById(req, res);
-  });
+  // router.get('/search', async (req: Request, res: Response) => {
+  //   console.log('route.ts /search');
+  //   await searchController.itemById(req, res);
+  // });
 
   app.use(BASE_PATH, router);
 }

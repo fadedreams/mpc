@@ -11,6 +11,10 @@ class AuthClient extends ApiClient {
     authAxios = this.axios;
   }
 
+  async test(authorizationHeader?: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await authAxios.get('/test');
+    return response;
+  }
   async getCurrentUser(authorizationHeader?: string): Promise<AxiosResponse> {
     // authAxios.defaults.headers['Authorization'] = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJhQGEuY29tIiwidXNlcm5hbWUiOiJBIiwiaWF0IjoxNzA3OTg3MTQxfQ.YNRZ2NpkUJKfGhkyluP25cnTj2fCCaF71wTccOhhjRo`;
     if (!authorizationHeader) {

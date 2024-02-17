@@ -16,7 +16,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
-import { authClient, authAxios } from '@gateway/utils/authClient';
+// import { authClient, authAxios } from '@gateway/utils/authClient';
 
 export class gatewayServer {
   private readonly log: Logger;
@@ -87,13 +87,14 @@ export class gatewayServer {
     app.use(json({ limit: '200mb' }));
     app.use(urlencoded({ extended: true, limit: '200mb' }));
 
-    app.use((req: Request, _res: Response, next: NextFunction) => {
-      if (req.session?.jwt) {
-        console.log("req.session.jwt", req.session?.jwt);
-        authAxios.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
-      }
-      next();
-    });
+    // app.use((req: Request, _res: Response, next: NextFunction) => {
+    //   if (req.session?.jwt) {
+    //     console.log("req.session.jwt", req.session?.jwt);
+    //     authAxios.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+    //   }
+    //   next();
+    // });
+
   }
 
   private routesMiddleware(app: Application): void {
