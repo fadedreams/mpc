@@ -32,6 +32,8 @@ class AuthClient extends ApiClient {
   }
 
   async signIn(body: IAuth): Promise<AxiosResponse> {
+    console.log("signin in authClient.ts");
+    console.log('baseURL:', authAxios.defaults.baseURL);
     const response: AxiosResponse = await authAxios.post('/signin', body);
     return response;
   }
@@ -43,9 +45,9 @@ class AuthClient extends ApiClient {
   }
 
   async getItem(itemId: string): Promise<AxiosResponse> {
+    console.log('authClient.ts getItem');
     const response: AxiosResponse = await authAxios.get(`/search/item/${itemId}`);
     return response;
-
   }
 
   // async getRefreshToken(username: string): Promise<AxiosResponse> {

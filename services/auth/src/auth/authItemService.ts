@@ -27,7 +27,6 @@ class AuthItemService extends ElasticSearchService {
         }
       }
     ];
-
     const result: SearchResponse = await this.getElasticSearchClient().search({
       index: 'items',
       size,
@@ -43,6 +42,7 @@ class AuthItemService extends ElasticSearchService {
       ],
       ...(from !== '0' && { search_after: [from] })
     });
+    // console.log(result);
     const total: IHitsTotal = result.hits.total as IHitsTotal;
     return {
       total: total.value,

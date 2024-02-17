@@ -15,6 +15,7 @@ export class SearchController {
   }
 
   public async itemById(req: Request, res: Response): Promise<void> {
+    console.log('searchController.ts itemById');
     const response: AxiosResponse = await authClient.getItem(req.params.itemId);
     res.status(StatusCodes.OK).json({ message: response.data.message, item: response.data.item });
   }

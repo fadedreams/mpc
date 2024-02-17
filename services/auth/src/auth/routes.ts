@@ -16,7 +16,10 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('auth service is healthy and OK.');
   });
   router.get('/test', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('test');
+    const responseData = {
+      message: 'test',
+    };
+    res.status(StatusCodes.OK).json(responseData);
   });
 
   router.get('/test2', (_req: Request, res: Response) => {
@@ -36,13 +39,13 @@ export function initRoutes(app: Application) {
     await authController.loginUser(req, res);
   });
 
-  // router.post('/search/item/:from/:size/:type', async (req: Request, res: Response) => {
-  //   await itemController.items(req, res);
-  // });
-  //
-  // router.post('/search/item/:itemId', async (req: Request, res: Response) => {
-  //   await itemController.singleItemById(req, res);
-  // });
+  router.get('/search/item/:from/:size/:type', async (req: Request, res: Response) => {
+    await itemController.items(req, res);
+  });
+
+  router.get('/search/item/:itemId', async (req: Request, res: Response) => {
+    await itemController.singleItemById(req, res);
+  });
 
   //gatewaymdl
   // router.post('/signup', verifyGatewayRequest, async (req: Request, res: Response) => {

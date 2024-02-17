@@ -16,6 +16,7 @@ export class AuthController {
   public async loginUser(req: Request, res: Response): Promise<void> {
     console.log("loginUser in AuthController.ts");
     const response: AxiosResponse = await authClient.signIn(req.body);
+    console.log("loginUser in AuthController.ts", response);
     req.session = { jwt: response.data.token };
     res.status(StatusCodes.CREATED).json({ message: response.data.message, user: response.data.user, token: response.data.token });
   }

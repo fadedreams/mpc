@@ -13,16 +13,19 @@ export default class ItemController {
     this.authItemService = new AuthItemService();
   }
 
+  // http://localhost:3002/api/v1/auth/search/item/1/2/f?query=description
   public async items(req: Request, res: Response): Promise<void> {
     try {
-      const { from, size, type } = req.params;
+      const { from, size } = req.params;
+      let type = 'backward';
       let resultHits: unknown[] = [];
       const paginate: IPaginateProps = { from, size: parseInt(`${size}`), type };
-
+      // console.log('req.query', req.query.query);
       const items: ISearchResult = await this.authItemService.itemsSearch(
         `${req.query.query}`,
         paginate
       );
+      console.log(items);
 
       for (const item of items.hits) {
         resultHits.push(item._source);
