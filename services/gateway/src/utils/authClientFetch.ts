@@ -9,10 +9,16 @@ export class AuthClient {
   }
 
 
-  async getCurrentUser(token?: string) {
+  async getCurrentUser(authorizationHeader?: string) {
+    if (!authorizationHeader) {
+      throw new Error('No authorization header provided');
+    }
+    const [bearer, token] = authorizationHeader.split(' ');
+    // console.log('token in getCurrentUser', token);
     const response = await fetch(`${this.baseUrl}/currentuser`, {
       headers: {
         'Authorization': `Bearer ${token}`
+        // 'Authorization': `${token}`
       }
     });
     return response.json();

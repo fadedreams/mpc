@@ -48,9 +48,10 @@ export class AuthController {
   }
 
   public async currentUser(req: Request, res: Response, authorizationHeader?: string): Promise<void> {
-    console.log("currentUser in AuthController.ts");
+    console.log("currentUser in AuthController.ts", authorizationHeader);
     const response = await authClient.getCurrentUser(authorizationHeader);
-    res.status(StatusCodes.OK).json({ message: response.data.message, user: response.data.user });
+    console.log("currentUser res in AuthController.ts", response);
+    res.status(StatusCodes.OK).json({ message: response.message, user: response.user });
   }
 
   // public async test(req: Request, res: Response): Promise<void> {
