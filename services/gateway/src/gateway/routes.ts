@@ -62,7 +62,12 @@ export function initRoutes(app: Application) {
 
   router.post('/signup', async (req: Request, res: Response) => {
     console.log("signup in routes.ts");
-    await authController.createUser(req, res);
+    try {
+      await authController.createUser(req, res);
+    } catch (error) {
+      console.error("Error during signup router:", error);
+      // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+    }
   });
 
   router.post('/signin', async (req: Request, res: Response) => {
@@ -72,8 +77,8 @@ export function initRoutes(app: Application) {
       // Set the status code in the route handler
     } catch (error) {
       // Handle any errors that might occur during login
-      console.error("Error during login:", error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
+      console.error("Error during login router:", error);
+      // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
     }
   });
 
