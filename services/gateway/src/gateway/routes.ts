@@ -88,13 +88,14 @@ export function initRoutes(app: Application) {
     await authController.currentUser(req, res, authorizationHeader);
   });
 
-  // router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
-  //   await searchController.items(req, res);
-  // });
+  router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
+    await searchController.items(req, res);
+  });
 
-  // router.get('/auth/search/item/:itemId', async (req: Request, res: Response) => {
-  //   await searchController.itemById(req, res);
-  // });
+  router.get('/auth/search/item/:itemId', async (req: Request, res: Response) => {
+    await searchController.itemById(req, res);
+
+  });
 
   // router.get('/search', async (req: Request, res: Response) => {
   //   console.log('route.ts /search');

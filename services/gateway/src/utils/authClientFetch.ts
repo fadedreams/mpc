@@ -46,6 +46,19 @@ export class AuthClient {
     return response.json();
   }
 
+  async getItem(itemId: string) {
+    const response = await fetch(`${this.baseUrl}/search/item/${itemId}`);
+    // const response = await fetch(`http://localhost:3002/api/v1/auth/search/item/1`);
+    return response.json();
+  }
+
+  async getItems(query: string, from: string, size: string, type: string) {
+    // const response = await fetch(`${this.baseUrl}/auth/search/item/items?${query}&from=${from}&size=${size}&type=${type}`);
+    console.log(`${this.baseUrl}/search/item/${from}/${size}/${type}?${query}`);
+    const response = await fetch(`${this.baseUrl}/search/item/${from}/${size}/${type}?${query}`);
+    return response.json();
+  }
+
 }
 
 const authClient = new AuthClient();
