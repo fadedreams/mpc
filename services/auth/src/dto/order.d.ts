@@ -84,9 +84,7 @@ export interface IOrderDocument {
   itemId: string;
   sellerId: string;
   sellerUsername: string;
-  sellerImage?: string;
   sellerEmail: string;
-  itemCoverImage?: string;
   itemMainTitle: string;
   itemTitle: string;
   itemDescription: string;

@@ -11,14 +11,12 @@ export type ItemType =
 
 export interface ICreateItem extends Record<string, ItemType> {
   sellerId?: string;
-  profilePicture?: string;
   title: string;
   categories: string;
   description: string;
   subCategories: string[];
   tags: string[];
   price: number;
-  coverImage?: string;
   expectedDelivery: string;
   Title: string;
   Description: string;
@@ -44,7 +42,6 @@ export interface ISellerItem {
   Title: string;
   Description: string;
   price: number;
-  coverImage?: string;
   createdAt?: Date | string;
   sortId?: number;
   // this is added here because we will use the json format of the document

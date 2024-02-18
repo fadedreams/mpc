@@ -57,7 +57,6 @@ export interface ISignUpPayload {
   username: string;
   password: string;
   email: string;
-  country: string;
 }
 
 export interface ISignInPayload {

@@ -11,9 +11,9 @@ class authApp {
   private readonly authServer: authServer;
   private readonly log: Logger;
 
-  constructor(config: Config, elasticSearchService: ElasticSearchService, emailConsumer: EmailConsumer) {
+  constructor(config: Config, elasticSearchService: ElasticSearchService) {
     this.config = config;
-    this.authServer = new authServer(config, elasticSearchService, emailConsumer);
+    this.authServer = new authServer(config, elasticSearchService);
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authApp', 'debug');
   }
 
@@ -25,7 +25,6 @@ class authApp {
 }
 
 const config = Config.getInstance();
-const emailConsumer = new EmailConsumer(config);
 const elasticSearchService = new ElasticSearchService();
-const auth_app = new authApp(config, elasticSearchService, emailConsumer);
+const auth_app = new authApp(config, elasticSearchService);
 auth_app.initialize();

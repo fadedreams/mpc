@@ -21,9 +21,6 @@ export interface ISellerDocument extends Record<string, SellerType> {
   fullName: string;
   username?: string;
   email?: string;
-  profilePicture?: string;
-  description: string;
-  country?: string;
   ratingsCount?: number;
   ratingSum?: number;
   ratingCategories?: IRatingCategories;

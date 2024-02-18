@@ -56,7 +56,6 @@ export interface IChatBoxProps {
 export interface IChatSellerProps {
   _id: string;
   username: string;
-  profilePicture: string;
   responseTime: number;
 }
 

@@ -13,18 +13,17 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +135 ~/nodeprj/mpc/services/gateway/src/gateway/gatewayServer.ts
-badd +5 services/gateway/.env
-badd +17 services/gateway/src/gateway/elasticSearchService.ts
-badd +8 services/gateway/package.json
-badd +192 docker-compose.yml
-badd +1 services/gateway/Dockerfile
-badd +1 services/gateway/src/broker/gatewayQueueConnection.ts
-badd +3 ~/nodeprj2/nodeprj/mov_ticket/docker-compose.yml
+badd +27 services/auth/src/dto/review.d.ts
+badd +45 services/auth/src/dto/item.d.ts
+badd +8 services/auth/src/dto/buyer.d.ts
+badd +20 services/auth/src/dto/seller.d.ts
+badd +59 services/auth/src/dto/chat.d.ts
+badd +60 services/auth/src/dto/auth.d.ts
+badd +110 services/auth/src/dto/order.d.ts
 argglobal
 %argdel
 $argadd .
-edit services/gateway/.env
+edit services/auth/src/dto/order.d.ts
 wincmd t
 let s:save_winminheight = &winminheight
 let s:save_winminwidth = &winminwidth
@@ -33,7 +32,7 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt services/gateway/src/gateway/elasticSearchService.ts
+balt services/auth/src/dto/item.d.ts
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -42,12 +41,12 @@ setlocal fdl=99
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 5 - ((4 * winheight(0) + 15) / 31)
+let s:l = 101 - ((17 * winheight(0) + 11) / 22)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 5
-normal! 042|
+keepjumps 101
+normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

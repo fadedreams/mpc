@@ -24,12 +24,11 @@ export class authServer {
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
-  // private readonly emailConsumer: EmailConsumer;
+  private readonly emailConsumer: EmailConsumer;
 
   constructor(
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
-    private readonly emailConsumer: EmailConsumer
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'auth', 'debug');
     this.SERVER_PORT = 3002;
