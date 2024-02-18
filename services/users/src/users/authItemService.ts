@@ -1,5 +1,5 @@
 import { ISellerItem } from "@users/dto/item.d";
-import { ElasticSearchService } from "@users/auth/elasticSearchService";  // Update this import based on the actual path
+import { ElasticSearchService } from "@users/users/elasticSearchService";  // Update this import based on the actual path
 import { IHitsTotal, IPaginateProps, IQueryList, ISearchResult } from '@users/dto/search.d';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 

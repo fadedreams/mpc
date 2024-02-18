@@ -18,5 +18,5 @@ COPY --from=builder /app/package*.json ./   # Copy package files from builder st
 RUN npm install -g pm2 npm@latest
 RUN npm ci --production
 
-EXPOSE 3002
+EXPOSE 3003
 CMD [ "npm", "run", "build" ]

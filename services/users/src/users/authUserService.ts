@@ -5,7 +5,7 @@ import { Logger } from 'winston';
 import { sign } from 'jsonwebtoken';
 import { omit } from 'lodash';
 import { Model, Op } from 'sequelize';
-import { AuthModel } from '@users/auth/models/auth.schema';
+import { AuthModel } from '@users/users/models/auth.schema';
 import { IAuthBuyerMessageDetails, IAuthDocument } from '@users/dto/auth.d';
 import { Config } from '@users/config';
 

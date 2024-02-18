@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
-import { AuthUserService } from '@users/auth/authUserService';
+import { AuthUserService } from '@users/users/authUserService';
 import { IAuthDocument, IEmailMessageDetails } from '@users/dto/auth.d';
 import { BadRequestError, firstLetterUppercase, lowerCase, isEmail } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@users/config';
 import { sign } from 'jsonwebtoken';
 import crypto from 'crypto';
-import { signupSchema } from '@users/auth/schemas/signup';
-import { loginSchema } from '@users/auth/schemas/signin';
+import { signupSchema } from '@users/users/schemas/signup';
+import { loginSchema } from '@users/users/schemas/signin';
 import { StatusCodes } from 'http-status-codes';
-import { AuthModel } from '@users/auth/models/auth.schema';
+import { AuthModel } from '@users/users/models/auth.schema';
 import { omit } from 'lodash';
 
 class AuthController {

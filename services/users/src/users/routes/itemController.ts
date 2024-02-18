@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { sortBy } from 'lodash';
 import { ISearchResult, IPaginateProps } from '@users/dto/search.d'; // Import your search module and types
-import AuthItemService from '@users/auth/authItemService'; // Import your search module and types
+import AuthItemService from '@users/users/authItemService'; // Import your search module and types
 
 
 export default class ItemController {
@@ -13,7 +13,7 @@ export default class ItemController {
     this.authItemService = new AuthItemService();
   }
 
-  // http://localhost:3002/api/v1/auth/search/item/1/2/f?query=description
+  // http://localhost:3003/api/v1/auth/search/item/1/2/f?query=description
   public async items(req: Request, res: Response): Promise<void> {
     try {
       const { from, size } = req.params;

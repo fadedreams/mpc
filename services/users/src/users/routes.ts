@@ -1,12 +1,12 @@
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import AuthController from '@users/auth/routes/authController';  // Adjust the import path based on your project structure
-import ItemController from '@users/auth/routes/itemController';  // Adjust the import path based on your project structure
+import AuthController from '@users/users/routes/authController';  // Adjust the import path based on your project structure
+import ItemController from '@users/users/routes/itemController';  // Adjust the import path based on your project structure
 import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
 
-const BASE_PATH = '/api/v1/auth';
+const BASE_PATH = '/api/v1/users';
 
 export function initRoutes(app: Application) {
   const authController = new AuthController();

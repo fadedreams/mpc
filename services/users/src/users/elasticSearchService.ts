@@ -11,7 +11,7 @@ export class ElasticSearchService {
   private readonly elasticSearchClient: Client;
 
   constructor() {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authElasticSearchServer', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'usersElasticSearchServer', 'debug');
     this.elasticSearchClient = new Client({
       // node: `${config.ELASTIC_SEARCH_URL}`
       node: 'http://localhost:9200'
@@ -27,11 +27,11 @@ export class ElasticSearchService {
     while (!isConnected) {
       try {
         const health: ClusterHealthResponse = await this.elasticSearchClient.cluster.health({});
-        this.log.info(`authService Elasticsearch health status - ${health.status}`);
+        this.log.info(`usersService Elasticsearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
         this.log.error(`Connection to Elasticsearch failed. Retrying... ${config.ELASTIC_SEARCH_URL}`);
-        this.log.log('error', 'authService checkConnection() method:', error);
+        this.log.log('error', 'usersService checkConnection() method:', error);
       }
     }
   }
@@ -53,7 +53,7 @@ export class ElasticSearchService {
       }
     } catch (error) {
       this.log.error(`An error occurred while creating the index ${indexName}`);
-      this.log.log('error', 'AuthService createIndex() method error:', error);
+      this.log.log('error', 'UsersService createIndex() method error:', error);
     }
   }
 
@@ -65,7 +65,7 @@ export class ElasticSearchService {
       });
       return result._source as ISellerItem;
     } catch (error) {
-      this.log.log('error', 'AuthService elastcisearch getDocumentById() method error:', error);
+      this.log.log('error', 'UsersService elastcisearch getDocumentById() method error:', error);
       return {} as ISellerItem;
     }
   }

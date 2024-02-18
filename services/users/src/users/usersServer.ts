@@ -19,7 +19,7 @@ import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@users/dto/auth.d';
 
-export class authServer {
+export class UsersServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
@@ -30,8 +30,8 @@ export class authServer {
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
   ) {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'auth', 'debug');
-    this.SERVER_PORT = 3002;
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'users', 'debug');
+    this.SERVER_PORT = 3003;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
   }
@@ -103,7 +103,7 @@ export class authServer {
 
   private errorHandler(app: Application): void {
     app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
-      this.log.log('error', `AuthService ${error.comingFrom}:`, error);
+      this.log.log('error', `UsersService ${error.comingFrom}:`, error);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeErrors());
       }

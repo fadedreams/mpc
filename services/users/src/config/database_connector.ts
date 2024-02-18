@@ -8,7 +8,7 @@ class DatabaseConnector {
   private log: Logger;
 
   constructor() {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authDatabaseServer', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'usersDatabaseServer', 'debug');
     this.sequelize = new Sequelize(process.env.MYSQL_DB!, {
       dialect: 'mysql',
       logging: true,
