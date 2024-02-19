@@ -12,11 +12,6 @@ const sellerSchema: ObjectSchema = Joi.object().keys({
   username: Joi.string().optional(),
   profilePublicId: Joi.string().optional().allow(null, ''),
   email: Joi.string().optional(),
-  profilePicture: Joi.string().required().messages({
-    'string.base': 'Please add a profile picture',
-    'string.empty': 'Profile picture is required',
-    'any.required': 'Profile picture is required'
-  }),
   description: Joi.string().required().messages({
     'string.base': 'Please add a seller description',
     'string.empty': 'Seller description is required',

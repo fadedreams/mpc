@@ -28,7 +28,6 @@ export interface ISellerItem {
   sellerId?: string | ObjectId;
   title: string;
   username?: string;
-  profilePicture?: string;
   email?: string;
   description: string;
   active?: boolean;

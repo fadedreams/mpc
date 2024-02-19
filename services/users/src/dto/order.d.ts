@@ -116,9 +116,7 @@ export interface IOrderNotifcation {
   _id?: string;
   userTo: string;
   senderUsername: string;
-  senderPicture: string;
   receiverUsername: string;
-  receiverPicture: string;
   isRead?: boolean;
   orderId: string;
   type?: string;

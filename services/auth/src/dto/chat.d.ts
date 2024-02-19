@@ -24,9 +24,7 @@ export interface IMessageDocument {
   sellerId?: string;
   buyerId?: string;
   senderUsername?: string;
-  senderPicture?: string;
   receiverUsername?: string;
-  receiverPicture?: string;
   isRead?: boolean;
   hasOffer?: boolean;
   offer?: IOffer;
@@ -62,7 +60,6 @@ export interface IChatSellerProps {
 export interface IChatBuyerProps {
   _id: string;
   username: string;
-  profilePicture: string;
 }
 
 export interface IChatMessageProps {
