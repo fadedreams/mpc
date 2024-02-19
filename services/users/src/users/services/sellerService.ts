@@ -1,10 +1,13 @@
 
+import { StatusCodes } from 'http-status-codes';
 import { SellerModel } from '@users/users/models/seller.schema';
 import { IOrderMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } from '@users/dto/';
 
+import { BadRequestError } from '@fadedreams7org1/mpclib';
 
 import mongoose from 'mongoose';
 import BuyerService from '@users/users/services/buyerService';
+import { sellerSchema } from '@users/users/schemas/seller';
 
 class SellerService {
   private buyerService: BuyerService;
@@ -33,7 +36,7 @@ class SellerService {
     return sellers;
   }
 
-  async createSeller(sellerData: ISellerDocument): Promise<ISellerDocument> {
+  async createSellerModel(sellerData: ISellerDocument): Promise<ISellerDocument> {
     const createdSeller: ISellerDocument = await SellerModel.create(sellerData) as ISellerDocument;
     await this.buyerService.updateBuyerIsSellerProp(`${createdSeller.email}`);
     return createdSeller;
@@ -46,17 +49,9 @@ class SellerService {
         $set: {
           profilePublicId: sellerData.profilePublicId,
           fullName: sellerData.fullName,
-          profilePicture: sellerData.profilePicture,
           description: sellerData.description,
-          country: sellerData.country,
-          skills: sellerData.skills,
           oneliner: sellerData.oneliner,
-          languages: sellerData.languages,
           responseTime: sellerData.responseTime,
-          experience: sellerData.experience,
-          education: sellerData.education,
-          socialLinks: sellerData.socialLinks,
-          certificates: sellerData.certificates
         }
       },
       { new: true }
@@ -112,6 +107,42 @@ class SellerService {
       }
     ).exec();
   }
+
+
+  async createSeller(data: ISellerDocument) {
+    const { error } = await Promise.resolve(sellerSchema.validate(data || {}));
+    if (error?.details) {
+      throw new BadRequestError(error.details[0].message, 'Create seller() method error');
+    }
+
+    // Extract relevant properties from data
+    const { email, username, profilePublicId, fullName, description, oneliner, responseTime } = data || {};
+
+    // Check if email property exists in data
+    if (!email) {
+      throw new BadRequestError('Email is required.', 'Create seller() method error');
+    }
+
+    const checkIfSellerExist: ISellerDocument | null = await this.getSellerByEmail(email);
+    if (checkIfSellerExist) {
+      throw new BadRequestError('Seller already exists. Go to your account page to update.', 'Create seller() method error');
+    }
+
+    // Create an object with the gathered properties
+    const seller: ISellerDocument = {
+      profilePublicId: profilePublicId,
+      fullName: fullName,
+      username: username!,
+      email,
+      description: description,
+      oneliner: oneliner,
+      responseTime: responseTime,
+    };
+
+    const createdSellerInner: ISellerDocument = await this.createSellerModel(seller);
+    return { 'message': 'Seller created successfully.', 'seller': createdSellerInner };
+  }
+
 }
 
 export default SellerService;

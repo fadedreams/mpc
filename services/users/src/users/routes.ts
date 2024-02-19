@@ -1,6 +1,6 @@
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import AuthController from '@users/users/routes/authController';  // Adjust the import path based on your project structure
+import UsersController from '@users/users/routes/userController';  // Adjust the import path based on your project structure
 import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
@@ -8,7 +8,7 @@ const router: Router = express.Router();
 const BASE_PATH = '/api/v1/users';
 
 export function initRoutes(app: Application) {
-  // const authController = new AuthController();
+  const usersController = new UsersController();
 
   router.get('/auth-health', (_req: Request, res: Response) => {
     res.status(StatusCodes.OK).send('auth service is healthy and OK.');
@@ -24,14 +24,25 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
+  router.post('/email', async (req: Request, res: Response) => {
+    await usersController.getBuyerEmail(req, res);
+  });
 
+  router.post('/username', async (req: Request, res: Response) => {
+    await usersController.getBuyerCurrentUsername(req, res);
+  });
 
+  router.post('/:username', async (req: Request, res: Response) => {
+    await usersController.getBuyerUsername(req, res);
+  });
 
-  //gatewaymdl
-  // router.post('/signup', verifyGatewayRequest, async (req: Request, res: Response) => {
-  //   await authController.createUser(req, res);
-  // });
-  //
+  router.post('/create', async (req: Request, res: Response) => {
+    await usersController.createSeller(req, res);
+  });
+
+  router.put('/:sellerId', async (req: Request, res: Response) => {
+    await usersController.updateSeller(req, res);
+  });
   // router.post('/signin', verifyGatewayRequest, async (req: Request, res: Response) => {
   //   await authController.loginUser(req, res);
   // });

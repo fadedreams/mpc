@@ -12,17 +12,17 @@ const sellerSchema: ObjectSchema = Joi.object().keys({
   username: Joi.string().optional(),
   profilePublicId: Joi.string().optional().allow(null, ''),
   email: Joi.string().optional(),
-  description: Joi.string().required().messages({
+  description: Joi.string().optional().messages({
     'string.base': 'Please add a seller description',
     'string.empty': 'Seller description is required',
     'any.required': 'Seller description is required'
   }),
-  oneliner: Joi.string().required().messages({
+  oneliner: Joi.string().optional().messages({
     'string.base': 'Please add your oneliner',
     'string.empty': 'Oneliner field is required',
     'any.required': 'Oneliner field is required'
   }),
-  responseTime: Joi.number().required().greater(0).messages({
+  responseTime: Joi.number().optional().greater(0).messages({
     'string.base': 'Please add a response time',
     'string.empty': 'Response time is required',
     'any.required': 'Response time is required',
