@@ -61,7 +61,7 @@ const sellerSchema: Schema = new Schema(
     completedJobs: { type: Number, default: 0 },
     cancelledJobs: { type: Number, default: 0 },
     totalEarnings: { type: Number, default: 0 },
-    totalGigs: { type: Number, default: 0 },
+    totalItems: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
   },
   {

@@ -3,8 +3,7 @@ import { Logger } from 'winston';
 import express, { Express } from 'express';
 import { Config } from '@users/config';
 import { UsersServer } from './users/usersServer';
-import { ElasticSearchService } from './users/elasticSearchService';
-import { EmailConsumer } from './broker/emailConsumer';
+import { ElasticSearchService } from '@users/users/services/elasticSearchService';
 
 class UsersApp {
   private readonly config: Config;

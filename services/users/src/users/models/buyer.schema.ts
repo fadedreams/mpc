@@ -6,7 +6,7 @@ const buyerSchema: Schema = new Schema(
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
     isSeller: { type: Boolean, default: false },
-    purchasedGigs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gig' }],
+    purchasedItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }],
     createdAt: { type: Date }
   },
   {

@@ -1,7 +1,6 @@
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import AuthController from '@users/users/routes/authController';  // Adjust the import path based on your project structure
-import ItemController from '@users/users/routes/itemController';  // Adjust the import path based on your project structure
 import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
@@ -9,8 +8,7 @@ const router: Router = express.Router();
 const BASE_PATH = '/api/v1/users';
 
 export function initRoutes(app: Application) {
-  const authController = new AuthController();
-  const itemController = new ItemController();
+  // const authController = new AuthController();
 
   router.get('/auth-health', (_req: Request, res: Response) => {
     res.status(StatusCodes.OK).send('auth service is healthy and OK.');
@@ -27,25 +25,7 @@ export function initRoutes(app: Application) {
   });
 
 
-  router.get('/currentuser', async (req: Request, res: Response) => {
-    await authController.currentUser(req, res);
-  });
 
-  router.post('/signup', async (req: Request, res: Response) => {
-    await authController.createUser(req, res);
-  });
-
-  router.post('/signin', async (req: Request, res: Response) => {
-    await authController.loginUser(req, res);
-  });
-
-  router.get('/search/item/:from/:size/:type', async (req: Request, res: Response) => {
-    await itemController.items(req, res);
-  });
-
-  router.get('/search/item/:itemId', async (req: Request, res: Response) => {
-    await itemController.singleItemById(req, res);
-  });
 
   //gatewaymdl
   // router.post('/signup', verifyGatewayRequest, async (req: Request, res: Response) => {
