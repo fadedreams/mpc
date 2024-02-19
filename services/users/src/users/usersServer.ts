@@ -18,6 +18,7 @@ import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@users/dto/auth.d';
+import { DatabaseConnector } from '@users/config';
 
 export class UsersServer {
   private readonly log: Logger;
@@ -29,11 +30,13 @@ export class UsersServer {
   constructor(
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
+    private readonly databaseConnector: DatabaseConnector
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'users', 'debug');
     this.SERVER_PORT = 3003;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
+    this.databaseConnector = databaseConnector;
   }
 
   start(app: Application): void {
@@ -43,6 +46,7 @@ export class UsersServer {
     this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
+    this.databaseConnector.connect();
   }
 
   private initMiddleware(app: Application): void {

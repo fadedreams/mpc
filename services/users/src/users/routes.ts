@@ -24,25 +24,35 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
-  router.post('/email', async (req: Request, res: Response) => {
+  router.get('/email', async (req: Request, res: Response) => {
     await usersController.getBuyerEmail(req, res);
   });
 
-  router.post('/username', async (req: Request, res: Response) => {
+  router.get('/username', async (req: Request, res: Response) => {
     await usersController.getBuyerCurrentUsername(req, res);
   });
 
-  router.post('/:username', async (req: Request, res: Response) => {
+  router.get('/create', async (req: Request, res: Response) => {
+    await usersController.createSeller(req, res);
+  });
+
+  router.get('/:username', async (req: Request, res: Response) => {
     await usersController.getBuyerUsername(req, res);
   });
 
-  router.post('/create', async (req: Request, res: Response) => {
-    await usersController.createSeller(req, res);
-  });
 
   router.put('/:sellerId', async (req: Request, res: Response) => {
     await usersController.updateSeller(req, res);
   });
+
+  router.get('/id/:sellerId', async (req: Request, res: Response) => {
+    await usersController.getSellerId(req, res);
+  });
+
+  router.get('/username/:username', async (req: Request, res: Response) => {
+    await usersController.getSellerUsername(req, res);
+  });
+
   // router.post('/signin', verifyGatewayRequest, async (req: Request, res: Response) => {
   //   await authController.loginUser(req, res);
   // });

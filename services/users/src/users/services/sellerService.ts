@@ -22,7 +22,9 @@ class SellerService {
   }
 
   async getSellerByUsername(username: string): Promise<ISellerDocument | null> {
+    console.log("username", username);
     const seller: ISellerDocument | null = await SellerModel.findOne({ username }).exec() as ISellerDocument;
+    console.log("seller", seller);
     return seller;
   }
 
@@ -142,7 +144,6 @@ class SellerService {
     const createdSellerInner: ISellerDocument = await this.createSellerModel(seller);
     return { 'message': 'Seller created successfully.', 'seller': createdSellerInner };
   }
-
 }
 
 export default SellerService;

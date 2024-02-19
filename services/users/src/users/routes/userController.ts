@@ -53,14 +53,16 @@ class UsersController {
   };
 
   public async createSeller(req: Request, res: Response): Promise<void> {
-    const { email, fullName, description, oneliner, responseTime } = req.body;
+    const { email, fullName, description, profilePublicId, oneliner, responseTime } = req.body;
     let username = req.currentUser!.username;
+    // let username = "atest";
     // Create an object with the gathered properties
     const sellerData = {
       email,
       fullName,
       username,
       description,
+      profilePublicId,
       oneliner,
       responseTime,
     };
@@ -80,6 +82,8 @@ class UsersController {
     const updatedSeller: ISellerDocument = await this.sellerService.updateSeller(req.params.sellerId, seller);
     res.status(StatusCodes.OK).json({ message: 'Seller created successfully.', seller: updatedSeller });
   };
+
+
 
 }
 

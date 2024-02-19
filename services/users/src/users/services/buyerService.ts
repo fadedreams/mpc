@@ -1,7 +1,8 @@
 
 
 import { BuyerModel } from '@users/users/models/buyer.schema';
-import { IBuyerDocument } from '@users/dto/buyer.d';
+import { IBuyerDocument, ISellerDocument } from '@users/dto/';
+import { SellerModel } from '../models/seller.schema';
 
 class BuyerService {
   async getBuyerByEmail(email: string): Promise<IBuyerDocument | null> {
@@ -11,6 +12,7 @@ class BuyerService {
 
   async getBuyerByUsername(username: string): Promise<IBuyerDocument | null> {
     const buyer: IBuyerDocument | null = await BuyerModel.findOne({ username }).exec() as IBuyerDocument;
+    console.log("buyer", buyer)
     return buyer;
   }
 
@@ -25,6 +27,8 @@ class BuyerService {
       await BuyerModel.create(buyerData);
     }
   }
+
+
 
   async updateBuyerIsSellerProp(email: string): Promise<void> {
     await BuyerModel.updateOne(

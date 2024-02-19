@@ -26,15 +26,15 @@ services:
     environment:
     - REDIS_HOSTS=local:redis_container:6379
   
-  # mongodb:
-  #   container_name: mongodb_container
-  #   image: mongo:jammy
-  #   restart: always
-  #   ports:
-  #     - 27017:27017
-  #   volumes:
-  #     - ./docker-volumes/data:/data/db
-  
+  mongodb:
+    # container_name: mongodb_container
+    image: mongo:jammy
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./docker-volumes/data:/data/db
+ 
   mysql:
     # container_name: mysql_container
     image: mysql:8.0.36-bullseye
