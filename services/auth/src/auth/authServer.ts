@@ -2,7 +2,7 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
 import { isAxiosError } from 'axios';
-import { ElasticSearchService } from './elasticSearchService';
+import { ElasticSearchService } from '@auth/auth/services/elasticSearchService';
 import { RabbitMQManager } from '@auth/broker/rabbitMQManager';
 import { EmailConsumer } from '@auth/broker/emailConsumer';
 import { Config } from '@auth/config';

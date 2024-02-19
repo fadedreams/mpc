@@ -2,9 +2,8 @@ import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { Logger } from 'winston';
 import express, { Express } from 'express';
 import { Config } from '@auth/config';
-import { authServer } from './auth/authServer';
-import { ElasticSearchService } from './auth/elasticSearchService';
-import { EmailConsumer } from './broker/emailConsumer';
+import { authServer } from '@auth/auth/authServer';
+import { ElasticSearchService } from '@auth/auth/services/elasticSearchService';
 
 class authApp {
   private readonly config: Config;

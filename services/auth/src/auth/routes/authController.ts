@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AuthUserService } from '@auth/auth/authUserService';
+import { AuthUserService } from '@auth/auth/services/authUserService';
 import { IAuthDocument, IEmailMessageDetails } from '@auth/dto/auth.d';
 import { BadRequestError, firstLetterUppercase, lowerCase, isEmail } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@auth/config';
