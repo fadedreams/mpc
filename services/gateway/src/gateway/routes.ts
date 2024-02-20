@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { AuthController } from './authController';
 import { SearchController } from './searchController';
 import { UsersController } from './usersController';
+import { authMiddleware } from './middleware/authmdl';
 
 const router: Router = express.Router();
 const BASE_PATH = '/api/v1/gateway';
@@ -84,10 +85,24 @@ export function initRoutes(app: Application) {
     }
   });
 
-  router.get('/currentuser', async (req: Request, res: Response) => {
+  router.get('/currentuser_token', async (req: Request, res: Response) => {
     // console.log("currentuser in routes.ts");
     const authorizationHeader = req.headers.authorization;
     await authController.currentUser(req, res, authorizationHeader);
+  });
+
+  // router.get('/currentusers', async (req: Request, res: Response) => {
+  //   // console.log("currentuser in routes.ts");
+  //   await authController.currentUserS(req, res);
+  // });
+
+  router.get('/currentuser', authMiddleware.verifyUser, async (req: Request, res: Response) => {
+    console.log("currentuserv in routes.ts", req.currentUser);
+    if (req.currentUser) {
+      res.status(StatusCodes.OK).json({ message: "user", user: req.currentUser });
+    } else {
+      res.status(StatusCodes.UNAUTHORIZED).json({ message: "unauthorized" });
+    }
   });
 
   router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
@@ -99,7 +114,6 @@ export function initRoutes(app: Application) {
   });
 
   //buyer routes
-
   router.get('/buyer/email', async (req: Request, res: Response) => {
     await usersController.getUserByEmail(req, res);
   });
@@ -122,12 +136,14 @@ export function initRoutes(app: Application) {
   router.get('/seller/random/:size', async (req: Request, res: Response) => {
     await usersController.getSellerByUsername(req, res);
   });
-  router.post('/seller/create', async (req: Request, res: Response) => {
+  router.post('/seller/create', authMiddleware.verifyUser, async (req: Request, res: Response) => {
+    console.log('/seller/create');
     await usersController.createSeller(req, res);
   });
   router.put('/seller/:sellerId', async (req: Request, res: Response) => {
     await usersController.updateSeller(req, res);
   });
+
   // router.get('/search', async (req: Request, res: Response) => {
   //   console.log('route.ts /search');
   //   await searchController.itemById(req, res);

@@ -1,7 +1,7 @@
 import { configInstance as config } from '@gateway/config';
 import axios, { AxiosResponse } from 'axios';
 import { ApiClient } from './apiClient';
-import { IAuth } from '@gateway/gateway/middleware/express.d';
+import { IAuth } from '@gateway/dto';
 
 export let authAxios: ReturnType<typeof axios.create>;
 

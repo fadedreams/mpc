@@ -1,16 +1,19 @@
-declare global {
-  namespace Express {
-    interface Request {
-      currentUser?: IAuthPayload;
-    }
-  }
-}
+import { Request, Response, NextFunction } from 'express';
 
 export interface IAuthPayload {
   id: number;
   username: string;
   email: string;
   iat?: number;
+}
+
+
+declare global {
+  namespace Express {
+    interface Request {
+      currentUser;
+    }
+  }
 }
 
 export interface IAuth {
@@ -30,8 +33,8 @@ export interface IAuthDocument {
   updatedAt?: Date;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
-  comparePassword(password: string): Promise<boolean>;
-  hashPassword(password: string): Promise<string>;
+  comparePassword?(password: string): Promise<boolean>;
+  hashPassword?(password: string): Promise<string>;
 }
 
 export interface IAuthBuyerMessageDetails {
@@ -72,32 +75,3 @@ export interface IResetPassword {
   confirmPassword: string;
 }
 
-export interface IReduxAuthPayload {
-  authInfo?: IAuthDocument;
-}
-
-export interface IReduxAddAuthUser {
-  type: string;
-  payload: IReduxAuthPayload;
-}
-
-export interface IReduxLogout {
-  type: string;
-  payload: boolean;
-}
-
-export interface IAuthResponse {
-  message: string;
-}
-
-export interface IAuthUser {
-  createdAt: Date | null;
-  email: string | null;
-  emailVerificationToken: string | null;
-  emailVerified: boolean | null;
-  id: number | null;
-  passwordResetExpires: Date | null;
-  passwordResetToken: null | null;
-  updatedAt: Date | null;
-  username: string | null;
-}

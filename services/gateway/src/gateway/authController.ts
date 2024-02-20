@@ -1,20 +1,23 @@
-
-
 import { authClient } from '@gateway/utils/authClient';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { IAuthPayload, CustomSession } from '@gateway/dto';
+// Define a custom interface that extends express.Session
 
 export class AuthController {
-
   public async createUser(req: Request, res: Response): Promise<void> {
     try {
       console.log("create in AuthController.ts");
-      // const response: AxiosResponse = await authClient.signUp(req.body);
       const response = await authClient.signUp(req.body);
       console.log("create in AuthController.ts", response);
-      // console.log("response ", response.token);
-      req.session = { jwt: response.token };
-      // res.status(StatusCodes.CREATED).json({ message: response.data.message, user: response.data.user });
+
+      // Cast req.session to CustomSession type
+      const customSession = req.session as CustomSession;
+
+      // Set properties on the session
+      customSession.jwt = response.token;
+      customSession.user = response.user;
+
       res.status(StatusCodes.CREATED).json({
         message: response.message,
         user: response.user,
@@ -33,7 +36,16 @@ export class AuthController {
       console.log("loginUser in AuthController.ts");
       const response = await authClient.signIn(req.body);
       console.log("loginUser in AuthController.ts", response);
-      req.session = { jwt: response.token };
+
+      // Cast req.session to CustomSession type
+      const customSession = req.session as CustomSession;
+
+      // Set properties on the session
+      customSession.jwt = response.token;
+      customSession.user = response.user;
+
+      // Can still set on the current request
+      req.currentUser = response.user;
 
       res.status(StatusCodes.OK).json({
         message: response.message,
@@ -54,9 +66,11 @@ export class AuthController {
     res.status(StatusCodes.OK).json({ message: response.message, user: response.user });
   }
 
-  // public async test(req: Request, res: Response): Promise<void> {
-  //   const response: AxiosResponse = await authClient.test(req.body);
-  //   res.status(StatusCodes.OK).json({ message: response.data.message, user: response.data.user });
-  // }
 
+  public async currentUserS(req: Request, res: Response): Promise<void> {
+    const response = await authClient.getCurrentUserS(req, res);
+    console.log("currentUser res in AuthController.ts", response);
+    res.status(StatusCodes.OK);
+    // res.status(StatusCodes.OK).json({ message: response.message, user: response.user });
+  }
 }

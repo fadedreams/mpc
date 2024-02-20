@@ -1,7 +1,7 @@
 
 import { StatusCodes } from 'http-status-codes';
 import { SellerModel } from '@users/users/models/seller.schema';
-import { IOrderMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } from '@users/dto/';
+import { ISellerDocument, IRatingTypes, IReviewMessageDetails, IOrderMessage } from '@users/dto/';
 
 import { BadRequestError } from '@fadedreams7org1/mpclib';
 

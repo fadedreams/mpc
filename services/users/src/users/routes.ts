@@ -32,7 +32,7 @@ export function initRoutes(app: Application) {
     await usersController.getBuyerCurrentUsername(req, res);
   });
 
-  router.get('/create', async (req: Request, res: Response) => {
+  router.post('/create', async (req: Request, res: Response) => {
     await usersController.createSeller(req, res);
   });
 

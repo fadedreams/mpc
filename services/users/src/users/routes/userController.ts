@@ -54,8 +54,8 @@ class UsersController {
 
   public async createSeller(req: Request, res: Response): Promise<void> {
     const { email, fullName, description, profilePublicId, oneliner, responseTime } = req.body;
-    let username = req.currentUser!.username;
-    // let username = "atest";
+    // let username = req.currentUser!.username;
+    let username = "atest";
     // Create an object with the gathered properties
     const sellerData = {
       email,
@@ -64,7 +64,7 @@ class UsersController {
       description,
       profilePublicId,
       oneliner,
-      responseTime,
+      responseTime
     };
     const seller = await this.sellerService.createSeller(sellerData);
 

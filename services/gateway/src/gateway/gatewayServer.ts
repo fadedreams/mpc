@@ -16,7 +16,9 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
+import session from 'express-session';
 // import { authClient, authAxios } from '@gateway/utils/authClient';
+
 
 export class gatewayServer {
   private readonly log: Logger;
@@ -34,6 +36,8 @@ export class gatewayServer {
     this.SERVER_PORT = 3000;
     this.gatewayQueueConnection = new gatewayQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
+
+    // Create Redis client and store
   }
 
   start(app: Application): void {
@@ -47,19 +51,19 @@ export class gatewayServer {
 
   private initMiddleware(app: Application): void {
     app.set('trust proxy', 1);
-    // app.use(
-    //   cookieSession({
-    //     name: 'session',
-    //     keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
-    //     maxAge: 24 * 7 * 3600000,
-    //     secure: false,
-    //     sameSite: 'lax'
-    //     // secure: this.config.NODE_ENV !== 'development',
-    //     // ...(this.config.NODE_ENV !== 'development' && {
-    //     //   sameSite: 'none'
-    //     // })
-    //   })
-    // );
+    app.use(
+      cookieSession({
+        name: 'session',
+        keys: [`${this.config.SECRET_KEY_ONE}`, `${this.config.SECRET_KEY_TWO}`],
+        maxAge: 24 * 7 * 3600000,
+        secure: false,
+        sameSite: 'lax'
+        // secure: this.config.NODE_ENV !== 'development',
+        // ...(this.config.NODE_ENV !== 'development' && {
+        //   sameSite: 'none'
+        // })
+      })
+    );
     app.use(hpp());
     // app.use(helmet());
     app.use(cors({
@@ -79,6 +83,8 @@ export class gatewayServer {
       res.setHeader('X-Frame-Options', 'DENY');
       // Set X-XSS-Protection header
       res.setHeader('X-XSS-Protection', '1; mode=block');
+
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
       // Call the next middleware in the stack
       next();
     });
