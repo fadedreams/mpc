@@ -117,13 +117,18 @@ export class UsersServer {
 
   private async startQueues(): Promise<void> {
     await this.rabbitMQManager.initialize();
-    const emailChannel = this.rabbitMQManager.getChannel();
+    const channel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
-    await this.rabbitMQManager.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.rabbitMQManager.consumeOrderEmailMessages(emailChannel);
+    await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    await this.rabbitMQManager.consumeOrderEmailMessages(channel);
+    await this.rabbitMQManager.consumeBuyerDirectMessage(channel);
+    await this.rabbitMQManager.consumeSellerDirectMessage(channel);
+    await this.rabbitMQManager.consumeReviewFanoutMessages(channel);
+
+
     const msg = JSON.stringify({ username: 'test' });
-    emailChannel.publish('mpc-email-auth', 'auth-email', Buffer.from(msg));
-    emailChannel.publish('mpc-order-auth', 'order-email', Buffer.from(msg));
+    channel.publish('mpc-email-auth', 'auth-email', Buffer.from(msg));
+    channel.publish('mpc-order-auth', 'order-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
     // await consumeOrderEmailMessages(emailChannel);
   }

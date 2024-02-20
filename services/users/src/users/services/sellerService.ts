@@ -61,8 +61,8 @@ class SellerService {
     return updatedSeller;
   }
 
-  async updateTotalGigsCount(sellerId: string, count: number): Promise<void> {
-    await SellerModel.updateOne({ _id: sellerId }, { $inc: { totalGigs: count } }).exec();
+  async updateTotalItemCount(sellerId: string, count: number): Promise<void> {
+    await SellerModel.updateOne({ _id: sellerId }, { $inc: { totalItems: count } }).exec();
   }
 
   async updateSellerOngoingJobsProp(sellerId: string, ongoingJobs: number): Promise<void> {

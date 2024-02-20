@@ -26,9 +26,9 @@ class RConsumer {
       const routingKey = 'user-buyer';
       const queueName = 'user-buyer-queue';
       await channel.assertExchange(exchangeName, 'direct');
-      const jobberQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-      await channel.bindQueue(jobberQueue.queue, exchangeName, routingKey);
-      channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
+      const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+      await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
+      channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
         const { type } = JSON.parse(msg!.content.toString());
         if (type === 'auth') {
           const { username, email, createdAt } = JSON.parse(msg!.content.toString());
