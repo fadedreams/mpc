@@ -2,24 +2,24 @@ import { Config } from '@users/config';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { Channel, connect } from 'amqplib';
 import { Logger } from 'winston';
-import { AuthQueueConnection } from './authQueueConnection'; // Import authQueueConnection
+import { QueueConnection } from './queueConnection'; // Import queueConnection
 
-class AuthProducer {
+class RProducer {
   private channel!: Channel;
-  private readonly authQueueConnection: AuthQueueConnection; // Add reference to authQueueConnection
+  private readonly queueConnection: QueueConnection; // Add reference to queueConnection
   private log: Logger;
 
   constructor(private readonly config: Config) {
-    this.authQueueConnection = new AuthQueueConnection(winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authServiceProducer', 'debug'), config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.queueConnection = new QueueConnection(winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authServiceProducer', 'debug'), config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authServiceProducer', 'debug');
   }
 
   async createChannel(): Promise<void> {
     try {
-      await this.authQueueConnection.createConnection(); // Use authQueueConnection to create the connection
-      this.channel = this.authQueueConnection.getChannel(); // Get the channel from authQueueConnection
+      await this.queueConnection.createConnection(); // Use queueConnection to create the connection
+      this.channel = this.queueConnection.getChannel(); // Get the channel from queueConnection
     } catch (error) {
-      this.log.log('error', 'AuthProducer createChannel() method error:', error);
+      this.log.log('error', 'RProducer createChannel() method error:', error);
     }
   }
 
@@ -43,11 +43,11 @@ class AuthProducer {
 
   async closeChannel(): Promise<void> {
     try {
-      await this.authQueueConnection.closeConnection(); // Use authQueueConnection to close the connection
+      await this.queueConnection.closeConnection(); // Use queueConnection to close the connection
     } catch (error) {
-      this.log.log('error', 'AuthProducer closeChannel() method error:', error);
+      this.log.log('error', 'RProducer closeChannel() method error:', error);
     }
   }
 }
 
-export { AuthProducer };
+export { RProducer };

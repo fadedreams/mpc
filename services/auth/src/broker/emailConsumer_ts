@@ -1,12 +1,11 @@
-
-import { Config } from '@users/config';
+import { Config } from '@auth/config';
 import { IEmailLocals, winstonLogger } from '@fadedreams7org1/mpclib';
 import { Channel, ConsumeMessage } from 'amqplib';
 import { Logger } from 'winston';
-// import { createConnection } from '@users/queues/connection';
-// import { sendEmail } from '@users/queues/mail.transport';
-import { RabbitMQManager } from '@users/broker/rabbitMQManager';
-import { MailTransportHelper } from '@users/utils';
+// import { createConnection } from '@auth/queues/connection';
+// import { sendEmail } from '@auth/queues/mail.transport';
+import { RabbitMQManager } from '@auth/broker/rabbitMQManager';
+import { MailTransportHelper } from '@auth/utils';
 
 
 class EmailConsumer {

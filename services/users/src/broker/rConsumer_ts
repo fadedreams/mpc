@@ -1,0 +1,54 @@
+import { Config } from '@users/config';
+import { IEmailLocals, winstonLogger } from '@fadedreams7org1/mpclib';
+import { Channel, ConsumeMessage, Replies } from 'amqplib';
+import { Logger } from 'winston';
+import { RabbitMQManager } from '@users/broker/rabbitMQManager';
+import { MailTransportHelper } from '@users/utils';
+import { IBuyerDocument } from '@users/dto';
+import BuyerService from '@users/users/services/buyerService';
+
+class RConsumer {
+  private readonly log: Logger;
+  private readonly rabbitMQManager: RabbitMQManager;
+  private readonly mailTransportHelper: MailTransportHelper;
+  private readonly buyerService: BuyerService;
+
+  constructor(private readonly config: Config) {
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'emailConsumer', 'debug');
+    this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.mailTransportHelper = new MailTransportHelper(this.config);
+    this.buyerService = new BuyerService();
+  }
+
+  public async consumeBuyerDirectMessage(channel: Channel): Promise<void> {
+    try {
+      const exchangeName = 'mpc-buyer-update';
+      const routingKey = 'user-buyer';
+      const queueName = 'user-buyer-queue';
+      await channel.assertExchange(exchangeName, 'direct');
+      const jobberQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+      await channel.bindQueue(jobberQueue.queue, exchangeName, routingKey);
+      channel.consume(jobberQueue.queue, async (msg: ConsumeMessage | null) => {
+        const { type } = JSON.parse(msg!.content.toString());
+        if (type === 'auth') {
+          const { username, email, createdAt } = JSON.parse(msg!.content.toString());
+          const buyer: IBuyerDocument = {
+            username,
+            email,
+            purchasedItems: [],
+            createdAt
+          };
+          await this.buyerService.createBuyer(buyer);
+        } else {
+          const { buyerId, purchasedItems } = JSON.parse(msg!.content.toString());
+          await this.buyerService.updateBuyerPurchasedItemsProp(buyerId, purchasedItems, type);
+        }
+        channel.ack(msg!);
+      });
+    } catch (error) {
+      this.log.log('error', 'UsersService UserConsumer consumeBuyerDirectMessage() method error:', error);
+    }
+  }
+}
+
+export { RConsumer };

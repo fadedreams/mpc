@@ -1,5 +1,5 @@
 import { Logger } from 'winston';
-import { connect, Channel, Connection } from 'amqplib';
+import { connect, Channel, Connection, ConsumeMessage } from 'amqplib';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 
 export class RabbitMQManager {
@@ -58,6 +58,45 @@ export class RabbitMQManager {
       this.log.error('AuthQueueConnection closeConnection() method error:', error);
     }
   }
+
+  async consumeEmailMessages(channel: Channel, exchangeName: string, routingKey: string, queueName: string, template: string): Promise<void> {
+    try {
+      let channel: Channel | undefined = undefined;
+
+      if (!channel) {
+        await this.initialize();
+        channel = this.getChannel();
+      }
+
+      if (channel) {
+        await channel.assertExchange(exchangeName, 'direct');
+        const mpcQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+        await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
+
+        channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
+          console.log("consumed ", msg?.content.toString());
+          const messageData = JSON.parse(msg!.content.toString());
+          console.log(messageData.username);
+          // this.log.info("Sending email to: " + messageData.username, "receiver: " + messageData.receiver);
+          // this.mailTransportHelper.sendEmail(messageData.receiver);
+          channel!.ack(msg!);
+        });
+      } else {
+        throw new Error('Channel is undefined.');
+      }
+    } catch (error) {
+      this.log.log('error', `authService EmailConsumer consumeEmailMessages() method error: ${error}`);
+    }
+  }
+
+  async consumeAuthEmailMessages(channel: Channel): Promise<void> {
+    await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+  }
+
+  async consumeOrderEmailMessages(channel: Channel): Promise<void> {
+    await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
+  }
+
 }
 
 // Dependency Injection

@@ -3,7 +3,7 @@ import client, { Channel, Connection } from 'amqplib';
 import { Logger } from 'winston';
 
 
-export class AuthQueueConnection {
+export class QueueConnection {
   private readonly log: Logger;
   private readonly rabbitmqEndpoint: string;
   private connection!: Connection;
@@ -18,7 +18,7 @@ export class AuthQueueConnection {
     try {
       this.connection = await client.connect(this.rabbitmqEndpoint);
       this.channel = await this.connection.createChannel();
-      this.log.info('auth server connected to queue successfully... ', this.rabbitmqEndpoint);
+      this.log.info('user server connected to queue successfully... ', this.rabbitmqEndpoint);
     } catch (error) {
       this.log.log(`authService error createConnection() method: ${this.rabbitmqEndpoint}`, error);
     }
@@ -37,7 +37,7 @@ export class AuthQueueConnection {
         await this.connection.close();
       }
     } catch (error) {
-      this.log.log('error', 'AuthQueueConnection closeConnection() method error:', error);
+      this.log.log('error', 'QueueConnection closeConnection() method error:', error);
     }
   }
 }

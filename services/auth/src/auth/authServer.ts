@@ -4,7 +4,7 @@ import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpc
 import { isAxiosError } from 'axios';
 import { ElasticSearchService } from '@auth/auth/services/elasticSearchService';
 import { RabbitMQManager } from '@auth/broker/rabbitMQManager';
-import { EmailConsumer } from '@auth/broker/emailConsumer';
+// import { EmailConsumer } from '@auth/broker/emailConsumer';
 import { Config } from '@auth/config';
 import { Logger } from 'winston';
 import client, { Channel, Connection } from 'amqplib';
@@ -24,7 +24,7 @@ export class authServer {
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
-  private readonly emailConsumer: EmailConsumer;
+  // private readonly emailConsumer: EmailConsumer;
 
   constructor(
     private readonly config: Config,
@@ -33,7 +33,7 @@ export class authServer {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'auth', 'debug');
     this.SERVER_PORT = 3002;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
-    this.emailConsumer = new EmailConsumer(this.config);
+    // this.emailConsumer = new EmailConsumer(this.config);
   }
 
   start(app: Application): void {
@@ -115,8 +115,8 @@ export class authServer {
     await this.rabbitMQManager.initialize();
     const emailChannel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
-    await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.emailConsumer.consumeOrderEmailMessages(emailChannel);
+    await this.rabbitMQManager.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    await this.rabbitMQManager.consumeOrderEmailMessages(emailChannel);
     const msg = JSON.stringify({ username: 'test' });
     emailChannel.publish('mpc-email-auth', 'auth-email', Buffer.from(msg));
     emailChannel.publish('mpc-order-auth', 'order-email', Buffer.from(msg));

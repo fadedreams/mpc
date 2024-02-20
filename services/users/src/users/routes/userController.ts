@@ -9,7 +9,6 @@ import crypto from 'crypto';
 import { signupSchema } from '@users/users/schemas/signup';
 import { loginSchema } from '@users/users/schemas/signin';
 import { StatusCodes } from 'http-status-codes';
-import { AuthModel } from '@users/users/models/auth.schema';
 import { omit } from 'lodash';
 import { IBuyerDocument, ISellerDocument } from '@users/dto/';
 

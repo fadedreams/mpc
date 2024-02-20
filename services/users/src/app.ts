@@ -22,7 +22,7 @@ class UsersApp {
   initialize(): void {
     const app: Express = express();
     this.usersServer.start(app);
-    this.log.info('auth Service Initialized');
+    this.log.info('user Service Initialized');
   }
 }
 
