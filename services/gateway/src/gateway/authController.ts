@@ -1,6 +1,6 @@
 
 
-import { authClient } from '@gateway/utils/authClientFetch';
+import { authClient } from '@gateway/utils/authClient';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 

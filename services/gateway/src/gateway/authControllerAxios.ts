@@ -1,5 +1,5 @@
 
-import { authClient } from '@gateway/utils/authClientFetch';
+import { authClient } from '@gateway/utils/authClient';
 import { AxiosResponse } from 'axios';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';

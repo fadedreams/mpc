@@ -3,6 +3,7 @@ import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { AuthController } from './authController';
 import { SearchController } from './searchController';
+import { UsersController } from './usersController';
 
 const router: Router = express.Router();
 const BASE_PATH = '/api/v1/gateway';
@@ -11,6 +12,7 @@ import axios, { AxiosResponse } from 'axios';
 export function initRoutes(app: Application) {
   const authController = new AuthController();
   const searchController = new SearchController();
+  const usersController = new UsersController();
 
   router.get('/auth-health', (_req: Request, res: Response) => {
     res.status(StatusCodes.OK).send('auth service is healthy and OK.');
@@ -94,9 +96,38 @@ export function initRoutes(app: Application) {
 
   router.get('/auth/search/item/:itemId', async (req: Request, res: Response) => {
     await searchController.itemById(req, res);
-
   });
 
+  //buyer routes
+
+  router.get('/buyer/email', async (req: Request, res: Response) => {
+    await usersController.getUserByEmail(req, res);
+  });
+
+  router.get('/buyer/username', async (req: Request, res: Response) => {
+    const authorizationHeader = req.headers.authorization;
+    await usersController.getCurrentBuyerByUsername(req, res, authorizationHeader);
+  });
+
+  router.get('/buyer/:username', async (req: Request, res: Response) => {
+    await usersController.getUserByUsername(req, res);
+  });
+
+  router.get('/seller/id/:sellerId', async (req: Request, res: Response) => {
+    await usersController.getSellerById(req, res);
+  });
+  router.get('/seller/username/:username', async (req: Request, res: Response) => {
+    await usersController.getSellerByUsername(req, res);
+  });
+  router.get('/seller/random/:size', async (req: Request, res: Response) => {
+    await usersController.getSellerByUsername(req, res);
+  });
+  router.post('/seller/create', async (req: Request, res: Response) => {
+    await usersController.createSeller(req, res);
+  });
+  router.put('/seller/:sellerId', async (req: Request, res: Response) => {
+    await usersController.updateSeller(req, res);
+  });
   // router.get('/search', async (req: Request, res: Response) => {
   //   console.log('route.ts /search');
   //   await searchController.itemById(req, res);
