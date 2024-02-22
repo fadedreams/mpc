@@ -70,6 +70,53 @@ export class ElasticSearchService {
     }
   }
 
+  async getIndexedData(index: string, itemId: string): Promise<ISellerItem> {
+    try {
+      const result: GetResponse = await this.elasticSearchClient.get({ index, id: itemId });
+      return result._source as ISellerItem;
+    } catch (error) {
+      this.log.log('error', 'ElasticSearchService getIndexedData() method error:', error);
+      return {} as ISellerItem;
+    }
+  }
+
+  async addDataToIndex(index: string, itemId: string, itemDocument: unknown): Promise<void> {
+    try {
+      await this.elasticSearchClient.index({
+        index,
+        id: itemId,
+        body: itemDocument  // Use 'body' instead of 'document' for the request payload
+      });
+    } catch (error) {
+      this.log.log('error', 'ElasticSearchService addDataToIndex() method error:', error);
+    }
+  }
+
+  async updateIndexedData(index: string, itemId: string, itemDocument: unknown): Promise<void> {
+    try {
+      await this.elasticSearchClient.update({
+        index,
+        id: itemId,
+        body: {
+          doc: itemDocument
+        }
+      });
+    } catch (error) {
+      this.log.log('error', 'ElasticSearchService updateIndexedData() method error:', error);
+    }
+  }
+
+  async deleteIndexedData(index: string, itemId: string): Promise<void> {
+    try {
+      await this.elasticSearchClient.delete({
+        index,
+        id: itemId
+      });
+    } catch (error) {
+      this.log.log('error', 'ElasticSearchService deleteIndexedData() method error:', error);
+    }
+  }
+
 }
 
 // Usage
