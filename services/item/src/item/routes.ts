@@ -24,34 +24,34 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
-  router.get('/email', async (req: Request, res: Response) => {
-    await itemController.getBuyerEmail(req, res);
-  });
-
-  router.get('/username', async (req: Request, res: Response) => {
-    await itemController.getBuyerCurrentUsername(req, res);
-  });
-
-  router.post('/create', async (req: Request, res: Response) => {
-    await itemController.createSeller(req, res);
-  });
-
-  router.get('/:username', async (req: Request, res: Response) => {
-    await itemController.getBuyerUsername(req, res);
-  });
-
-
-  router.put('/:sellerId', async (req: Request, res: Response) => {
-    await itemController.updateSeller(req, res);
-  });
-
-  router.get('/id/:sellerId', async (req: Request, res: Response) => {
-    await itemController.getSellerId(req, res);
-  });
-
-  router.get('/username/:username', async (req: Request, res: Response) => {
-    await itemController.getSellerUsername(req, res);
-  });
+  // router.get('/email', async (req: Request, res: Response) => {
+  //   await itemController.getBuyerEmail(req, res);
+  // });
+  //
+  // router.get('/username', async (req: Request, res: Response) => {
+  //   await itemController.getBuyerCurrentUsername(req, res);
+  // });
+  //
+  // router.post('/create', async (req: Request, res: Response) => {
+  //   await itemController.createSeller(req, res);
+  // });
+  //
+  // router.get('/:username', async (req: Request, res: Response) => {
+  //   await itemController.getBuyerUsername(req, res);
+  // });
+  //
+  //
+  // router.put('/:sellerId', async (req: Request, res: Response) => {
+  //   await itemController.updateSeller(req, res);
+  // });
+  //
+  // router.get('/id/:sellerId', async (req: Request, res: Response) => {
+  //   await itemController.getSellerId(req, res);
+  // });
+  //
+  // router.get('/username/:username', async (req: Request, res: Response) => {
+  //   await itemController.getSellerUsername(req, res);
+  // });
 
   // router.post('/signin', verifyGatewayRequest, async (req: Request, res: Response) => {
   //   await authController.loginUser(req, res);

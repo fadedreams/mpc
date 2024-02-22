@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { sortBy } from 'lodash';
 import { ISearchResult, IPaginateProps } from '@item/dto/search.d'; // Import your search module and types
-import AuthItemService from '@item/item/authItemService'; // Import your search module and types
+import AuthItemService from '@item/item/services/itemService'; // Import your search module and types
 
 
 export default class ItemController {
