@@ -33,8 +33,8 @@ class ItemService {
 
   async getSellerItems(sellerId: string): Promise<ISellerItem[]> {
     const resultsHits: ISellerItem[] = [];
-    const gigs = await this.searchService.itemsSearchBySellerId(sellerId, true);
-    for (const item of gigs.hits) {
+    const items = await this.searchService.itemsSearchBySellerId(sellerId, true);
+    for (const item of items.hits) {
       resultsHits.push(item._source as ISellerItem);
     }
     return resultsHits;
@@ -55,6 +55,42 @@ class ItemService {
     }
     return createdItem;
   };
+
+  async deleteItem(itemId: string, sellerId: string): Promise<void> {
+    await ItemModel.deleteOne({ _id: itemId }).exec();
+    await this.rabbitMQManager.publishDirectMessage(
+      'mpc-seller-update',
+      'user-seller',
+      JSON.stringify({ type: 'update-item-count', itemSellerId: sellerId, count: -1 }),
+      'Details sent to users service.'
+    );
+    await this.elasticSearchService.deleteIndexedData('items', `${itemId}`);
+  }
+
+  async updateItem(itemId: string, itemData: ISellerItem): Promise<ISellerItem> {
+    const document: ISellerItem = await ItemModel.findOneAndUpdate(
+      { _id: itemId },
+      {
+        $set: {
+          title: itemData.title,
+          description: itemData.description,
+          categories: itemData.categories,
+          subCategories: itemData.subCategories,
+          tags: itemData.tags,
+          price: itemData.price,
+          expectedDelivery: itemData.expectedDelivery,
+          basicTitle: itemData.Title,
+          basicDescription: itemData.Description
+        }
+      },
+      { new: true }
+    ).exec() as ISellerItem;
+    if (document) {
+      const data: ISellerItem = document.toJSON?.() as ISellerItem;
+      await this.elasticSearchService.updateIndexedData('items', `${document._id}`, data);
+    }
+    return document;
+  }
 
 }
 
