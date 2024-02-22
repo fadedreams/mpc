@@ -2,7 +2,7 @@
 import { BuyerModel } from '@item/item/models/buyer.schema';
 import { IBuyerDocument, ISellerDocument } from '@item/dto/';
 import { SellerModel } from '../models/seller.schema';
-import { IHitsTotal, IPaginateProps, IQueryList, ISearchResult, ISellerItem } from '@item/dto/';
+import { IHitsTotal, IPaginateProps, IQueryList, ISearchResult, ISellerItem, IReviewMessageDetails, IRatingTypes } from '@item/dto/';
 import { ElasticSearchService } from '@item/item/services/elasticSearchService';
 import SearchService from '@item/item/services/searchService';
 import { ItemModel } from '@item/item/models/item.schema';
@@ -92,6 +92,33 @@ class ItemService {
     return document;
   }
 
+
+  async updateItemReview(data: IReviewMessageDetails): Promise<void> {
+    const ratingTypes: IRatingTypes = {
+      '1': 'one',
+      '2': 'two',
+      '3': 'three',
+      '4': 'four',
+      '5': 'five',
+    };
+    const ratingKey: string = ratingTypes[`${data.rating}`];
+    const item = await ItemModel.findOneAndUpdate(
+      { _id: data.itemId },
+      {
+        $inc: {
+          ratingsCount: 1,
+          ratingSum: data.rating,
+          [`ratingCategories.${ratingKey}.value`]: data.rating,
+          [`ratingCategories.${ratingKey}.count`]: 1,
+        }
+      },
+      { new: true, upsert: true }
+    ).exec();
+    if (item) {
+      const data: ISellerItem = item.toJSON?.() as ISellerItem;
+      await this.elasticSearchService.updateIndexedData('items', `${item._id}`, data);
+    }
+  };
 }
 
 

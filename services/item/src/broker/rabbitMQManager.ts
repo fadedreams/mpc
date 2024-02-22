@@ -4,6 +4,7 @@ import { IBuyerDocument, ISellerDocument } from '@item/dto/';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import BuyerService from '@item/item/services/buyerService';
 import SellerService from '@item/item/services/sellerService';
+import ItemService from '@item/item/services/itemService';
 
 export class RabbitMQManager {
   private readonly log: Logger;
@@ -12,12 +13,14 @@ export class RabbitMQManager {
   private channel!: Channel;
   private buyerService: BuyerService;
   private sellerService: SellerService;
+  private readonly itemService: ItemService;
 
   constructor(log: Logger, rabbitmqEndpoint: string) {
     this.log = log;
     this.rabbitmqEndpoint = rabbitmqEndpoint;
     this.buyerService = new BuyerService();
     this.sellerService = new SellerService(this.buyerService);
+    this.itemService = new ItemService();
   }
 
   async initialize(): Promise<void> {
@@ -98,108 +101,28 @@ export class RabbitMQManager {
     await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
   }
 
-  // consuming messages from auth microservice, authUserService.ts in auth microservice
-  async consumeBuyerDirectMessage(channel: Channel): Promise<void> {
+  async consumeItemDirectMessage(channel: Channel): Promise<void> {
     try {
-      if (!this.channel) {
-        this.connection = await connect(this.rabbitmqEndpoint);
-        this.channel = await this.connection.createChannel();
+      if (!channel) {
+        await this.initialize();
+        channel = this.getChannel();
       }
-      const exchangeName = 'mpc-buyer-update';
-      const routingKey = 'user-buyer';
-      const queueName = 'user-buyer-queue';
+      const exchangeName = 'mpc-update-item';
+      const routingKey = 'update-item';
+      const queueName = 'item-update-queue';
       await channel.assertExchange(exchangeName, 'direct');
       const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
       await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
       channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { type } = JSON.parse(msg!.content.toString());
-        if (type === 'auth') {
-          const { username, email, createdAt } = JSON.parse(msg!.content.toString());
-          const buyer: IBuyerDocument = {
-            username,
-            email,
-            purchasedItems: [],
-            createdAt
-          };
-          await this.buyerService.createBuyer(buyer);
-        } else {
-          const { buyerId, purchasedItems } = JSON.parse(msg!.content.toString());
-          await this.buyerService.updateBuyerPurchasedItemsProp(buyerId, purchasedItems, type);
-        }
+        const { itemReview } = JSON.parse(msg!.content.toString());
+        await this.itemService.updateItemReview(JSON.parse(itemReview));
         channel.ack(msg!);
       });
     } catch (error) {
-      this.log.log('error', 'ItemService UserConsumer consumeBuyerDirectMessage() method error:', error);
-    }
-  }
-
-  //consuming messages from order microservice
-  async consumeSellerDirectMessage(channel: Channel): Promise<void> {
-    try {
-      if (!this.channel) {
-        this.connection = await connect(this.rabbitmqEndpoint);
-        this.channel = await this.connection.createChannel();
-      }
-      const exchangeName = 'mpc-seller-update';
-      const routingKey = 'user-seller';
-      const queueName = 'user-seller-queue';
-      await channel.assertExchange(exchangeName, 'direct');
-      const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-      await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
-      /** [TODO:description] */
-      channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { type, sellerId, ongoingJobs, completedJobs, totalEarnings, recentDelivery, itemSellerId, count } = JSON.parse(
-          msg!.content.toString()
-        );
-        if (type === 'create-order') {
-          await this.sellerService.updateSellerOngoingJobsProp(sellerId, ongoingJobs);
-        } else if (type === 'approve-order') {
-          await this.sellerService.updateSellerCompletedJobsProp({
-            sellerId,
-            ongoingJobs,
-            completedJobs,
-            totalEarnings,
-            recentDelivery
-          });
-        } else if (type === 'update-item-count') {
-          await this.sellerService.updateTotalItemCount(`${itemSellerId}`, count);
-        } else if (type === 'cancel-order') {
-          await this.sellerService.updateSellerCancelledJobsProp(sellerId);
-        }
-        channel.ack(msg!);
-      });
-    } catch (error) {
-      this.log.log('error', 'ItemService UserConsumer consumeSellerDirectMessage() method error:', error);
-    }
-  }
-
-  //consuming messages from review microservice
-  async consumeReviewFanoutMessages(channel: Channel): Promise<void> {
-    try {
-      if (!this.channel) {
-        this.connection = await connect(this.rabbitmqEndpoint);
-        this.channel = await this.connection.createChannel();
-      }
-      const exchangeName = 'mpc-review';
-      const queueName = 'seller-review-queue';
-      await channel.assertExchange(exchangeName, 'fanout');
-      const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-      await channel.bindQueue(mpcQueue.queue, exchangeName, '');
-      channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { type } = JSON.parse(msg!.content.toString());
-        if (type === 'buyer-review') {
-          await this.sellerService.updateSellerReview(JSON.parse(msg!.content.toString()));
-          await this.publishDirectMessage(
-            'mpc-update-item',
-            'update-item',
-            JSON.stringify({ type: 'updateItem', itemReview: msg!.content.toString() }),
-            'Message sent to item service.'
-          );
-        }
-        channel.ack(msg!);
-      });
-    } catch (error) {
-      this.log.log('error', 'ItemService UserConsumer consumeReviewFanoutMessages() method error:', error);
+      this.log.log('error', 'ItemService ItemConsumer consumeItemDirectMessage() method error:', error);
     }
   };
+
+
+
 }
