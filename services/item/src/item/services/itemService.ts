@@ -18,11 +18,13 @@ class ItemService {
   private readonly log: Logger;
   private readonly rabbitMQManager: RabbitMQManager;
 
-  constructor() {
+  constructor(rabbitMQManager: RabbitMQManager) {
     this.elasticSearchService = new ElasticSearchService();
     this.searchService = new SearchService();
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'items', 'debug');
-    this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    // this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
+    this.rabbitMQManager = rabbitMQManager;
+
   }
 
   async getItemById(itemId: string): Promise<ISellerItem> {

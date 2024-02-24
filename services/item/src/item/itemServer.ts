@@ -20,13 +20,14 @@ import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@item/dto/auth.d';
 import { DatabaseConnector } from '@item/config';
+import ItemService from '@item/item/services/itemService';
 
 export class ItemServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
-  private readonly redisConnection: RedisConnection;
+  // private readonly redisConnection: RedisConnection;
   // private readonly rConsumer: RConsumer;
 
   constructor(
@@ -37,10 +38,8 @@ export class ItemServer {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'item', 'debug');
     this.SERVER_PORT = 3004;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
-    // this.rConsumer = new RConsumer(this.config);
     this.databaseConnector = databaseConnector;
-
-    this.redisConnection = new RedisConnection();
+    // this.redisConnection = new RedisConnection();
   }
 
   start(app: Application): void {
@@ -49,7 +48,7 @@ export class ItemServer {
     this.routesMiddleware(app);
     this.errorHandler(app);
     this.startQueues();
-    // this.startElasticSearch();
+    this.startElasticSearch();
     // this.startRedis();
     this.databaseConnector.connect();
   }
@@ -143,7 +142,7 @@ export class ItemServer {
 
   private startRedis(): void {
 
-    this.redisConnection.connect();
+    // this.redisConnection.connect();
   }
 
   private startServer(app: Application): void {

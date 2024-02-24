@@ -1,4 +1,4 @@
-import { Logger } from 'winston';
+import { Logger } from 'winston'
 import { connect, Channel, Connection, ConsumeMessage, Replies } from 'amqplib';
 import { IBuyerDocument, ISellerDocument } from '@item/dto/';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
@@ -20,7 +20,7 @@ export class RabbitMQManager {
     this.rabbitmqEndpoint = rabbitmqEndpoint;
     this.buyerService = new BuyerService();
     this.sellerService = new SellerService(this.buyerService);
-    this.itemService = new ItemService();
+    this.itemService = new ItemService(this);
   }
 
   async initialize(): Promise<void> {
@@ -115,7 +115,7 @@ export class RabbitMQManager {
       await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
       channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
         const { itemReview } = JSON.parse(msg!.content.toString());
-        await this.itemService.updateItemReview(JSON.parse(itemReview));
+        // await this.itemService.updateItemReview(JSON.parse(itemReview));
         channel.ack(msg!);
       });
     } catch (error) {
