@@ -21,7 +21,7 @@ class ItemService {
   constructor() {
     this.elasticSearchService = new ElasticSearchService();
     this.searchService = new SearchService();
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'users', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'items', 'debug');
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
   }
 
@@ -49,7 +49,7 @@ class ItemService {
         'mpc-seller-update',
         'user-seller',
         JSON.stringify({ type: 'update-item-count', itemSellerId: `${data.sellerId}`, count: 1 }),
-        'Details sent to users service.'
+        'Details sent to items service.'
       );
       await this.elasticSearchService.addDataToIndex('items', `${createdItem._id}`, createdItem);
     }
@@ -62,7 +62,7 @@ class ItemService {
       'mpc-seller-update',
       'user-seller',
       JSON.stringify({ type: 'update-item-count', itemSellerId: sellerId, count: -1 }),
-      'Details sent to users service.'
+      'Details sent to items service.'
     );
     await this.elasticSearchService.deleteIndexedData('items', `${itemId}`);
   }

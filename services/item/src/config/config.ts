@@ -22,6 +22,8 @@ export class Config {
   public GATEWAY_JWT_TOKEN: string | undefined;
   public JWT_TOKEN: string | undefined;
   public AUTH_JWT_TOKEN: string | undefined;
+  public REDIS_HOST: string | undefined;
+
 
   public API_GATEWAY_URL: string | undefined;
   public MYSQL_DB: string | undefined;
@@ -45,8 +47,9 @@ export class Config {
     this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE || '';
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO || '';
     this.GATEWAY_JWT_TOKEN = process.env.GATEWAY_JWT_TOKEN || 'secret';
-    this.JWT_TOKEN = process.env.JWT_TOKEN || 'secret';
+    this.JWT_TOKEN = process.env.JWT_TOKEN || 'http://localhost:6379';
     this.AUTH_JWT_TOKEN = process.env.AUTH_JWT_TOKEN || 'secret';
+    this.REDIS_HOST = process.env.AUTH_JWT_TOKEN || 'secret';
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || 'http://localhost:3000';
     this.MYSQL_DB = process.env.MYSQL_DB || '';
     this.DATABASE_URL = process.env.DATABASE_URL || '';

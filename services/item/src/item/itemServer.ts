@@ -4,6 +4,7 @@ import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpc
 import { isAxiosError } from 'axios';
 import { ElasticSearchService } from '@item/item/services/elasticSearchService';
 import { RabbitMQManager } from '@item/broker/rabbitMQManager';
+import { RedisConnection } from '@item/broker/redisConnection';
 // import { RConsumer } from '@item/broker/rConsumer';
 import { Config } from '@item/config';
 import { Logger } from 'winston';
@@ -25,18 +26,21 @@ export class ItemServer {
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
+  private readonly redisConnection: RedisConnection;
   // private readonly rConsumer: RConsumer;
 
   constructor(
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
-    private readonly databaseConnector: DatabaseConnector
+    private readonly databaseConnector: DatabaseConnector,
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'item', 'debug');
     this.SERVER_PORT = 3004;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     // this.rConsumer = new RConsumer(this.config);
     this.databaseConnector = databaseConnector;
+
+    this.redisConnection = new RedisConnection();
   }
 
   start(app: Application): void {
@@ -45,7 +49,8 @@ export class ItemServer {
     this.routesMiddleware(app);
     this.errorHandler(app);
     this.startQueues();
-    this.startElasticSearch();
+    // this.startElasticSearch();
+    // this.startRedis();
     this.databaseConnector.connect();
   }
 
@@ -121,9 +126,7 @@ export class ItemServer {
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
     await this.rabbitMQManager.consumeOrderEmailMessages(channel);
-    await this.rabbitMQManager.consumeBuyerDirectMessage(channel);
-    await this.rabbitMQManager.consumeSellerDirectMessage(channel);
-    await this.rabbitMQManager.consumeReviewFanoutMessages(channel);
+    await this.rabbitMQManager.consumeItemDirectMessage(channel);
 
 
     const msg = JSON.stringify({ username: 'test' });
@@ -136,6 +139,11 @@ export class ItemServer {
   private startElasticSearch(): void {
     this.elasticSearchService.checkConnection();
     this.elasticSearchService.createIndex('items');
+  }
+
+  private startRedis(): void {
+
+    this.redisConnection.connect();
   }
 
   private startServer(app: Application): void {
