@@ -27,8 +27,7 @@ export class ItemServer {
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
-  // private readonly redisConnection: RedisConnection;
-  // private readonly rConsumer: RConsumer;
+  private readonly redisConnection: RedisConnection;
 
   constructor(
     private readonly config: Config,
@@ -39,7 +38,7 @@ export class ItemServer {
     this.SERVER_PORT = 3004;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.databaseConnector = databaseConnector;
-    // this.redisConnection = new RedisConnection();
+    this.redisConnection = new RedisConnection();
   }
 
   start(app: Application): void {
@@ -49,7 +48,7 @@ export class ItemServer {
     this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
-    // this.startRedis();
+    this.startRedis();
     this.databaseConnector.connect();
   }
 
@@ -142,7 +141,7 @@ export class ItemServer {
 
   private startRedis(): void {
 
-    // this.redisConnection.connect();
+    this.redisConnection.connect();
   }
 
   private startServer(app: Application): void {

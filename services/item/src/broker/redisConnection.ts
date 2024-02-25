@@ -10,7 +10,7 @@ export class RedisConnection {
   private readonly log: Logger;
 
   constructor() {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gigRedisConnection', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'itemRedisConnection', 'debug');
     this.client = createClient({ url: `${config.REDIS_HOST}` });
     this.cacheError();
   }
