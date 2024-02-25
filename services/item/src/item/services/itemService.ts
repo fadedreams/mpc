@@ -126,6 +126,24 @@ class ItemService {
       await this.elasticSearchService.updateIndexedData('items', `${item._id}`, data);
     }
   };
+
+  async updateActiveItemProp(itemId: string, itemActive: boolean): Promise<ISellerItem> {
+    const document: ISellerItem = await ItemModel.findOneAndUpdate(
+      { _id: itemId },
+      {
+        $set: {
+          active: itemActive
+        }
+      },
+      { new: true }
+    ).exec() as ISellerItem;
+    if (document) {
+      const data: ISellerItem = document.toJSON?.() as ISellerItem;
+      await this.elasticSearchService.updateIndexedData('items', `${document._id}`, data);
+    }
+    return document;
+  };
+
 }
 
 

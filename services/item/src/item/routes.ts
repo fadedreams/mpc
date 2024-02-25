@@ -31,6 +31,15 @@ export function initRoutes(app: Application) {
   router.get('/:itemId', async (req: Request, res: Response) => {
     await itemController.itemUpdate(req, res);
   });
+
+  router.get('/active/:itemId', async (req: Request, res: Response) => {
+    await itemController.itemUpdateActive(req, res);
+  });
+
+  router.delete('/:itemId/:sellerId', async (req: Request, res: Response) => {
+    await itemController.itemDelete(req, res);
+  });
+
   // router.get('/email', async (req: Request, res: Response) => {
   // });
   //

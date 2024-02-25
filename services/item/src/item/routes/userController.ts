@@ -58,6 +58,17 @@ class ItemController {
     res.status(StatusCodes.OK).json({ message: 'Item updated successfully.', item: updatedItem });
   };
 
+  public async itemUpdateActive(req: Request, res: Response): Promise<void> {
+    const updateditem: ISellerItem = await this.itemService.updateActiveItemProp(req.params.itemId, req.body.active);
+    res.status(StatusCodes.OK).json({ message: 'Item updated successfully.', item: updateditem });
+  };
+
+  public async itemDelete(req: Request, res: Response): Promise<void> {
+    await this.itemService.deleteItem(req.params.itemId, req.params.sellerId);
+    res.status(StatusCodes.OK).json({ message: 'item deleted successfully.' });
+  };
+
+
 }
 
 export default ItemController;
