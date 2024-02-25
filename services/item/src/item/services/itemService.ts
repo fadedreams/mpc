@@ -144,6 +144,15 @@ class ItemService {
     return document;
   };
 
+  async getSellerPausedItems(sellerId: string): Promise<ISellerItem[]> {
+    const resultsHits: ISellerItem[] = [];
+    const items = await this.searchService.itemsSearchBySellerId(sellerId, false);
+    for (const item of items.hits) {
+      resultsHits.push(item._source as ISellerItem);
+    }
+    return resultsHits;
+  };
+
 }
 
 

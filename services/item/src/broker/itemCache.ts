@@ -4,7 +4,7 @@ import { configInstance as config } from '@item/config';
 import { Logger } from 'winston';
 import { redisClient } from '@item/broker/redisConnection';
 
-class ItemCache {
+export class ItemCache {
   private log: Logger;
 
   constructor() {
