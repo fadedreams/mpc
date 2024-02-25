@@ -24,8 +24,14 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
+  router.get('/create', async (req: Request, res: Response) => {
+    await itemController.itemCreate(req, res);
+  });
+
+  router.get('/:itemId', async (req: Request, res: Response) => {
+    await itemController.itemUpdate(req, res);
+  });
   // router.get('/email', async (req: Request, res: Response) => {
-  //   await itemController.getBuyerEmail(req, res);
   // });
   //
   // router.get('/username', async (req: Request, res: Response) => {

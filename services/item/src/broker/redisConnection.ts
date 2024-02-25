@@ -34,8 +34,8 @@ export class RedisConnection {
     return this.client;
   }
 }
-// const redisService = new RedisConnection();
-// export const redisConnect = async (): Promise<void> => {
-//   await redisService.connect();
-// };
-// export const client: RedisClientType = redisService.getClient();
+const redisService = new RedisConnection();
+export const redisConnect = async (): Promise<void> => {
+  await redisService.connect();
+};
+export const redisClient: RedisClientType = redisService.getClient();

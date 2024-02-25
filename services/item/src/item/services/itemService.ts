@@ -16,15 +16,16 @@ class ItemService {
   private readonly elasticSearchService: ElasticSearchService;
   private readonly searchService: SearchService;
   private readonly log: Logger;
-  private readonly rabbitMQManager: RabbitMQManager;
+  private readonly rabbitMQManager?: RabbitMQManager;
 
-  constructor(rabbitMQManager: RabbitMQManager) {
+  constructor(rabbitMQManager?: RabbitMQManager) {
     this.elasticSearchService = new ElasticSearchService();
     this.searchService = new SearchService();
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'items', 'debug');
     // this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
-    this.rabbitMQManager = rabbitMQManager;
-
+    if (rabbitMQManager) {
+      this.rabbitMQManager = rabbitMQManager;
+    }
   }
 
   async getItemById(itemId: string): Promise<ISellerItem> {
@@ -47,12 +48,14 @@ class ItemService {
     const createdItem: ISellerItem = await ItemModel.create(item);
     if (createdItem) {
       const data: ISellerItem = createdItem.toJSON?.() as ISellerItem;
-      await this.rabbitMQManager.publishDirectMessage(
-        'mpc-seller-update',
-        'user-seller',
-        JSON.stringify({ type: 'update-item-count', itemSellerId: `${data.sellerId}`, count: 1 }),
-        'Details sent to items service.'
-      );
+      if (this.rabbitMQManager) {
+        await this.rabbitMQManager.publishDirectMessage(
+          'mpc-seller-update',
+          'user-seller',
+          JSON.stringify({ type: 'update-item-count', itemSellerId: `${data.sellerId}`, count: 1 }),
+          'Details sent to items service.'
+        );
+      }
       await this.elasticSearchService.addDataToIndex('items', `${createdItem._id}`, createdItem);
     }
     return createdItem;
@@ -60,12 +63,14 @@ class ItemService {
 
   async deleteItem(itemId: string, sellerId: string): Promise<void> {
     await ItemModel.deleteOne({ _id: itemId }).exec();
-    await this.rabbitMQManager.publishDirectMessage(
-      'mpc-seller-update',
-      'user-seller',
-      JSON.stringify({ type: 'update-item-count', itemSellerId: sellerId, count: -1 }),
-      'Details sent to items service.'
-    );
+    if (this.rabbitMQManager) {
+      await this.rabbitMQManager.publishDirectMessage(
+        'mpc-seller-update',
+        'user-seller',
+        JSON.stringify({ type: 'update-item-count', itemSellerId: sellerId, count: -1 }),
+        'Details sent to items service.'
+      );
+    }
     await this.elasticSearchService.deleteIndexedData('items', `${itemId}`);
   }
 
