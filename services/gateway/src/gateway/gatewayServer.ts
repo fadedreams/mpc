@@ -2,7 +2,7 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
 import { isAxiosError } from 'axios';
-import { ElasticSearchService } from './elasticSearchService';
+import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
 import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
 import { EmailConsumer } from '@gateway/broker/emailConsumer';
 import { Config } from '@gateway/config';
@@ -14,8 +14,9 @@ import cors from 'cors';
 import hpp from 'hpp';
 import helmet from 'helmet';
 import compression from 'compression';
-import { initRoutes } from './routes';
+import { initRoutes } from '@gateway/gateway/routes/routes';
 import { StatusCodes } from 'http-status-codes';
+import { RedisConnection } from '@gateway/broker/redisConnection';
 import session from 'express-session';
 // import { authClient, authAxios } from '@gateway/utils/authClient';
 
@@ -25,17 +26,20 @@ export class gatewayServer {
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
   private readonly gatewayQueueConnection: gatewayQueueConnection;
+  private readonly redisConnection: RedisConnection
   // private readonly emailConsumer: EmailConsumer;
 
   constructor(
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
-    private readonly emailConsumer: EmailConsumer
+    private readonly emailConsumer: EmailConsumer,
+
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gateway', 'debug');
     this.SERVER_PORT = 3000;
     this.gatewayQueueConnection = new gatewayQueueConnection(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.emailConsumer = new EmailConsumer(this.config);
+    this.redisConnection = new RedisConnection();
 
     // Create Redis client and store
   }
@@ -47,6 +51,7 @@ export class gatewayServer {
     this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
+    this.startRedis();
   }
 
   private initMiddleware(app: Application): void {
@@ -146,6 +151,9 @@ export class gatewayServer {
     this.elasticSearchService.checkConnection();
   }
 
+  private startRedis(): void {
+    this.redisConnection.connect();
+  }
   private startServer(app: Application): void {
     try {
       const httpServer: http.Server = new http.Server(app);

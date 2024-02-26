@@ -3,7 +3,7 @@ import { Logger } from 'winston';
 import express, { Express } from 'express';
 import { Config } from '@gateway/config';
 import { gatewayServer } from './gateway/gatewayServer';
-import { ElasticSearchService } from './gateway/elasticSearchService';
+import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
 import { EmailConsumer } from './broker/emailConsumer';
 
 class gatewayApp {

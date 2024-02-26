@@ -48,8 +48,8 @@ export class ItemServer {
     this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
+    this.startDB();
     this.startRedis();
-    this.databaseConnector.connect();
   }
 
   private initMiddleware(app: Application): void {
@@ -140,8 +140,10 @@ export class ItemServer {
   }
 
   private startRedis(): void {
-
     this.redisConnection.connect();
+  }
+  private startDB(): void {
+    this.databaseConnector.connect();
   }
 
   private startServer(app: Application): void {

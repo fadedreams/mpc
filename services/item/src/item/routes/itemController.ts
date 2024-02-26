@@ -136,7 +136,7 @@ class ItemController {
 
 
   public async itemsByCategory(req: Request, res: Response): Promise<void> {
-    // console.log("tested");
+    // console.log("tested getUserSelectedItemCategory!");
     const category = await this.itemCache.getUserSelectedItemCategory(`selectedCategories:${req.params.username}`);
     const resultHits: ISellerItem[] = [];
     // let category = 'Category1';
