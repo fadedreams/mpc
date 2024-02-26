@@ -1,22 +1,25 @@
 
-import { BuyerModel } from '@item/item/models/buyer.schema';
 import { IBuyerDocument, ISellerDocument } from '@item/dto/';
-import { SellerModel } from '../models/seller.schema';
 import { IHitsTotal, IPaginateProps, IQueryList, ISearchResult, ISellerItem } from '@item/dto/';
+import { StatusCodes } from 'http-status-codes';
 import { ElasticSearchService } from '@item/item/services/elasticSearchService';
 import { Client } from '@elastic/elasticsearch';
-import { configInstance as config } from '@item/config';
-import { winstonLogger } from '@fadedreams7org1/mpclib';
-import { Logger } from 'winston';
+import { Request, Response } from 'express';
+import { sortBy } from 'lodash';
+import { ItemCache } from '@item/broker/itemCache';
+
 
 class SearchService {
 
   private readonly elasticSearchService: ElasticSearchService;
-  private readonly elasticSearchClient: Client;
+  // private readonly elasticSearchClient: Client;
+  private readonly itemCache: ItemCache;
+
 
   constructor() {
     this.elasticSearchService = new ElasticSearchService();
-    this.elasticSearchClient = this.elasticSearchService.getElasticSearchClient();
+    // this.elasticSearchClient = this.elasticSearchService.getElasticSearchClient();
+    this.itemCache = new ItemCache();
   }
 
   async itemsSearchBySellerId(searchQuery: string, active: boolean): Promise<ISearchResult> {
@@ -26,8 +29,12 @@ class SearchService {
           fields: ['sellerId'],
           query: `*${searchQuery}*`
         }
+      },
+      {
+        term: {
+          active
+        }
       }
-
     ];
     const result = await this.elasticSearchService.getElasticSearchClient().search({
       index: 'items',
@@ -58,8 +65,12 @@ class SearchService {
           fields: ['username', 'title', 'description', 'Description', 'Title', 'categories', 'subCategories', 'tags'],
           query: `*${searchQuery}*`
         }
+      },
+      {
+        term: {
+          active: true
+        }
       }
-
     ];
 
     if (deliveryTime !== 'undefined') {
@@ -103,9 +114,30 @@ class SearchService {
     };
   };
 
+  async items(req: Request, res: Response): Promise<void> {
+    const { from, size, type } = req.params;
+    let resultHits: ISellerItem[] = [];
+    const paginate: IPaginateProps = { from, size: parseInt(`${size}`), type };
+    const items: ISearchResult = await this.itemsSearch(
+      `${req.query.query}`,
+      paginate,
+      `${req.query.delivery_time}`,
+      parseInt(`${req.query.minprice}`),
+      parseInt(`${req.query.maxprice}`),
+    );
+    for (const item of items.hits) {
+      resultHits.push(item._source as ISellerItem);
+    }
+    if (type === 'backward') {
+      resultHits = sortBy(resultHits, ['sortId']);
+    }
+    res.status(StatusCodes.OK).json({ message: 'Search items results', total: items.total, items: resultHits });
+  }
+
+
   async itemsSearchByCategory(searchQuery: string): Promise<ISearchResult> {
     const result = await this.elasticSearchClient.search({
-      index: 'items',
+      index: 'Items',
       size: 10,
       query: {
         bool: {
@@ -114,6 +146,11 @@ class SearchService {
               query_string: {
                 fields: ['categories'],
                 query: `*${searchQuery}*`
+              }
+            },
+            {
+              term: {
+                active: true
               }
             }
           ]
@@ -127,9 +164,10 @@ class SearchService {
     };
   };
 
+
   async getTopRatedItemsByCategory(searchQuery: string): Promise<ISearchResult> {
     const result = await this.elasticSearchClient.search({
-      index: 'items',
+      index: 'Items',
       size: 10,
       query: {
         bool: {
@@ -162,6 +200,7 @@ class SearchService {
     };
   };
 
+
   async getMoreItemsLikeThis(itemId: string) {
     const result = await this.elasticSearchClient.search({
       index: 'items',
@@ -184,8 +223,6 @@ class SearchService {
       hits: result.hits.hits
     };
   };
-
 }
-
 
 export default SearchService;

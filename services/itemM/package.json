@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node -r tsconfig-paths/register src/app.ts | pino-pretty -c",
-    "dev5": "NODE_OPTIONS='--trace-warnings' ts-node --pretty -r tsconfig-paths/register src/app.ts",
+    "dev": "ts-node --pretty -r tsconfig-paths/register src/app.ts",
     "dev4": "NODE_OPTIONS=--stack-size=10000 ts-node -r tsconfig-paths/register src/app.ts",
     "dev2": "NODE_OPTIONS=\"--max-old-space-size=8192\" ts-node -r tsconfig-paths/register src/app.ts",
     "dev3": "tsx -r tsconfig-paths/register src/app2_test.ts",

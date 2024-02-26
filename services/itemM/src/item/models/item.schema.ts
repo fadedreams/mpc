@@ -27,6 +27,7 @@ const itemSchema: Schema = new Schema(
     },
     price: { type: Number, default: 0 },
     sortId: { type: Number },
+    coverImage: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
   },
   {

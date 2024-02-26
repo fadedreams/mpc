@@ -45,7 +45,6 @@ class ItemService {
 
 
   async createItem(item: ISellerItem): Promise<ISellerItem> {
-    // console.log("tested");
     const createdItem: ISellerItem = await ItemModel.create(item);
     if (createdItem) {
       const data: ISellerItem = createdItem.toJSON?.() as ISellerItem;
@@ -57,7 +56,6 @@ class ItemService {
           'Details sent to items service.'
         );
       }
-      // console.log('createdItemid: ', createdItem._id);
       await this.elasticSearchService.addDataToIndex('items', `${createdItem._id}`, createdItem);
     }
     return createdItem;
@@ -88,8 +86,8 @@ class ItemService {
           tags: itemData.tags,
           price: itemData.price,
           expectedDelivery: itemData.expectedDelivery,
-          Title: itemData.Title,
-          Description: itemData.Description
+          basicTitle: itemData.Title,
+          basicDescription: itemData.Description
         }
       },
       { new: true }
@@ -146,6 +144,7 @@ class ItemService {
     return document;
   };
 
+
   async getSellerPausedItems(sellerId: string): Promise<ISellerItem[]> {
     const resultsHits: ISellerItem[] = [];
     const items = await this.searchService.itemsSearchBySellerId(sellerId, false);
@@ -154,7 +153,6 @@ class ItemService {
     }
     return resultsHits;
   };
-
 }
 
 

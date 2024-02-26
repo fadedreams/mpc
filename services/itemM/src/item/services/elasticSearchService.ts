@@ -83,7 +83,6 @@ export class ElasticSearchService {
   }
 
   async addDataToIndex(index: string, itemId: string, itemDocument: unknown): Promise<void> {
-    // console.log("tested");
     try {
       await this.elasticSearchClient.index({
         index,

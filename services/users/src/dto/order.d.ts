@@ -91,7 +91,6 @@ export interface IOrderDocument {
   buyerId: string;
   buyerUsername: string;
   buyerEmail: string;
-  buyerImage?: string;
   status: string;
   orderId: string;
   invoiceId: string;

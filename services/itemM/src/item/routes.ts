@@ -24,20 +24,8 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
-  router.post('/create', async (req: Request, res: Response) => {
-    await itemController.itemCreate(req, res);
-  });
-
-  router.put('/:itemId', async (req: Request, res: Response) => {
-    await itemController.itemUpdate(req, res);
-  });
-
-  router.put('/active/:itemId', async (req: Request, res: Response) => {
-    await itemController.itemUpdateActive(req, res);
-  });
-
-  router.delete('/:itemId/:sellerId', async (req: Request, res: Response) => {
-    await itemController.itemDelete(req, res);
+  router.get('/:itemId', async (req: Request, res: Response) => {
+    await itemController.itemById(req, res);
   });
 
   router.get('/seller/:sellerId', async (req: Request, res: Response) => {
@@ -51,14 +39,33 @@ export function initRoutes(app: Application) {
   router.get('/search/:from/:size/:type', async (req: Request, res: Response) => {
     await itemController.items(req, res);
   });
-
+  //
   router.get('/category/:username', async (req: Request, res: Response) => {
-    // console.log("haya");
     await itemController.itemsByCategory(req, res);
   });
-
+  //
   router.get('/category/:username', async (req: Request, res: Response) => {
     await itemController.topRatedItemsByCategory(req, res);
+  });
+  //
+  router.get('/similar/:ItemId', async (req: Request, res: Response) => {
+    await itemController.moreLikeThis(req, res);
+  });
+
+  router.get('/create', async (req: Request, res: Response) => {
+    await itemController.itemCreate(req, res);
+  });
+
+  router.put('/:itemId', async (req: Request, res: Response) => {
+    await itemController.itemUpdate(req, res);
+  });
+
+  router.put('/active/:itemId', async (req: Request, res: Response) => {
+    await itemController.itemUpdateActive(req, res);
+  });
+
+  router.delete('/:itemId/:sellerId', async (req: Request, res: Response) => {
+    await itemController.itemDelete(req, res);
   });
 
   app.use(BASE_PATH, router);
