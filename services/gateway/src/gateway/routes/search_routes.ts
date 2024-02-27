@@ -7,11 +7,11 @@ import { SearchController } from '@gateway/gateway/controllers/searchController'
 const router: Router = express.Router();
 const searchController = new SearchController();
 
-router.get('/auth/search/item/:from/:size/:type', async (req: Request, res: Response) => {
+router.get('/:from/:size/:type', async (req: Request, res: Response) => {
   await searchController.items(req, res);
 });
 
-router.get('/auth/search/item/:itemId', async (req: Request, res: Response) => {
+router.get('/:itemId', async (req: Request, res: Response) => {
   await searchController.itemById(req, res);
 });
 

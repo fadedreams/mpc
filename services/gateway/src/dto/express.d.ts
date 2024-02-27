@@ -14,4 +14,5 @@ declare global {
 interface CustomSession extends Session {
   jwt?: string;
   user?: any; // Replace 'any' with the actual type of user
+  email?: any; // Replace 'any' with the actual type of user
 }

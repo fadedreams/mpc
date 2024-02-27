@@ -27,8 +27,10 @@ class ItemController {
     const count: number = await this.elasticSearchService.getDocumentCount('items');
     const item: ISellerItem = {
       sellerId: req.body.sellerId,
-      username: req.currentUser!.username,
-      email: req.currentUser!.email,
+      username: req.body.username,
+      email: req.body.email,
+      // username: req.currentUser!.username,
+      // email: req.currentUser!.email,
       // username: "a",
       // email: "a@a.com",
       title: req.body.title,

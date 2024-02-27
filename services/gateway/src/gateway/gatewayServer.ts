@@ -185,8 +185,8 @@ export class gatewayServer {
       const socketIoApp = new SocketIOAppHandler(this.socketIO);
       // socketIoApp.listen();
 
-      initRoutes(app, this.socketIO);
       this.initMiddleware(app);
+      initRoutes(app, this.socketIO);
       this.errorHandler(app);
 
       httpServer.listen(this.SERVER_PORT, () => {
@@ -203,8 +203,8 @@ export class gatewayServer {
       const httpServer: http.Server = new http.Server(app);
       const socketIO: Server = await this.createSocketIO(httpServer);
       app.get('/', (req, res) => res.sendFile(__dirname + '/socket_test.html'));
-      initRoutes(app, this.socketIO);
       this.initMiddleware(app);
+      initRoutes(app, this.socketIO);
       this.errorHandler(app);
       // console.log(__dirname);
       this.startHttpServer(httpServer);

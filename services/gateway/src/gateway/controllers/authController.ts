@@ -7,7 +7,7 @@ import { IAuthPayload, CustomSession } from '@gateway/dto';
 export class AuthController {
   public async createUser(req: Request, res: Response): Promise<void> {
     try {
-      console.log("create in AuthController.ts");
+      // console.log("create in AuthController.ts");
       const response = await authClient.signUp(req.body);
       console.log("create in AuthController.ts", response);
 
@@ -43,6 +43,7 @@ export class AuthController {
       // Set properties on the session
       customSession.jwt = response.token;
       customSession.user = response.user;
+      customSession.email = response.email;
 
       // Can still set on the current request
       req.currentUser = response.user;
