@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO chattttttttttt</title>
+    <style>
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #messages li {
+            padding: 5px 10px;
+        }
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+    <!-- <script src="https://socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // var socket = io();
+            var socket = io('http://localhost:3000');
+
+            // When the form is submitted, emit the 'message' event to the server
+            document.getElementById('messageForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // prevents the form from being submitted normally
+                var message = document.getElementById('m').value;
+                socket.emit('getLoggedInUsers', message);
+                document.getElementById('m').value = '';
+                return false;
+            });
+
+            // Listen for 'message' events from the server and add the message to the chat
+            socket.on('getLoggedInUsers', function(msg) {
+                var item = document.createElement('li');
+                console.log(msg);
+                item.textContent = msg;
+                document.getElementById('messages').appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Socket.IO Chat</h1>
+    <p>aaaaType a message and hit 'Send' to send a message to the server.</p>
+    <ul id="messages"></ul>
+    <form id="messageForm" action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+</body>
+</html>

@@ -163,7 +163,7 @@ export class gatewayServer {
   }
 
 
-  private async startServerO(app: Application) {
+  private async startServer(app: Application) {
     try {
       const httpServer: http.Server = new http.Server(app);
       this.log.info(`Gateway server has initiated with process id ${process.pid}`);
@@ -198,68 +198,10 @@ export class gatewayServer {
     }
   }
 
-  private async startServer(app: Application): Promise<void> {
-    try {
-      const httpServer: http.Server = new http.Server(app);
-      const socketIO: Server = await this.createSocketIO(httpServer);
-      app.get('/', (req, res) => res.sendFile(__dirname + '/socket_test.html'));
-      initRoutes(app, this.socketIO);
-      this.initMiddleware(app);
-      this.errorHandler(app);
-      // console.log(__dirname);
-      this.startHttpServer(httpServer);
-      this.socketIOConnections(socketIO);
-    } catch (error) {
-      this.log.log('error', 'Error in the startServer() method of the GatewayService.', error);
-    }
-  }
-
-  private async createSocketIO(httpServer: http.Server): Promise<Server> {
-    const io: Server = new Server(httpServer, {
-      cors: {
-        // origin: `${this.config.CLIENT_URL}`,
-        origin: `*`,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-      },
-      // transports: ['websocket'], // explicitly set transports
-    });
-    const pubClient = createClient({ url: this.config.REDIS_HOST });
-    const subClient = pubClient.duplicate();
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-    io.adapter(createAdapter(pubClient, subClient));
-    this.socketIO = io;
-
-    return io;
-  }
-
-  private async startHttpServer(httpServer: http.Server): Promise<void> {
-    try {
-      this.log.info(`Gateway server has initiated with process id ${process.pid}`);
-
-      httpServer.listen(this.SERVER_PORT, () => {
-        this.log.info(`Gateway server running on port ${this.SERVER_PORT}`);
-      });
-    } catch (error) {
-      this.log.log('error', 'GatewayService startServer() error method:', error);
-    }
-  }
-
-  private socketIOConnections(io: Server): void {
-    const socketIoApp = new SocketIOAppHandler(io);
-    socketIoApp.listen();
-    // this.listenForConnections();
-  }
-
   private listenForConnections(): void {
     console.log('in listenForConnections()');
     this.socketIO.on('connection', (socket) => {
       console.log('Client connected:', socket.id);
-
-      socket.on('getLoggedInUsers', (msg) => {
-        // Log any messages received from the client
-        console.log('Message received: ' + msg);
-      });
-
       // Add your socket event handlers here
     });
   }

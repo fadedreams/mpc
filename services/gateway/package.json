@@ -25,6 +25,7 @@
   "dependencies": {
     "@elastic/elasticsearch": "^8.12.1",
     "@fadedreams7org1/mpclib": "^0.1.2",
+    "@socket.io/redis-adapter": "^8.2.1",
     "@types/amqplib": "^0.10.4",
     "@types/compression": "^1.7.5",
     "@types/cookie-session": "^2.0.48",
@@ -54,6 +55,7 @@
     "nodemailer": "^6.9.9",
     "pino-pretty": "^10.3.1",
     "redis": "^4.6.13",
+    "socket.io": "^4.7.4",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",

@@ -8,7 +8,7 @@ volumes:
 version: '3.9'
 services:
   redis:
-    # container_name: redis_container
+    container_name: redis_container
     image: redis:alpine
     restart: always
     ports:

@@ -69,4 +69,4 @@ export class GatewayCache {
 }
 
 const gatewayCacheInstance = new GatewayCache();
-export { gatewayCacheInstance as itemCache };
+export { gatewayCacheInstance };
