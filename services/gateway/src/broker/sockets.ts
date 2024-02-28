@@ -3,12 +3,14 @@ import { Logger } from 'winston';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@gateway/config';
 import { GatewayCache } from '@gateway/broker/gatewayCache';
-import { io, Socket as SocketClient } from 'socket.io-client';
+import { io as ioClient, Socket as SocketClient } from 'socket.io-client';
+import { IMessageDocument } from '@gateway/dto';
 
 export class SocketIOAppHandler {
   private io: Server;
   private gatewayCache: GatewayCache;
   private log: Logger;
+  private msgSocketClient: SocketClient = {} as SocketClient;
 
   constructor(io: Server) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gateway', 'debug');
@@ -16,6 +18,7 @@ export class SocketIOAppHandler {
     this.io = io;
     this.gatewayCache = new GatewayCache();
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewaySocket', 'debug');
+    this.msgSocketServiceIOConnections();
   }
 
   //behave as a server for frontend
@@ -46,4 +49,35 @@ export class SocketIOAppHandler {
       });
     });
   }
+
+  //behave as a client for msg micro
+  private msgSocketServiceIOConnections(): void {
+    this.msgSocketClient = ioClient(`${config.MSG_BASE_URL}`, {
+      transports: ['websocket', 'polling'],
+      secure: true
+    });
+
+    this.msgSocketClient.on('connect', () => {
+      this.log.info('MsgService socket connected');
+    });
+
+    this.msgSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+      this.log.log('error', 'MsgSocket disconnect reason:', reason);
+      this.msgSocketClient.connect();
+    });
+
+    this.msgSocketClient.on('connect_error', (error: Error) => {
+      this.log.log('error', 'MsgService socket connection error:', error);
+      this.msgSocketClient.connect();
+    });
+
+    this.msgSocketClient.on('message received', (data: IMessageDocument) => {
+      this.io.emit('message received', data);
+    });
+
+    this.msgSocketClient.on('message updated', (data: IMessageDocument) => {
+      this.io.emit('message updated', data);
+    });
+  }
+
 }
