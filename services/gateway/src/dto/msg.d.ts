@@ -20,7 +20,7 @@ export interface IMessageDocument {
   fileType?: string;
   fileSize?: string;
   fileName?: string;
-  chatId?: string;
+  MsgId?: string;
   sellerId?: string;
   buyerId?: string;
   senderUsername?: string;
@@ -44,26 +44,27 @@ export interface IMessageDetails {
   template?: string;
 }
 
-export interface IChatBoxProps {
-  seller: IChatSellerProps;
-  buyer: IChatBuyerProps
-  chatId: string;
+export interface IMsgBoxProps {
+  seller: IMsgSellerProps;
+  buyer: IMsgBuyerProps
+  MsgId: string;
   onClose: () => void;
 }
 
-export interface IChatSellerProps {
+export interface IMsgSellerProps {
   _id: string;
   username: string;
   responseTime: number;
 }
 
-export interface IChatBuyerProps {
+export interface IMsgBuyerProps {
   _id: string;
   username: string;
 }
 
-export interface IChatMessageProps {
+export interface IMsgMessageProps {
   message: IMessageDocument;
   seller?: ISellerDocument;
-  chat?: ISellerItem;
+  Msg?: ISellerItem;
 }
+

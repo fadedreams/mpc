@@ -3,6 +3,7 @@ import { Logger } from 'winston';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@gateway/config';
 import { GatewayCache } from '@gateway/broker/gatewayCache';
+import { io, Socket as SocketClient } from 'socket.io-client';
 
 export class SocketIOAppHandler {
   private io: Server;
@@ -17,6 +18,7 @@ export class SocketIOAppHandler {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewaySocket', 'debug');
   }
 
+  //behave as a server for frontend
   public listen(): void {
     console.log('in listen() sockets.ts');
     // console.log('in listen() sockets.ts', this.io);

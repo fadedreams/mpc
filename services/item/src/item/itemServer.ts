@@ -42,7 +42,6 @@ export class ItemServer {
   }
 
   start(app: Application): void {
-    this.startServer(app);
     this.initMiddleware(app);
     this.routesMiddleware(app);
     this.errorHandler(app);
@@ -50,6 +49,7 @@ export class ItemServer {
     this.startElasticSearch();
     this.startDB();
     this.startRedis();
+    this.startServer(app);
   }
 
   private initMiddleware(app: Application): void {

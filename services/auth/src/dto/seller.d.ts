@@ -25,7 +25,6 @@ export interface ISellerDocument extends Record<string, SellerType> {
   ratingSum?: number;
   ratingCategories?: IRatingCategories;
   recentDelivery?: Date | string;
-  socialLinks?: string[];
   totalEarnings?: number;
   totalItems?: number;
   paypal?: string; // not needed

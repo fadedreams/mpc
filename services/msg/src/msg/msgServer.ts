@@ -21,6 +21,7 @@ import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@msg/dto/auth.d';
 import { DatabaseConnector } from '@msg/config';
 import ItemService from '@msg/msg/services/itemService';
+import { Server } from 'socket.io';
 
 export class MsgServer {
   private readonly log: Logger;
@@ -28,6 +29,7 @@ export class MsgServer {
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
   private readonly redisConnection: RedisConnection;
+  private socketIOMsgObject: Server = {} as Server;
 
   constructor(
     private readonly config: Config,
@@ -42,7 +44,6 @@ export class MsgServer {
   }
 
   start(app: Application): void {
-    this.startServer(app);
     this.initMiddleware(app);
     this.routesMiddleware(app);
     this.errorHandler(app);
@@ -50,6 +51,7 @@ export class MsgServer {
     this.startElasticSearch();
     this.startDB();
     this.startRedis();
+    this.startServer(app);
   }
 
   private initMiddleware(app: Application): void {
@@ -146,16 +148,38 @@ export class MsgServer {
     this.databaseConnector.connect();
   }
 
-  private startServer(app: Application): void {
+  private async startServer(app: Application): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(app);
-      this.log.info(`user server has initiated with process id ${process.pid}`);
+      const socketIO: Server = await this.createSocketIO(httpServer);
+      this.startHttpServer(httpServer);
+      this.socketIOMsgObject = socketIO;
+    } catch (error) {
+      this.log.log('error', 'MsgService startServer() method error:', error);
+    }
+  }
+
+  private async startHttpServer(httpServer: http.Server): Promise<void> {
+    try {
+      this.log.info(`Gateway server has initiated with process id ${process.pid}`);
       httpServer.listen(this.SERVER_PORT, () => {
-        this.log.info(`user server running on port ${this.SERVER_PORT}`);
+        this.log.info(`Gateway server running on port ${this.SERVER_PORT}`);
       });
     } catch (error) {
-      this.log.log('error', 'user Service startServer() method:', error);
+      this.log.log('error', 'GatewayService startServer() error method:', error);
     }
+  }
+
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    const io: Server = new Server(httpServer, {
+      cors: {
+        // origin: `${this.config.CLIENT_URL}`,
+        origin: `*`,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      },
+      // transports: ['websocket'], // explicitly set transports
+    });
+    return io;
   }
 
 }

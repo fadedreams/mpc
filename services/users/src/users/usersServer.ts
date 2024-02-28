@@ -40,13 +40,13 @@ export class UsersServer {
   }
 
   start(app: Application): void {
-    this.startServer(app);
     this.initMiddleware(app);
     this.routesMiddleware(app);
     this.errorHandler(app);
     this.startQueues();
     this.startElasticSearch();
     this.databaseConnector.connect();
+    this.startServer(app);
   }
 
   private initMiddleware(app: Application): void {
