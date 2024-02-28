@@ -1,0 +1,12 @@
+
+import { Application } from 'express';
+import { Config } from '@auth/config';
+import { ElasticSearchService } from '@auth/auth/elasticSearchService';
+import { authQueueConnection } from '@auth/broker/authQueueConnection';
+import { EmailConsumer } from '@auth/broker/emailConsumer';
+import { authServer } from '@auth/auth/authServer';
+
+jest.mock('@auth/auth/elasticSearchService');
+jest.mock('@auth/broker/authQueueConnection');
+jest.mock('@auth/broker/emailConsumer');
+
