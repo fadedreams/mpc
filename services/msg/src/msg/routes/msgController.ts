@@ -1,14 +1,15 @@
+
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { omit } from 'lodash';
 import { ElasticSearchService } from '@msg/msg/services/elasticSearchService';
 import MsgService from '@msg/msg/services/msgService';
 import { itemUpdateSchema } from '@msg/msg/schemas/item';
 import { BadRequestError, isDataURL, uploads } from '@fadedreams7org1/mpclib';
 import SearchService from '@msg/msg/services/searchService';
-import { ISellerDocument, ISellerItem, ISearchResult, IPaginateProps, IHitsTotal } from '@msg/dto/';
 import { sortBy } from 'lodash';
 import { ItemCache } from '@msg/broker/itemCache';
+import { messageSchema } from '@msg/msg/schemas/message';
+import { IBuyerDocument, ISellerDocument, IMessageDocument, IConversationDocument, IMessageDetails } from '@msg/dto/';
 
 class MsgController {
   private msgService: MsgService;
@@ -18,6 +19,7 @@ class MsgController {
     this.msgService = new MsgService();
     this.elasticSearchService = new ElasticSearchService();
   }
+
 
   public async conversation(req: Request, res: Response): Promise<void> {
     const { senderUsername, receiverUsername } = req.params;
@@ -43,30 +45,38 @@ class MsgController {
     res.status(StatusCodes.OK).json({ message: 'Messaging messages', messages });
   }
 
-  // public async itemCreate(req: Request, res: Response): Promise<void> {
-  //   const count: number = await this.elasticSearchService.getDocumentCount('items');
-  //   const item: ISellerItem = {
-  //     sellerId: req.body.sellerId,
-  //     username: req.body.username,
-  //     email: req.body.email,
-  //     // username: req.currentUser!.username,
-  //     // email: req.currentUser!.email,
-  //     // username: "a",
-  //     // email: "a@a.com",
-  //     title: req.body.title,
-  //     description: req.body.description,
-  //     categories: req.body.categories,
-  //     subCategories: req.body.subCategories,
-  //     tags: req.body.tags,
-  //     price: req.body.price,
-  //     expectedDelivery: req.body.expectedDelivery,
-  //     Title: req.body.Title,
-  //     Description: req.body.Description,
-  //     sortId: count + 1
-  //   };
-  //   const createdItem: ISellerItem = await this.itemService.createItem(item);
-  //   res.status(StatusCodes.CREATED).json({ message: 'Item created successfully.', item: createdItem });
-  // };
+  public async offer(req: Request, res: Response): Promise<void> {
+    const { messageId, type } = req.body;
+    const message = await this.msgService.updateOffer(messageId, type);
+    res.status(StatusCodes.OK).json({ message: 'Message updated', singleMessage: message });
+  }
+
+  public async markMultipleMessages(req: Request, res: Response): Promise<void> {
+    const { messageId, senderUsername, receiverUsername } = req.body;
+    await this.msgService.markManyMessagesAsRead(receiverUsername, senderUsername, messageId);
+    res.status(StatusCodes.OK).json({ message: 'Messages marked as read' });
+  }
+
+  public async markSingleMessage(req: Request, res: Response): Promise<void> {
+    const { messageId } = req.body;
+    const message = await this.msgService.markMessageAsRead(messageId);
+    res.status(StatusCodes.OK).json({ message: 'Message marked as read', singleMessage: message });
+  }
+
+  public async createMessage(req: Request, res: Response): Promise<void> {
+    try {
+      const body = req.body;
+      const message = await this.msgService.createMessage(body);
+      res.status(StatusCodes.OK).json({ message: 'Message added', conversationId: body.conversationId, messageData: message });
+    } catch (error) {
+      if (error instanceof BadRequestError) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: error.serializeErrors() });
+      } else {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+      }
+    }
+  }
+
 
 }
 

@@ -21,6 +21,7 @@ export interface IMessageDocument {
   fileSize?: string;
   fileName?: string;
   MsgId?: string;
+  itemId?: string;
   sellerId?: string;
   buyerId?: string;
   senderUsername?: string;

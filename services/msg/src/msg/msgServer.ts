@@ -22,6 +22,7 @@ import { IAuthPayload } from '@msg/dto/auth.d';
 import { DatabaseConnector } from '@msg/config';
 import ItemService from '@msg/msg/services/itemService';
 import { Server } from 'socket.io';
+export let socketIOMsgObject: Server;
 
 export class MsgServer {
   private readonly log: Logger;
@@ -29,7 +30,7 @@ export class MsgServer {
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
   private readonly redisConnection: RedisConnection;
-  private socketIOMsgObject: Server = {} as Server;
+  // private socketIOMsgObject: Server = {} as Server;
 
   constructor(
     private readonly config: Config,
@@ -124,9 +125,9 @@ export class MsgServer {
     await this.rabbitMQManager.initialize();
     const channel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
-    await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.rabbitMQManager.consumeOrderEmailMessages(channel);
-    await this.rabbitMQManager.consumeItemDirectMessage(channel);
+    // await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+    // await this.rabbitMQManager.consumeOrderEmailMessages(channel);
+    // await this.rabbitMQManager.consumeItemDirectMessage(channel);
 
 
     const msg = JSON.stringify({ username: 'test' });
@@ -153,7 +154,8 @@ export class MsgServer {
       const httpServer: http.Server = new http.Server(app);
       const socketIO: Server = await this.createSocketIO(httpServer);
       this.startHttpServer(httpServer);
-      this.socketIOMsgObject = socketIO;
+      // this.socketIOMsgObject = socketIO;
+      socketIOMsgObject = socketIO;
     } catch (error) {
       this.log.log('error', 'MsgService startServer() method error:', error);
     }

@@ -1,6 +1,6 @@
 import express, { Router, Request, Response, Application } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import ItemController from '@msg/msg/routes/itemController';  // Adjust the import path based on your project structure
+import MsgController from '@msg/msg/routes/msgController';  // Adjust the import path based on your project structure
 import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
@@ -8,7 +8,7 @@ const router: Router = express.Router();
 const BASE_PATH = '/api/v1/msg';
 
 export function initRoutes(app: Application) {
-  const itemController = new ItemController();
+  const msgController = new MsgController();
 
   router.get('/auth-health', (_req: Request, res: Response) => {
     res.status(StatusCodes.OK).send('msg service is healthy and OK.');
@@ -24,42 +24,31 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
-  router.post('/create', async (req: Request, res: Response) => {
-    await itemController.itemCreate(req, res);
+  router.get('/conversation/:senderUsername/:receiverUsername', async (req: Request, res: Response) => {
+    await msgController.conversation(req, res);
   });
 
-  router.put('/:itemId', async (req: Request, res: Response) => {
-    await itemController.itemUpdate(req, res);
+  router.get('/conversations/:username', async (req: Request, res: Response) => {
+    await msgController.conversationList(req, res);
   });
-
-  router.put('/active/:itemId', async (req: Request, res: Response) => {
-    await itemController.itemUpdateActive(req, res);
+  router.get('/:senderUsername/:receiverUsername', async (req: Request, res: Response) => {
+    await msgController.messages(req, res);
   });
-
-  router.delete('/:itemId/:sellerId', async (req: Request, res: Response) => {
-    await itemController.itemDelete(req, res);
+  router.get('/:conversationId', async (req: Request, res: Response) => {
+    await msgController.userMessages(req, res);
   });
-
-  router.get('/seller/:sellerId', async (req: Request, res: Response) => {
-    await itemController.sellerItems(req, res);
+  router.post('/', async (req: Request, res: Response) => {
+    await msgController.createMessage(req, res);
   });
-
-  router.get('/seller/pause/:sellerId', async (req: Request, res: Response) => {
-    await itemController.sellerInactiveItems(req, res);
+  router.put('/offer', async (req: Request, res: Response) => {
+    await msgController.offer(req, res);
   });
-
-  router.get('/search/:from/:size/:type', async (req: Request, res: Response) => {
-    await itemController.items(req, res);
+  router.put('/mark-as-read', async (req: Request, res: Response) => {
+    await msgController.markSingleMessage(req, res);
   });
-
-  router.get('/category/:username', async (req: Request, res: Response) => {
-    // console.log("haya");
-    await itemController.itemsByCategory(req, res);
-  });
-
-  router.get('/category/:username', async (req: Request, res: Response) => {
-    await itemController.topRatedItemsByCategory(req, res);
+  router.put('/mark-multiple-as-read', async (req: Request, res: Response) => {
   });
 
   app.use(BASE_PATH, router);
+
 }

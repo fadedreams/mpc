@@ -52,7 +52,7 @@ export class RabbitMQManager {
       this.channel.publish(exchangeName, routingKey, Buffer.from(message));
       this.log.info(logMessage);
     } catch (error) {
-      this.log.error('AuthService Provider publishDirectMessage() method error:', error);
+      this.log.error('MsgService Provider publishDirectMessage() method error:', error);
     }
   }
 
@@ -93,35 +93,35 @@ export class RabbitMQManager {
     }
   }
 
-  async consumeAuthEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-  }
-
-  async consumeOrderEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
-  }
-
-  async consumeItemDirectMessage(channel: Channel): Promise<void> {
-    try {
-      if (!channel) {
-        await this.initialize();
-        channel = this.getChannel();
-      }
-      const exchangeName = 'mpc-update-item';
-      const routingKey = 'update-item';
-      const queueName = 'item-update-queue';
-      await channel.assertExchange(exchangeName, 'direct');
-      const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-      await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
-      channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { itemReview } = JSON.parse(msg!.content.toString());
-        // await this.itemService.updateItemReview(JSON.parse(itemReview));
-        channel.ack(msg!);
-      });
-    } catch (error) {
-      this.log.log('error', 'ItemService ItemConsumer consumeItemDirectMessage() method error:', error);
-    }
-  };
+  // async consumeAuthEmailMessages(channel: Channel): Promise<void> {
+  //   await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
+  // }
+  //
+  // async consumeOrderEmailMessages(channel: Channel): Promise<void> {
+  //   await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
+  // }
+  //
+  // async consumeItemDirectMessage(channel: Channel): Promise<void> {
+  //   try {
+  //     if (!channel) {
+  //       await this.initialize();
+  //       channel = this.getChannel();
+  //     }
+  //     const exchangeName = 'mpc-update-item';
+  //     const routingKey = 'update-item';
+  //     const queueName = 'item-update-queue';
+  //     await channel.assertExchange(exchangeName, 'direct');
+  //     const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
+  //     await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
+  //     channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
+  //       const { itemReview } = JSON.parse(msg!.content.toString());
+  //       // await this.itemService.updateItemReview(JSON.parse(itemReview));
+  //       channel.ack(msg!);
+  //     });
+  //   } catch (error) {
+  //     this.log.log('error', 'ItemService ItemConsumer consumeItemDirectMessage() method error:', error);
+  //   }
+  // };
 
 
 
