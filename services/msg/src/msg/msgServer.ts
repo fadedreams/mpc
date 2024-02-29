@@ -20,7 +20,7 @@ import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@msg/dto/auth.d';
 import { DatabaseConnector } from '@msg/config';
-import ItemService from '@msg/msg/services/itemService';
+import MsgService from '@msg/msg/services/msgService';
 import { Server } from 'socket.io';
 export let socketIOMsgObject: Server;
 
@@ -37,7 +37,7 @@ export class MsgServer {
     private readonly elasticSearchService: ElasticSearchService,
     private readonly databaseConnector: DatabaseConnector,
   ) {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'item', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'msg', 'debug');
     this.SERVER_PORT = 3005;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
     this.databaseConnector = databaseConnector;
@@ -113,7 +113,7 @@ export class MsgServer {
 
   private errorHandler(app: Application): void {
     app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
-      this.log.log('error', `ItemService ${error.comingFrom}:`, error);
+      this.log.log('error', `MsgService ${error.comingFrom}:`, error);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeErrors());
       }

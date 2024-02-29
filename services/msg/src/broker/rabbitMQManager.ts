@@ -2,25 +2,16 @@ import { Logger } from 'winston'
 import { connect, Channel, Connection, ConsumeMessage, Replies } from 'amqplib';
 import { IBuyerDocument, ISellerDocument } from '@msg/dto/';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
-import BuyerService from '@msg/msg/services/buyerService';
-import SellerService from '@msg/msg/services/sellerService';
-import ItemService from '@msg/msg/services/itemService';
 
 export class RabbitMQManager {
   private readonly log: Logger;
   private readonly rabbitmqEndpoint: string;
   private connection!: Connection;
   private channel!: Channel;
-  private buyerService: BuyerService;
-  private sellerService: SellerService;
-  private readonly itemService: ItemService;
 
   constructor(log: Logger, rabbitmqEndpoint: string) {
     this.log = log;
     this.rabbitmqEndpoint = rabbitmqEndpoint;
-    this.buyerService = new BuyerService();
-    this.sellerService = new SellerService(this.buyerService);
-    this.itemService = new ItemService(this);
   }
 
   async initialize(): Promise<void> {

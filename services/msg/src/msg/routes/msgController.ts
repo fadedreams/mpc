@@ -5,7 +5,6 @@ import { ElasticSearchService } from '@msg/msg/services/elasticSearchService';
 import MsgService from '@msg/msg/services/msgService';
 import { itemUpdateSchema } from '@msg/msg/schemas/item';
 import { BadRequestError, isDataURL, uploads } from '@fadedreams7org1/mpclib';
-import SearchService from '@msg/msg/services/searchService';
 import { sortBy } from 'lodash';
 import { ItemCache } from '@msg/broker/itemCache';
 import { messageSchema } from '@msg/msg/schemas/message';

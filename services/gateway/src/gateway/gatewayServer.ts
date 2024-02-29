@@ -163,7 +163,7 @@ export class gatewayServer {
   }
 
 
-  private async startServerO(app: Application) {
+  private async startServerOld(app: Application) {
     try {
       const httpServer: http.Server = new http.Server(app);
       this.log.info(`Gateway server has initiated with process id ${process.pid}`);

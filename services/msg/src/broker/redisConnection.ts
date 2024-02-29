@@ -9,7 +9,7 @@ export class RedisConnection {
   private readonly log: Logger;
 
   constructor() {
-    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'itemRedisConnection', 'debug');
+    this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'msgRedisConnection', 'debug');
     this.client = createClient({ url: `${config.REDIS_HOST}` });
     console.log(config.REDIS_HOST);
     // this.client = createClient({ url: `redis://localhost:6379` });
@@ -19,7 +19,7 @@ export class RedisConnection {
 
   private cacheError(): void {
     this.client.on('error', (error: unknown) => {
-      this.log.error('ItemService redisConnect() method error:', error);
+      this.log.error('msgService redisConnect() method error:', error);
     });
   }
 
@@ -33,9 +33,9 @@ export class RedisConnection {
     console.log(config.REDIS_HOST);
     try {
       await this.client.connect();
-      this.log.info(`ItemService Redis Connection: ${await this.client.ping()}`);
+      this.log.info(`msgService Redis Connection: ${await this.client.ping()}`);
     } catch (error) {
-      this.log.error('ItemService redisConnect() method error:', error);
+      this.log.error('msgService redisConnect() method error:', error);
     }
   }
 
