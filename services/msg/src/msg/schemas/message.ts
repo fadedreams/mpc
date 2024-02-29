@@ -1,4 +1,3 @@
-
 import Joi, { ObjectSchema } from 'joi';
 
 const messageSchema: ObjectSchema = Joi.object().keys({
@@ -25,6 +24,11 @@ const messageSchema: ObjectSchema = Joi.object().keys({
     'string.base': 'Sender username is required',
     'string.empty': 'Sender username is required',
     'any.required': 'Sender username is required'
+  }),
+  receiverUsername: Joi.string().required().messages({
+    'string.base': 'Receiver username is required',
+    'string.empty': 'Receiver username is required',
+    'any.required': 'Receiver username is required'
   }),
   isRead: Joi.boolean().optional(),
   hasOffer: Joi.boolean().optional(),

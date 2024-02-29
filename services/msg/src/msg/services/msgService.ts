@@ -170,7 +170,7 @@ class MsgService {
   public async createMessage(body: any): Promise<IMessageDocument> {
     const { error } = await Promise.resolve(messageSchema.validate(body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'Create message() method');
+      throw new BadRequestError(error.details[0].message, 'messageSchema unvalidated Create message() method');
     }
 
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
@@ -180,9 +180,6 @@ class MsgService {
     const messageData: IMessageDocument = {
       conversationId: body.conversationId,
       body: body.body,
-      fileType: body.fileType,
-      fileSize: body.fileSize,
-      fileName: body.fileName,
       itemId: body.itemId,
       buyerId: body.buyerId,
       sellerId: body.sellerId,

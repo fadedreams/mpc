@@ -55,7 +55,7 @@ export class ElasticSearchService {
       }
     } catch (error) {
       this.log.error(`An error occurred while creating the index ${indexName}`);
-      this.log.log('error', 'msgService createIndex() method error:', error);
+      this.log.log('error', 'ItemService createIndex() method error:', error);
     }
   }
 
@@ -67,7 +67,7 @@ export class ElasticSearchService {
       });
       return result._source as ISellerItem;
     } catch (error) {
-      this.log.log('error', 'msgService elastcisearch getDocumentById() method error:', error);
+      this.log.log('error', 'ItemService elastcisearch getDocumentById() method error:', error);
       return {} as ISellerItem;
     }
   }

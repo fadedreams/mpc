@@ -24,6 +24,9 @@ export function initRoutes(app: Application) {
     res.status(StatusCodes.OK).send('test');
   });
 
+  router.post('/', async (req: Request, res: Response) => {
+    await msgController.createMessage(req, res);
+  });
   router.get('/conversation/:senderUsername/:receiverUsername', async (req: Request, res: Response) => {
     await msgController.conversation(req, res);
   });
@@ -36,9 +39,6 @@ export function initRoutes(app: Application) {
   });
   router.get('/:conversationId', async (req: Request, res: Response) => {
     await msgController.userMessages(req, res);
-  });
-  router.post('/', async (req: Request, res: Response) => {
-    await msgController.createMessage(req, res);
   });
   router.put('/offer', async (req: Request, res: Response) => {
     await msgController.offer(req, res);

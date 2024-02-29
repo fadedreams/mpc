@@ -22,6 +22,7 @@ class MsgController {
 
 
   public async conversation(req: Request, res: Response): Promise<void> {
+    //tested
     const { senderUsername, receiverUsername } = req.params;
     const conversations = await this.msgService.getConversation(senderUsername, receiverUsername);
     res.status(StatusCodes.OK).json({ message: 'Messaging conversation', conversations });
@@ -40,6 +41,8 @@ class MsgController {
   }
 
   public async userMessages(req: Request, res: Response): Promise<void> {
+    //tested
+    // console.log('userMessages', req.params);
     const { conversationId } = req.params;
     const messages = await this.msgService.getUserMessages(conversationId);
     res.status(StatusCodes.OK).json({ message: 'Messaging messages', messages });
@@ -58,12 +61,14 @@ class MsgController {
   }
 
   public async markSingleMessage(req: Request, res: Response): Promise<void> {
+    //tested
     const { messageId } = req.body;
     const message = await this.msgService.markMessageAsRead(messageId);
     res.status(StatusCodes.OK).json({ message: 'Message marked as read', singleMessage: message });
   }
 
   public async createMessage(req: Request, res: Response): Promise<void> {
+    //tested
     try {
       const body = req.body;
       const message = await this.msgService.createMessage(body);
