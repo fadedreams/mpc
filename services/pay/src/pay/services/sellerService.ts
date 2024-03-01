@@ -1,13 +1,13 @@
 
 import { StatusCodes } from 'http-status-codes';
-import { SellerModel } from '@users/users/models/seller.schema';
-import { ISellerDocument, IRatingTypes, IReviewMessageDetails, IPayMessage } from '@users/dto/';
+import { SellerModel } from '@pay/pay/models/seller.schema';
+import { ISellerDocument, IRatingTypes, IReviewMessageDetails, IPayMessage } from '@pay/dto/';
 
 import { BadRequestError } from '@fadedreams7org1/mpclib';
 
 import mongoose from 'mongoose';
-import BuyerService from '@users/users/services/buyerService';
-import { sellerSchema } from '@users/users/schemas/seller';
+import BuyerService from '@pay/pay/services/buyerService';
+import { sellerSchema } from '@pay/pay/schemas/seller';
 
 class SellerService {
   private buyerService: BuyerService;

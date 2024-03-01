@@ -1,7 +1,7 @@
 
 import { configInstance as config } from '@gateway/config';
 
-import { IOrderMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } from '@gateway/dto/';
+import { IPayMessage, IRatingTypes, IReviewMessageDetails, ISellerDocument } from '@gateway/dto/';
 import { IAuth } from '@gateway/dto';
 
 export class UsersClient {

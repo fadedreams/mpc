@@ -1,7 +1,7 @@
 
 import { StatusCodes } from 'http-status-codes';
 import { SellerModel } from '@item/item/models/seller.schema';
-import { ISellerDocument, IRatingTypes, IReviewMessageDetails, IOrderMessage } from '@item/dto/';
+import { ISellerDocument, IRatingTypes, IReviewMessageDetails, IPayMessage } from '@item/dto/';
 
 import { BadRequestError } from '@fadedreams7org1/mpclib';
 
@@ -73,7 +73,7 @@ class SellerService {
     await SellerModel.updateOne({ _id: sellerId }, { $inc: { ongoingJobs: -1, cancelledJobs: 1 } }).exec();
   }
 
-  async updateSellerCompletedJobsProp(data: IOrderMessage): Promise<void> {
+  async updateSellerCompletedJobsProp(data: IPayMessage): Promise<void> {
     const { sellerId, ongoingJobs, completedJobs, totalEarnings, recentDelivery } = data;
     await SellerModel.updateOne(
       { _id: sellerId },

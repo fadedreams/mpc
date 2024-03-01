@@ -1,5 +1,4 @@
-
-export interface IOffer {
+export interface IPayOffer {
   [key: string]: string | number | boolean | undefined;
   itemTitle: string;
   price: number;
@@ -9,7 +8,7 @@ export interface IOffer {
   newDeliveryDate: string;
   accepted: boolean;
   cancelled: boolean;
-  reason?: string; // this is the reason for extending the delivery date
+  reason?: string;
 }
 
 export interface IExtendedDelivery {
@@ -28,23 +27,23 @@ export interface IDeliveredWork {
   fileName: string;
 }
 
-export interface IOrderEvents {
-  placeOrder: string;
+export interface IPayEvents {
+  placePay: string;
   requirements: string;
-  orderStarted: string;
+  payStarted: string;
   deliveryDateUpdate?: string;
-  orderDelivered?: string;
+  payDelivered?: string;
   buyerReview?: string;
   sellerReview?: string;
 }
 
-export interface IOrderReview {
+export interface IPayReview {
   rating: number;
   review: string;
   date?: string;
 }
 
-export interface IOrderMessage {
+export interface IPayMessage {
   sellerId?: string;
   buyerId?: string;
   ongoingJobs?: number;
@@ -64,11 +63,11 @@ export interface IOrderMessage {
   title?: string;
   description?: string;
   deliveryDays?: string;
-  orderId?: string;
+  payId?: string;
   invoiceId?: string;
-  orderDue?: string;
+  payDue?: string;
   requirements?: string;
-  orderUrl?: string;
+  payUrl?: string;
   originalDate?: string;
   newDate?: string;
   reason?: string;
@@ -79,8 +78,8 @@ export interface IOrderMessage {
   serviceFee?: string;
 }
 
-export interface IOrderDocument {
-  offer: IOffer;
+export interface IPayDocument {
+  offer: IPayOffer;
   itemId: string;
   sellerId: string;
   sellerUsername: string;
@@ -91,9 +90,8 @@ export interface IOrderDocument {
   buyerId: string;
   buyerUsername: string;
   buyerEmail: string;
-  buyerImage?: string;
   status: string;
-  orderId: string;
+  payId: string;
   invoiceId: string;
   quantity: number;
   price: number;
@@ -106,19 +104,19 @@ export interface IOrderDocument {
   approvedAt?: string;
   deliveredWork?: IDeliveredWork[];
   dateOrdered?: string;
-  events: IOrderEvents;
-  buyerReview?: IOrderReview;
-  sellerReview?: IOrderReview;
+  events: IPayEvents;
+  buyerReview?: IPayReview;
+  sellerReview?: IPayReview;
   paymentIntent?: string;
 }
 
-export interface IOrderNotifcation {
+export interface IPayNotification {
   _id?: string;
   userTo: string;
   senderUsername: string;
   receiverUsername: string;
   isRead?: boolean;
-  orderId: string;
+  payId: string;
   type?: string;
   message: string;
   rating?: number;
