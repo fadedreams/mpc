@@ -4,6 +4,6 @@ export * from './seller.d';
 export * from './search.d';
 export * from './review.d';
 export * from './express.d';
-export * from './chat.d';
+export * from './msg.d';
 export * from './pay.d';
 export * from './item.d';

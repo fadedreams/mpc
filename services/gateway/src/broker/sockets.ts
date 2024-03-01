@@ -49,6 +49,7 @@ export class SocketIOAppHandler {
       socket.on('category', async (category: string, username: string) => {
         await this.gatewayCache.saveUserSelectedItemCategory(`selectedCategories:${username}`, category);
       });
+
     });
   }
 
@@ -63,15 +64,11 @@ export class SocketIOAppHandler {
       this.log.info('MsgService socket connected');
     });
 
-    this.msgSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
-      this.log.log('error', 'MsgSocket disconnect reason:', reason);
-      this.msgSocketClient.connect();
-    });
 
-    this.msgSocketClient.on('connect_error', (error: Error) => {
-      this.log.log('error', 'MsgService socket connection error:', error);
-      this.msgSocketClient.connect();
-    });
+    // this.msgSocketClient.on('connect_error', (error: Error) => {
+    //   this.log.log('error', 'MsgService socket connection error:', error);
+    //   this.msgSocketClient.connect();
+    // });
 
     this.msgSocketClient.on('message received', (data: IMessageDocument) => {
       this.io.emit('message received', data);
@@ -80,6 +77,7 @@ export class SocketIOAppHandler {
     this.msgSocketClient.on('message updated', (data: IMessageDocument) => {
       this.io.emit('message updated', data);
     });
+
   }
 
   //behave as a client for pay micro
@@ -98,10 +96,10 @@ export class SocketIOAppHandler {
       this.msgSocketClient.connect();
     });
 
-    this.paySocketClient.on('connect_error', (error: Error) => {
-      this.log.log('error', 'PayService socket connection error:', error);
-      this.msgSocketClient.connect();
-    });
+    // this.paySocketClient.on('connect_error', (error: Error) => {
+    //   this.log.log('error', 'PayService socket connection error:', error);
+    //   this.msgSocketClient.connect();
+    // });
 
   }
 

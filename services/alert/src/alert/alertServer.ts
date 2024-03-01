@@ -39,12 +39,12 @@ export class AlertServer {
     const emailChannel: Channel = await this.alertQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-alert', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.emailConsumer.consumeOrderEmailMessages(emailChannel);
+    await this.emailConsumer.consumePayEmailMessages(emailChannel);
     const msg = JSON.stringify({ username: 'test' });
     emailChannel.publish('mpc-email-alert', 'auth-email', Buffer.from(msg));
-    emailChannel.publish('mpc-order-alert', 'order-email', Buffer.from(msg));
+    emailChannel.publish('mpc-pay-alert', 'pay-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
-    // await consumeOrderEmailMessages(emailChannel);
+    // await consumePayEmailMessages(emailChannel);
   }
 
   private startElasticSearch(): void {

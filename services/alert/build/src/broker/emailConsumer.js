@@ -53,9 +53,9 @@ class EmailConsumer {
             yield this.consumeEmailMessages(channel, 'mpc-email-alert', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
         });
     }
-    consumeOrderEmailMessages(channel) {
+    consumePayEmailMessages(channel) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.consumeEmailMessages(channel, 'mpc-order-alert', 'order-email', 'order-email-queue', 'orderPlaced');
+            yield this.consumeEmailMessages(channel, 'mpc-pay-alert', 'pay-email', 'pay-email-queue', 'orderPlaced');
         });
     }
 }

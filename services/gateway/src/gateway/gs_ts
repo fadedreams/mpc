@@ -146,12 +146,12 @@ export class gatewayServer {
     const emailChannel: Channel = await this.gatewayQueueConnection.createConnection() as Channel;
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-gateway', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.emailConsumer.consumeOrderEmailMessages(emailChannel);
+    await this.emailConsumer.consumePayEmailMessages(emailChannel);
     const msg = JSON.stringify({ username: 'test' });
     emailChannel.publish('mpc-email-gateway', 'auth-email', Buffer.from(msg));
-    emailChannel.publish('mpc-order-gateway', 'order-email', Buffer.from(msg));
+    emailChannel.publish('mpc-pay-gateway', 'pay-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
-    // await consumeOrderEmailMessages(emailChannel);
+    // await consumePayEmailMessages(emailChannel);
   }
 
   private startElasticSearch(): void {

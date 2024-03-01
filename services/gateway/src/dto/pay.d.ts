@@ -103,7 +103,7 @@ export interface IPayDocument {
   delivered?: boolean;
   approvedAt?: string;
   deliveredWork?: IDeliveredWork[];
-  dateOrdered?: string;
+  datePayed?: string;
   events: IPayEvents;
   buyerReview?: IPayReview;
   sellerReview?: IPayReview;

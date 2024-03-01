@@ -1,6 +1,6 @@
 
 import mongoose, { ObjectId } from 'mongoose';
-import { IOffer } from './order.d';
+import { IOffer } from './pay.d';
 import { ISellerItem } from './item.d';
 import { ISellerDocument } from './seller.d';
 
@@ -16,11 +16,8 @@ export interface IMessageDocument {
   conversationId?: string;
   body?: string;
   url?: string;
-  file?: string;
-  fileType?: string;
-  fileSize?: string;
-  fileName?: string;
   MsgId?: string;
+  itemId?: string;
   sellerId?: string;
   buyerId?: string;
   senderUsername?: string;

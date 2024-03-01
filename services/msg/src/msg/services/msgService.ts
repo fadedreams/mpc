@@ -49,8 +49,8 @@ class MsgService {
       if (this.rabbitMQManager) {
         await this.rabbitMQManager.publishDirectMessage(
           // await publishDirectMessage(
-          'mpc-order-alert',
-          'order-email',
+          'mpc-pay-alert',
+          'pay-email',
           JSON.stringify(emailMessageDetails),
           'Order email sent to alert service.'
         );

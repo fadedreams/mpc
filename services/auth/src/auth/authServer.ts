@@ -116,12 +116,12 @@ export class authServer {
     const emailChannel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.rabbitMQManager.consumeEmailMessages(emailChannel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.rabbitMQManager.consumeOrderEmailMessages(emailChannel);
+    await this.rabbitMQManager.consumePayEmailMessages(emailChannel);
     const msg = JSON.stringify({ username: 'test' });
     emailChannel.publish('mpc-email-auth', 'auth-email', Buffer.from(msg));
-    emailChannel.publish('mpc-order-auth', 'order-email', Buffer.from(msg));
+    emailChannel.publish('mpc-pay-auth', 'pay-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
-    // await consumeOrderEmailMessages(emailChannel);
+    // await consumePayEmailMessages(emailChannel);
   }
 
   private startElasticSearch(): void {

@@ -93,8 +93,8 @@ export class RabbitMQManager {
     await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
   }
 
-  async consumeOrderEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
+  async consumePayEmailMessages(channel: Channel): Promise<void> {
+    await this.consumeEmailMessages(channel, 'mpc-pay-auth', 'pay-email', 'pay-email-queue', 'orderPlaced');
   }
 
 }

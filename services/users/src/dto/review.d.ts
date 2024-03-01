@@ -5,7 +5,7 @@ export interface IReviewMessageDetails {
   sellerId?: string;
   review?: string;
   rating?: number;
-  orderId?: string;
+  payId?: string;
   createdAt?: string;
   type: string;
 }
@@ -21,7 +21,7 @@ export interface IReviewDocument {
   sellerId: string;
   review: string;
   rating: number;
-  orderId: string;
+  payId: string;
   createdAt: Date | string;
   reviewerUsername: string;
   reviewType?: string;
