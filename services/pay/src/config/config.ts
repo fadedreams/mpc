@@ -23,6 +23,7 @@ export class Config {
   public JWT_TOKEN: string | undefined;
   public AUTH_JWT_TOKEN: string | undefined;
   public REDIS_HOST: string | undefined;
+  public PAY_BASE_URL: string | undefined;
 
 
   public API_GATEWAY_URL: string | undefined;
@@ -50,6 +51,7 @@ export class Config {
     this.JWT_TOKEN = process.env.JWT_TOKEN || 'http://localhost:6379';
     this.AUTH_JWT_TOKEN = process.env.AUTH_JWT_TOKEN || 'secret';
     this.REDIS_HOST = process.env.REDIS_HOST || 'redis://localhost:6379';
+    this.PAY_BASE_URL = process.env.PAY_BASE_URL || 'http://localhost:3006';
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || 'http://localhost:3000';
     this.MYSQL_DB = process.env.MYSQL_DB || '';
     this.DATABASE_URL = process.env.DATABASE_URL || '';
