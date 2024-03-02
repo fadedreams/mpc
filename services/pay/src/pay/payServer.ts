@@ -18,11 +18,14 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload } from '@pay/dto/auth.d';
+import { IAuthPayload } from '@pay/dto';
 import { DatabaseConnector } from '@pay/config';
 import ItemService from '@pay/pay/services/itemService';
+import { Server } from 'socket.io';
 
-export class ItemServer {
+export let socketIOPayObject: Server;
+
+export class PayServer {
   private readonly log: Logger;
   // private readonly elasticSearchService: ElasticSearchService;
   private readonly SERVER_PORT: number;
@@ -146,17 +149,37 @@ export class ItemServer {
     this.databaseConnector.connect();
   }
 
-  private startServer(app: Application): void {
+  private async startServer(app: Application): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(app);
-      this.log.info(`pay server has initiated with process id ${process.pid}`);
-      httpServer.listen(this.SERVER_PORT, () => {
-        this.log.info(`pay server running on port ${this.SERVER_PORT}`);
-      });
+      const socketIO: Server = await this.createSocketIO(httpServer);
+      this.startHttpServer(httpServer);
+      // this.socketIOMsgObject = socketIO;
+      socketIOPayObject = socketIO;
     } catch (error) {
-      this.log.log('error', 'pay Service startServer() method:', error);
+      this.log.log('error', 'PayService startServer() method error:', error);
     }
   }
-
+  private async startHttpServer(httpServer: http.Server): Promise<void> {
+    try {
+      this.log.info(`Gateway server has initiated with process id ${process.pid}`);
+      httpServer.listen(this.SERVER_PORT, () => {
+        this.log.info(`Gateway server running on port ${this.SERVER_PORT}`);
+      });
+    } catch (error) {
+      this.log.log('error', 'GatewayService startServer() error method:', error);
+    }
+  }
+  private async createSocketIO(httpServer: http.Server): Promise<Server> {
+    const io: Server = new Server(httpServer, {
+      cors: {
+        // origin: `${this.config.CLIENT_URL}`,
+        origin: `*`,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      },
+      // transports: ['websocket'], // explicitly set transports
+    });
+    return io;
+  }
 }
 

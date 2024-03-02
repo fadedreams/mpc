@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { NotAuthorizedError } from '@fadedreams7org1/mpclib';
 import JWT from 'jsonwebtoken';
-// const tokens: string[] = ['auth', 'seller', 'item', 'search', 'buyer', 'message', 'order', 'review'];
+// const tokens: string[] = ['auth', 'seller', 'item', 'search', 'buyer', 'message', 'pay', 'rate'];
 export function verifyGatewayRequest(req: Request, _res: Response, next: NextFunction): void {
   console.log('verifyGatewayRequest');
   if (!req.headers?.gatewaytoken) {

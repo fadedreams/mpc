@@ -42,7 +42,6 @@ const paySchema: ObjectSchema = Joi.object().keys({
     .items(
       Joi.object({
         message: Joi.string(),
-        file: Joi.string()
       })
     )
     .optional(),

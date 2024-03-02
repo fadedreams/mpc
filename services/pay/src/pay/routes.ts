@@ -61,5 +61,18 @@ export function initRoutes(app: Application) {
     await itemController.topRatedItemsByCategory(req, res);
   });
 
+  // router.get('/notification/:userTo', notifications);
+  // router.get('/:orderId', orderId);
+  // router.get('/seller/:sellerId', sellerOrders);
+  // router.get('/buyer/:buyerId', buyerOrders);
+  // router.post('/', order);
+  // router.post('/create-payment-intent', intent);
+  // router.put('/cancel/:orderId', cancel);
+  // router.put('/extension/:orderId', requestExtension);
+  // router.put('/deliver-order/:orderId', deliverOrder);
+  // router.put('/approve-order/:orderId', buyerApproveOrder);
+  // router.put('/gig/:type/:orderId', deliveryDate);
+  // router.put('/notification/mark-as-read', markNotificationAsRead);
+
   app.use(BASE_PATH, router);
 }
