@@ -1,4 +1,4 @@
-export interface IPayOffer {
+export interface IorderOffer {
   [key: string]: string | number | boolean | undefined;
   itemTitle: string;
   price: number;
@@ -27,23 +27,23 @@ export interface IDeliveredWork {
   fileName: string;
 }
 
-export interface IPayEvents {
-  placePay: string;
+export interface IorderEvents {
+  placeorder: string;
   requirements: string;
-  payStarted: string;
+  orderStarted: string;
   deliveryDateUpdate?: string;
-  payDelivered?: string;
+  orderDelivered?: string;
   buyerReview?: string;
   sellerReview?: string;
 }
 
-export interface IPayReview {
+export interface IorderReview {
   rating: number;
   review: string;
   date?: string;
 }
 
-export interface IPayMessage {
+export interface IOrderMessage‌ {
   sellerId?: string;
   buyerId?: string;
   ongoingJobs?: number;
@@ -63,11 +63,11 @@ export interface IPayMessage {
   title?: string;
   description?: string;
   deliveryDays?: string;
-  payId?: string;
+  orderId?: string;
   invoiceId?: string;
-  payDue?: string;
+  orderDue?: string;
   requirements?: string;
-  payUrl?: string;
+  orderUrl?: string;
   originalDate?: string;
   newDate?: string;
   reason?: string;
@@ -78,8 +78,8 @@ export interface IPayMessage {
   serviceFee?: string;
 }
 
-export interface IPayDocument {
-  offer: IPayOffer;
+export interface IOrderDocument {
+  offer: IorderOffer;
   itemId: string;
   sellerId: string;
   sellerUsername: string;
@@ -91,7 +91,7 @@ export interface IPayDocument {
   buyerUsername: string;
   buyerEmail: string;
   status: string;
-  payId: string;
+  orderId: string;
   invoiceId: string;
   quantity: number;
   price: number;
@@ -103,20 +103,20 @@ export interface IPayDocument {
   delivered?: boolean;
   approvedAt?: string;
   deliveredWork?: IDeliveredWork[];
-  datePayed?: string;
-  events: IPayEvents;
-  buyerReview?: IPayReview;
-  sellerReview?: IPayReview;
-  paymentIntent?: string;
+  dateordered?: string;
+  events: IorderEvents;
+  buyerReview?: IorderReview;
+  sellerReview?: IorderReview;
+  ordermentIntent?: string;
 }
 
-export interface IPayNotification {
+export interface IOrderNotification {
   _id?: string;
   userTo: string;
   senderUsername: string;
   receiverUsername: string;
   isRead?: boolean;
-  payId: string;
+  orderId: string;
   type?: string;
   message: string;
   rating?: number;

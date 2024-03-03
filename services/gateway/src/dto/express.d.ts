@@ -1,4 +1,4 @@
-import { IAuthPayload } from './auth.d';
+import { IAuthPayload‌ } from './auth.d';
 
 import { Session } from 'express-session';
 import { Request, Response, NextFunction } from 'express';

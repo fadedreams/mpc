@@ -1,7 +1,7 @@
 
 import { Config } from '@msg/config';
 import { BadRequestError, NotAuthorizedError } from '@fadedreams7org1/mpclib';
-import { IAuthPayload } from '@msg/dto/auth.d';
+import { IAuthPayload‌ } from '@msg/dto/auth.d';
 
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';

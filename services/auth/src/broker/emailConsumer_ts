@@ -53,8 +53,8 @@ class EmailConsumer {
     await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
   }
 
-  async consumePayEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-pay-auth', 'pay-email', 'pay-email-queue', 'orderPlaced');
+  async consumeorderEmailMessages(channel: Channel): Promise<void> {
+    await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
   }
 
 }

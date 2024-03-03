@@ -1,6 +1,6 @@
 
 import mongoose, { ObjectId } from 'mongoose';
-import { IOffer } from './pay.d';
+import { IOffer } from './order.d';
 import { ISellerItem } from './item.d';
 import { ISellerDocument } from './seller.d';
 

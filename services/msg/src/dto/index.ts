@@ -5,5 +5,5 @@ export * from './search.d';
 export * from './review.d';
 export * from './express.d';
 export * from './msg.d';
-export * from './pay.d';
+export * from './order.d';
 export * from './item.d';

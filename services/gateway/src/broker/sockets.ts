@@ -11,7 +11,7 @@ export class SocketIOAppHandler {
   private gatewayCache: GatewayCache;
   private log: Logger;
   private msgSocketClient: SocketClient = {} as SocketClient;
-  private paySocketClient: SocketClient = {} as SocketClient;
+  private orderSocketClient: SocketClient = {} as SocketClient;
 
   constructor(io: Server) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gateway', 'debug');
@@ -20,7 +20,7 @@ export class SocketIOAppHandler {
     this.gatewayCache = new GatewayCache();
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewaySocket', 'debug');
     this.msgSocketServiceIOConnections();
-    this.paySocketServiceIOConnections();
+    this.orderSocketServiceIOConnections();
   }
 
   //behave as a server for frontend
@@ -80,24 +80,24 @@ export class SocketIOAppHandler {
 
   }
 
-  //behave as a client for pay micro
-  private paySocketServiceIOConnections(): void {
-    this.paySocketClient = ioClient(`${config.PAY_BASE_URL}`, {
+  //behave as a client for order micro
+  private orderSocketServiceIOConnections(): void {
+    this.orderSocketClient = ioClient(`${config.order_BASE_URL}`, {
       transports: ['websocket', 'polling'],
       secure: true
     });
 
-    this.paySocketClient.on('connect', () => {
-      this.log.info('PayService socket connected');
+    this.orderSocketClient.on('connect', () => {
+      this.log.info('orderService socket connected');
     });
 
-    this.paySocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
-      this.log.log('error', 'PaySocket disconnect reason:', reason);
+    this.orderSocketClient.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+      this.log.log('error', 'orderSocket disconnect reason:', reason);
       this.msgSocketClient.connect();
     });
 
-    // this.paySocketClient.on('connect_error', (error: Error) => {
-    //   this.log.log('error', 'PayService socket connection error:', error);
+    // this.orderSocketClient.on('connect_error', (error: Error) => {
+    //   this.log.log('error', 'orderService socket connection error:', error);
     //   this.msgSocketClient.connect();
     // });
 

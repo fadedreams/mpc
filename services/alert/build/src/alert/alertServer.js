@@ -42,12 +42,12 @@ class AlertServer {
             const emailChannel = yield this.alertQueueConnection.createConnection();
             // const emailChannel: Channel = await createConnection() as Channel;
             yield this.emailConsumer.consumeEmailMessages(emailChannel, 'mpc-email-alert', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-            yield this.emailConsumer.consumePayEmailMessages(emailChannel);
+            yield this.emailConsumer.consumeorderEmailMessages(emailChannel);
             const msg = JSON.stringify({ username: 'test' });
             emailChannel.publish('mpc-email-alert', 'auth-email', Buffer.from(msg));
-            emailChannel.publish('mpc-pay-alert', 'pay-email', Buffer.from(msg));
+            emailChannel.publish('mpc-order-alert', 'order-email', Buffer.from(msg));
             // await consumeAuthEmailMessages(emailChannel);
-            // await consumePayEmailMessages(emailChannel);
+            // await consumeorderEmailMessages(emailChannel);
         });
     }
     startElasticSearch() {

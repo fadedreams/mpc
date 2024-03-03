@@ -18,7 +18,7 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload } from '@msg/dto/auth.d';
+import { IAuthPayload‌ } from '@msg/dto/auth.d';
 import { DatabaseConnector } from '@msg/config';
 import MsgService from '@msg/msg/services/msgService';
 import { Server } from 'socket.io';
@@ -126,15 +126,15 @@ export class MsgServer {
     const channel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
     // await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    // await this.rabbitMQManager.consumePayEmailMessages(channel);
+    // await this.rabbitMQManager.consumeorderEmailMessages(channel);
     // await this.rabbitMQManager.consumeItemDirectMessage(channel);
 
 
     const msg = JSON.stringify({ username: 'test' });
     channel.publish('mpc-email-auth', 'auth-email', Buffer.from(msg));
-    channel.publish('mpc-pay-auth', 'pay-email', Buffer.from(msg));
+    channel.publish('mpc-order-auth', 'order-email', Buffer.from(msg));
     // await consumeAuthEmailMessages(emailChannel);
-    // await consumePayEmailMessages(emailChannel);
+    // await consumeorderEmailMessages(emailChannel);
   }
 
   private startElasticSearch(): void {

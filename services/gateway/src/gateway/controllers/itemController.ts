@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { BadRequestError } from '@fadedreams7org1/mpclib';
 import { itemClient } from '@gateway/utils/itemClient'; // Import the ItemClient
-import { IAuthPayload, CustomSession } from '@gateway/dto';
+import { IAuthPayload‌, CustomSession } from '@gateway/dto';
 
 export class ItemController {
 

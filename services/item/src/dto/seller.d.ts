@@ -27,6 +27,6 @@ export interface ISellerDocument extends Record<string, SellerType> {
   recentDelivery?: Date | string;
   totalEarnings?: number;
   totalItems?: number;
-  paypal?: string; // not needed
+  orderpal?: string; // not needed
   createdAt?: Date | string;
 }

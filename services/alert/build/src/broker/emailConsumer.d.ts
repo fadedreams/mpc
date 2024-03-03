@@ -8,6 +8,6 @@ declare class EmailConsumer {
     constructor(config: Config);
     consumeEmailMessages(channel: Channel, exchangeName: string, routingKey: string, queueName: string, template: string): Promise<void>;
     consumeAuthEmailMessages(channel: Channel): Promise<void>;
-    consumePayEmailMessages(channel: Channel): Promise<void>;
+    consumeorderEmailMessages(channel: Channel): Promise<void>;
 }
 export { EmailConsumer };

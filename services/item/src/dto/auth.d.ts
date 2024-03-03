@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export interface IAuthPayload {
+export interface IAuthPayload‌ {
   id: number;
   username: string;
   email: string;
@@ -52,14 +52,14 @@ export interface IEmailMessageDetails {
   username?: string;
 }
 
-export interface ISignUpPayload {
+export interface ISignUporderload {
   [key: string]: string;
   username: string;
   password: string;
   email: string;
 }
 
-export interface ISignInPayload {
+export interface ISignInorderload {
   [key: string]: string;
   username: string;
   password: string;
