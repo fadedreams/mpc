@@ -82,7 +82,7 @@ export class SocketIOAppHandler {
 
   //behave as a client for order micro
   private orderSocketServiceIOConnections(): void {
-    this.orderSocketClient = ioClient(`${config.order_BASE_URL}`, {
+    this.orderSocketClient = ioClient(`${config.ORDER_BASE_URL}`, {
       transports: ['websocket', 'polling'],
       secure: true
     });

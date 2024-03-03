@@ -85,7 +85,6 @@ class OrderController {
   public async markNotificationAsRead(req: Request, res: Response): Promise<void> {
     try {
       const { notificationId } = req.params;
-
       // Call the markNotificationAsRead method from the OrderService
       const notification: IOrderNotification = await this.orderService.markNotificationAsRead(notificationId);
       res.status(StatusCodes.OK).json({ message: 'Notification marked as read successfully.', notification });

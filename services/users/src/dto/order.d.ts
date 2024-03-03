@@ -1,4 +1,4 @@
-export interface IorderOffer {
+export interface IOrderOffer {
   [key: string]: string | number | boolean | undefined;
   itemTitle: string;
   price: number;
@@ -27,7 +27,7 @@ export interface IDeliveredWork {
   fileName: string;
 }
 
-export interface IorderEvents {
+export interface IOrderEvents {
   placeorder: string;
   requirements: string;
   orderStarted: string;
@@ -37,13 +37,13 @@ export interface IorderEvents {
   sellerReview?: string;
 }
 
-export interface IorderReview {
+export interface IOrderReview {
   rating: number;
   review: string;
   date?: string;
 }
 
-export interface IOrderMessage‌ {
+export interface IOrderMessage {
   sellerId?: string;
   buyerId?: string;
   ongoingJobs?: number;
@@ -79,7 +79,7 @@ export interface IOrderMessage‌ {
 }
 
 export interface IOrderDocument {
-  offer: IorderOffer;
+  offer: IOrderOffer;
   itemId: string;
   sellerId: string;
   sellerUsername: string;

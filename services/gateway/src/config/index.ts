@@ -23,7 +23,7 @@ export class Config {
   public USERS_BASE_URL: string | undefined;
   public ITEM_BASE_URL: string | undefined;
   public MSG_BASE_URL: string | undefined;
-  public order_BASE_URL: string | undefined;
+  public ORDER_BASE_URL: string | undefined;
   public RATE_BASE_URL: string | undefined;
   public REDIS_HOST: string | undefined;
 
@@ -46,7 +46,7 @@ export class Config {
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
     this.ITEM_BASE_URL = process.env.ITEM_BASE_URL || '';
     this.MSG_BASE_URL = process.env.MSG_BASE_URL || '';
-    this.order_BASE_URL = process.env.order_BASE_URL || '';
+    this.ORDER_BASE_URL = process.env.ORDER_BASE_URL || '';
     this.RATE_BASE_URL = process.env.RATE_BASE_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || 'redis://localhost:6379';
   }

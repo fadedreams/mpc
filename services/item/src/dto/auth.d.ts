@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export interface IAuthPayload‌ {
+export interface IAuthPayload {
   id: number;
   username: string;
   email: string;

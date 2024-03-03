@@ -33,7 +33,7 @@ export function initRoutes(app: Application) {
   router.get('/buyer/:buyerId', async (req: Request, res: Response) => {
     await orderController.buyerOrders(req, res);
   });
-  router.post('/notification/mark-as-read', async (req: Request, res: Response) => {
+  router.post('/notification/mark-as-read/:notificationId', async (req: Request, res: Response) => {
     await orderController.markNotificationAsRead(req, res);
   });
 

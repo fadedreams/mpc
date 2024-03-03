@@ -6,13 +6,13 @@ import { initAuthRoutes } from './auth_routes'; // Assuming the path to auth_rou
 import bsRoutes from './buyer_seller_routes';
 import searchRoutes from './search_routes';
 import itemRoutes from './item_routes';
-import { Server } from 'socket.io';
+import orderRoutes from './order_routes';
 
+import { Server } from 'socket.io';
 const router: Router = express.Router();
 const BASE_PATH = '/api/v1/gateway';
 
 export function initRoutes(app: Application, socketIO: Server) {
-
   // console.log(' in initRoutes ', socketIO);
   // router.use('', authRoutes);
   const authRoutes = initAuthRoutes(socketIO);
@@ -22,6 +22,7 @@ export function initRoutes(app: Application, socketIO: Server) {
   router.use('', bsRoutes);
   router.use('/item', itemRoutes);
 
+  router.use('/order', orderRoutes);
 
   //testing events socket
   // router.get('/event', async (_req: Request, res: Response) => {

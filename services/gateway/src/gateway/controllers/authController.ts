@@ -1,7 +1,7 @@
 import { authClient } from '@gateway/utils/authClient';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { IAuthPayload‌, CustomSession } from '@gateway/dto';
+import { IAuthPayload, CustomSession } from '@gateway/dto';
 // Define a custom interface that extends express.Session
 
 export class AuthController {

@@ -1,6 +1,6 @@
 import { configInstance as config } from '@gateway/config';
 import { BadRequestError, NotAuthorizedError } from '@fadedreams7org1/mpclib';
-import { IAuthPayload‌, CustomSession } from '@gateway/dto';
+import { IAuthPayload, CustomSession } from '@gateway/dto';
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 
