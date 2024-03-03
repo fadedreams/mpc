@@ -24,7 +24,7 @@ export class ItemCache {
       const response: string = (await redisClient.GET(key)) as string;
       return response;
     } catch (error) {
-      this.log.error('itemService ItemCache getUserSelectedItemCategory() method error:', error);
+      this.log.error('orderService ItemCache getUserSelectedItemCategory() method error:', error);
       return '';
     }
   }

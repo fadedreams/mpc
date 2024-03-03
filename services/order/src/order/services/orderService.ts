@@ -53,7 +53,7 @@ class OrderService {
     return notifications;
   }
 
-  async markNotificationAsRead(notificationId: string): Promise<IOrderNotification> {
+  async markNotificationAsRead(notificationId: string) {
     const notification: IOrderNotification = await NotificationModelSchema.findOneAndUpdate(
       { _id: notificationId },
       {
@@ -64,14 +64,29 @@ class OrderService {
       { new: true }
     ) as IOrderNotification;
 
-    const order: IOrderDocument = await this.getOrderByOrderId(notification.orderId);
+    const order = await this.getOrderByOrderId(notification.orderId);
     socketIOOrderObject.emit('order notification', order, notification);
 
     return notification;
   }
-  public async getOrderByOrderId(orderId: string): Promise<IOrderDocument> {
-    const order: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { orderId } }])) as IOrderDocument[];
-    return order[0];
+
+  // public async getOrderByOrderId(orderId: string): Promise<IOrderDocument> {
+  //   // const order: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { orderId } }])) as IOrderDocument[];
+  //   const order: IOrderDocument[] = (await OrderModel.aggregate([{ $match: { _id: orderId } }])) as IOrderDocument[];
+  //   return order[0];
+  // }
+
+  // async getOrderByOrderId(orderId: string): Promise<IOrderDocument | null> {
+  //   const result = await OrderModel.aggregate([
+  //     { $match: { _id: orderId } }
+  //   ]);
+  //   console.log(result);
+  //   return result.length > 0 ? result[0] : null;
+  // }
+
+  public async getOrderByOrderId(orderId: string): Promise<IOrderDocument | null> {
+    const order = await OrderModel.findOne({ _id: orderId }).exec();
+    return order;
   }
 
   public async getOrdersBySellerId(sellerId: string): Promise<IOrderDocument[]> {
@@ -103,21 +118,19 @@ class OrderService {
     return order;
   }
 
-  public async order(req: Request, res: Response): Promise<void> {
-    try {
-      const { error } = await Promise.resolve(orderSchema.validate(req.body));
-      if (error?.details) {
-        throw new BadRequestError(error.details[0].message, 'Create order() method');
-      }
-      const serviceFee: number = req.body.price < 50 ? (5.5 / 100) * req.body.price + 2 : (5.5 / 100) * req.body.price;
-      let orderData: IOrderDocument = req.body;
-      orderData = { ...orderData, serviceFee };
-      const order: IOrderDocument = await this.createOrder(orderData);
-      res.status(StatusCodes.CREATED).json({ message: 'Order created successfully.', order });
-    } catch (error) {
-      console.error(error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
-    }
+  public async order(req: Request, res: Response) {
+    const { error } = await Promise.resolve(orderSchema.validate(req.body));
+    // if (error?.details) {
+    //   throw new BadRequestError(error.details[0].message, 'Create order() method');
+    // }
+    const serviceFee: number = req.body.price < 50 ? (5.5 / 100) * req.body.price + 2 : (5.5 / 100) * req.body.price;
+    let orderData: IOrderDocument = req.body;
+    orderData = { ...orderData, serviceFee };
+    const order: IOrderDocument = await this.createOrder(orderData);
+    return order;
+    // res.status(StatusCodes.CREATED).json({ message: 'Order created successfully.', order });
+    console.error(error);
+    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
   }
 
   async updateOrderReview(data: IReviewMessageDetails): Promise<IOrderDocument> {

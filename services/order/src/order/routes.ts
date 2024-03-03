@@ -18,6 +18,9 @@ export function initRoutes(app: Application) {
     };
     res.status(StatusCodes.OK).json(responseData);
   });
+  router.post('/', async (req: Request, res: Response) => {
+    await orderController.order(req, res);
+  });
   router.get('/notification/:userTo', async (req: Request, res: Response) => {
     await orderController.notifications(req, res);
   });
@@ -29,9 +32,6 @@ export function initRoutes(app: Application) {
   });
   router.get('/buyer/:buyerId', async (req: Request, res: Response) => {
     await orderController.buyerOrders(req, res);
-  });
-  router.post('/', async (req: Request, res: Response) => {
-    await orderController.order(req, res);
   });
   router.post('/notification/mark-as-read', async (req: Request, res: Response) => {
     await orderController.markNotificationAsRead(req, res);

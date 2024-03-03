@@ -12,11 +12,9 @@ class orderApp {
   private readonly log: Logger;
   private readonly databaseConnector: DatabaseConnector;
 
-  // constructor(config: Config, elasticSearchService: ElasticSearchService, databaseConnector: DatabaseConnector) {
-  constructor(config: Config, databaseConnector: DatabaseConnector) {
+  constructor(config: Config, elasticSearchService: ElasticSearchService, databaseConnector: DatabaseConnector) {
     this.config = config;
-    // this.orderServer = new orderServer(config, elasticSearchService, databaseConnector);
-    this.orderServer = new orderServer(config, databaseConnector);
+    this.orderServer = new orderServer(config, elasticSearchService, databaseConnector);
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'orderApp', 'debug');
     this.databaseConnector = databaseConnector;
   }
@@ -29,8 +27,7 @@ class orderApp {
 }
 
 const config = Config.getInstance();
-// const elasticSearchService = new ElasticSearchService();
+const elasticSearchService = new ElasticSearchService();
 const databaseConnector = DatabaseConnector.getInstance();
-// const item_app = new orderApp(config, elasticSearchService, databaseConnector);
-const item_app = new orderApp(config, databaseConnector);
+const item_app = new orderApp(config, elasticSearchService, databaseConnector);
 item_app.initialize();

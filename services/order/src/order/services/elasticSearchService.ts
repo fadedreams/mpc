@@ -125,7 +125,7 @@ export class ElasticSearchService {
       const result: CountResponse = await this.elasticSearchClient.count({ index });
       return result.count;
     } catch (error) {
-      this.log.log('error', 'itemService elasticsearch getDocumentCount() method error:', error);
+      this.log.log('error', 'orderService elasticsearch getDocumentCount() method error:', error);
       return 0;
     }
   };

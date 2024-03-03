@@ -2,25 +2,15 @@ import { Logger } from 'winston'
 import { connect, Channel, Connection, ConsumeMessage, Replies } from 'amqplib';
 import { IBuyerDocument, ISellerDocument } from '@order/dto/';
 import { winstonLogger } from '@fadedreams7org1/mpclib';
-import BuyerService from '@order/order/services/buyerService';
-import SellerService from '@order/order/services/sellerService';
-import ItemService from '@order/order/services/itemService';
-
 export class RabbitMQManager {
   private readonly log: Logger;
   private readonly rabbitmqEndpoint: string;
   private connection!: Connection;
   private channel!: Channel;
-  private buyerService: BuyerService;
-  private sellerService: SellerService;
-  private readonly itemService: ItemService;
 
   constructor(log: Logger, rabbitmqEndpoint: string) {
     this.log = log;
     this.rabbitmqEndpoint = rabbitmqEndpoint;
-    this.buyerService = new BuyerService();
-    this.sellerService = new SellerService(this.buyerService);
-    this.itemService = new ItemService(this);
   }
 
   async initialize(): Promise<void> {
@@ -93,35 +83,6 @@ export class RabbitMQManager {
     }
   }
 
-  async consumeAuthEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-  }
-
-  async consumeorderEmailMessages(channel: Channel): Promise<void> {
-    await this.consumeEmailMessages(channel, 'mpc-order-auth', 'order-email', 'order-email-queue', 'orderPlaced');
-  }
-
-  async consumeItemDirectMessage(channel: Channel): Promise<void> {
-    try {
-      if (!channel) {
-        await this.initialize();
-        channel = this.getChannel();
-      }
-      const exchangeName = 'mpc-update-item';
-      const routingKey = 'update-item';
-      const queueName = 'item-update-queue';
-      await channel.assertExchange(exchangeName, 'direct');
-      const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
-      await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
-      channel.consume(mpcQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { itemReview } = JSON.parse(msg!.content.toString());
-        // await this.itemService.updateItemReview(JSON.parse(itemReview));
-        channel.ack(msg!);
-      });
-    } catch (error) {
-      this.log.log('error', 'ItemService ItemConsumer consumeItemDirectMessage() method error:', error);
-    }
-  };
 
 
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-// import { ElasticSearchService } from '@order/order/services/elasticSearchService';
+import { ElasticSearchService } from '@order/order/services/elasticSearchService';
 import NotificationService from '@order/order/services/notificationService';
 import OrderService from '@order/order/services/orderService';
 import { IOrderNotification, IOrderDocument } from '@order/dto';
@@ -9,10 +9,10 @@ import { orderSchema } from '@order/order/schemas/order';
 
 class OrderController {
   private orderService: OrderService;
-  // private elasticSearchService: ElasticSearchService;
+  private elasticSearchService: ElasticSearchService;
 
   constructor() {
-    // this.elasticSearchService = new ElasticSearchService();
+    this.elasticSearchService = new ElasticSearchService();
     this.orderService = new OrderService();
   }
 
@@ -27,8 +27,13 @@ class OrderController {
   }
 
   public async orderId(req: Request, res: Response): Promise<void> {
+    //tested
     try {
-      const order: IOrderDocument = await this.orderService.getOrderByOrderId(req.params.orderId);
+      const order = await this.orderService.getOrderByOrderId(req.params.orderId);
+      if (!order) {
+        res.status(StatusCodes.NOT_FOUND).json({ error: `Order with orderId ${req.params.orderId} not found` });
+        return;
+      }
       res.status(StatusCodes.OK).json({ message: 'Order by order id', order });
     } catch (error) {
       console.error(error);
@@ -57,6 +62,7 @@ class OrderController {
   }
 
   public async order(req: Request, res: Response): Promise<void> {
+    //rested
     try {
       const { error } = await Promise.resolve(orderSchema.validate(req.body));
       if (error?.details) {

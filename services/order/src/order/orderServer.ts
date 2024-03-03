@@ -20,7 +20,6 @@ import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@order/dto';
 import { DatabaseConnector } from '@order/config';
-import ItemService from '@order/order/services/itemService';
 import { Server } from 'socket.io';
 
 export let socketIOOrderObject: Server;
@@ -34,7 +33,7 @@ export class orderServer {
 
   constructor(
     private readonly config: Config,
-    // private readonly elasticSearchService: ElasticSearchService,
+    private readonly elasticSearchService: ElasticSearchService,
     private readonly databaseConnector: DatabaseConnector,
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'order', 'debug');
@@ -126,8 +125,6 @@ export class orderServer {
     const channel = this.rabbitMQManager.getChannel();
     // const emailChannel: Channel = await createConnection() as Channel;
     await this.rabbitMQManager.consumeEmailMessages(channel, 'mpc-email-auth', 'auth-email', 'auth-email-queue', 'authEmailTemplate');
-    await this.rabbitMQManager.consumeorderEmailMessages(channel);
-    await this.rabbitMQManager.consumeItemDirectMessage(channel);
 
 
     const msg = JSON.stringify({ username: 'test' });

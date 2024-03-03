@@ -30,13 +30,8 @@ const orderSchema: ObjectSchema = Joi.object().keys({
   serviceFee: Joi.number().optional(),
   requirements: Joi.string().optional().allow(null, ''),
   ordermentIntent: Joi.string().required(),
-  requestExtension: Joi.object({
-    originalDate: Joi.string().required(),
-    newDate: Joi.string().required(),
-    days: Joi.number().required(),
-    reason: Joi.string().required()
-  }).optional(),
   delivered: Joi.boolean().optional(),
+  cancelled: Joi.boolean().optional(),
   approvedAt: Joi.string().optional(),
   deliveredWork: Joi.array()
     .items(
@@ -46,23 +41,28 @@ const orderSchema: ObjectSchema = Joi.object().keys({
     )
     .optional(),
   dateordered: Joi.string().optional(),
+
   events: Joi.object({
-    placeorder: Joi.string(),
-    requirements: Joi.string(),
-    orderStarted: Joi.string(),
-    deliverydateUpdate: Joi.string().optional(),
-    orderDelivered: Joi.string().optional(),
-    buyerReview: Joi.string().optional(),
-    sellerReview: Joi.string().optional()
+    placeorder: Joi.string().allow(''),  // Allow empty string
+    requirements: Joi.string().allow(''),
+    orderStarted: Joi.string().allow(''),
+    deliveryDateUpdate: Joi.string().allow(''),
+    orderDelivered: Joi.string().allow(''),
+    buyerReview: Joi.string().allow(''),
+    sellerReview: Joi.string().allow('')
   }).optional(),
+
   buyerReview: Joi.object({
     rating: Joi.number(),
-    review: Joi.string()
+    review: Joi.string().allow(''),
+    created: Joi.date().optional()  // Include if it's part of your data model
   }).optional(),
+
   sellerReview: Joi.object({
     rating: Joi.number(),
-    review: Joi.string()
-  }).optional()
+    review: Joi.string().allow(''),
+    created: Joi.date().optional()  // Include if it's part of your data model
+  }).optional(),
 });
 
 const orderUpdateSchema: ObjectSchema = Joi.object().keys({
