@@ -18,9 +18,9 @@ export class QueueConnection {
     try {
       this.connection = await client.connect(this.rabbitmqEndpoint);
       this.channel = await this.connection.createChannel();
-      this.log.info('user server connected to queue successfully... ', this.rabbitmqEndpoint);
+      this.log.info('item server connected to queue successfully... ', this.rabbitmqEndpoint);
     } catch (error) {
-      this.log.log(`authService error createConnection() method: ${this.rabbitmqEndpoint}`, error);
+      this.log.log(`itemService error createConnection() method: ${this.rabbitmqEndpoint}`, error);
     }
   }
 

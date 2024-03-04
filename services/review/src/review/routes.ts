@@ -5,7 +5,7 @@ import { verifyGatewayRequest } from './middleware/gatewaymdl';
 
 const router: Router = express.Router();
 
-const BASE_PATH = '/api/v1/item';
+const BASE_PATH = '/api/v1/review';
 
 export function initRoutes(app: Application) {
   const itemController = new ItemController();
@@ -32,34 +32,6 @@ export function initRoutes(app: Application) {
     await itemController.itemUpdate(req, res);
   });
 
-  router.put('/active/:itemId', async (req: Request, res: Response) => {
-    await itemController.itemUpdateActive(req, res);
-  });
-
-  router.delete('/:itemId/:sellerId', async (req: Request, res: Response) => {
-    await itemController.itemDelete(req, res);
-  });
-
-  router.get('/seller/:sellerId', async (req: Request, res: Response) => {
-    await itemController.sellerItems(req, res);
-  });
-
-  router.get('/seller/pause/:sellerId', async (req: Request, res: Response) => {
-    await itemController.sellerInactiveItems(req, res);
-  });
-
-  router.get('/search/:from/:size/:type', async (req: Request, res: Response) => {
-    await itemController.items(req, res);
-  });
-
-  router.get('/category/:username', async (req: Request, res: Response) => {
-    // console.log("haya");
-    await itemController.itemsByCategory(req, res);
-  });
-
-  router.get('/category/:username', async (req: Request, res: Response) => {
-    await itemController.topRatedItemsByCategory(req, res);
-  });
 
   app.use(BASE_PATH, router);
 }

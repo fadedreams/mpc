@@ -26,8 +26,14 @@ export class Config {
 
 
   public API_GATEWAY_URL: string | undefined;
+
   public MYSQL_DB: string | undefined;
   public DATABASE_URL: string | undefined;
+
+  public POSTGRES_HOST: string | undefined;
+  public POSTGRES_USER: string | undefined;
+  public POSTGRES_PASSWORD: string | undefined;
+  public POSTGRES_DB: string | undefined;
 
   public CLOUD_NAME: string | undefined;
   public CLOUD_API_KEY: string | undefined;
@@ -53,6 +59,10 @@ export class Config {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || 'http://localhost:3000';
     this.MYSQL_DB = process.env.MYSQL_DB || '';
     this.DATABASE_URL = process.env.DATABASE_URL || '';
+    this.POSTGRES_HOST = process.env.POSTGRES_HOST || 'localhost';
+    this.POSTGRES_USER = process.env.POSTGRES_USER || 'mpc';
+    this.POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || 'mpc';
+    this.POSTGRES_DB = process.env.POSTGRES_DB || 'mpc-review';
     this.CLOUD_NAME = process.env.CLOUD_NAME || '';
     this.CLOUD_API_KEY = process.env.CLOUD_API_KEY || '';
     this.CLOUD_API_SECRET = process.env.CLOUD_API_SECRET || '';

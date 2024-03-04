@@ -19,8 +19,8 @@ import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
 import { IAuthPayload } from '@review/dto/';
-import { DatabaseConnector } from '@review/config';
 import ItemService from '@review/review/services/itemService';
+import { PGConnector } from '@review/config';  // Adjust the path accordingly
 
 export class ReviewServer {
   private readonly log: Logger;
@@ -28,17 +28,19 @@ export class ReviewServer {
   private readonly SERVER_PORT: number;
   private readonly rabbitMQManager: RabbitMQManager;
   private readonly redisConnection: RedisConnection;
+  private readonly pgConnector: PGConnector;
 
   constructor(
     private readonly config: Config,
     private readonly elasticSearchService: ElasticSearchService,
-    private readonly databaseConnector: DatabaseConnector,
+    // private readonly databaseConnector: DatabaseConnector,
   ) {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'review', 'debug');
     this.SERVER_PORT = 3007;
     this.rabbitMQManager = new RabbitMQManager(this.log, config.RABBITMQ_ENDPOINT ?? 'amqp://localhost');
-    this.databaseConnector = databaseConnector;
+    // this.databaseConnector = databaseConnector;
     this.redisConnection = new RedisConnection();
+    this.pgConnector = PGConnector.getInstance();
   }
 
   start(app: Application): void {
@@ -142,8 +144,9 @@ export class ReviewServer {
   private startRedis(): void {
     this.redisConnection.connect();
   }
-  private startDB(): void {
-    this.databaseConnector.connect();
+  private async startDB(): Promise<void> {
+    // this.databaseConnector.connect();
+    await this.pgConnector.connect();
   }
 
   private startServer(app: Application): void {

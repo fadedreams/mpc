@@ -11,7 +11,7 @@ export function initRoutes(app: Application) {
   const itemController = new ItemController();
 
   router.get('/auth-health', (_req: Request, res: Response) => {
-    res.status(StatusCodes.OK).send('user service is healthy and OK.');
+    res.status(StatusCodes.OK).send('item service is healthy and OK.');
   });
   router.get('/test', (_req: Request, res: Response) => {
     const responseData = {

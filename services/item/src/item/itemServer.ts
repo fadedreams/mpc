@@ -18,7 +18,7 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload‌ } from '@item/dto/auth.d';
+import { IAuthPayload } from '@item/dto/';
 import { DatabaseConnector } from '@item/config';
 import ItemService from '@item/item/services/itemService';
 
@@ -149,12 +149,12 @@ export class ItemServer {
   private startServer(app: Application): void {
     try {
       const httpServer: http.Server = new http.Server(app);
-      this.log.info(`user server has initiated with process id ${process.pid}`);
+      this.log.info(`item server has initiated with process id ${process.pid}`);
       httpServer.listen(this.SERVER_PORT, () => {
-        this.log.info(`user server running on port ${this.SERVER_PORT}`);
+        this.log.info(`item server running on port ${this.SERVER_PORT}`);
       });
     } catch (error) {
-      this.log.log('error', 'user Service startServer() method:', error);
+      this.log.log('error', 'item Service startServer() method:', error);
     }
   }
 
