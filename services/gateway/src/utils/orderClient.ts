@@ -27,6 +27,7 @@ export class OrderClient {
   }
 
   public async createOrder(order: any) {
+    console.log("client createOrder: ", order);
     const response = await fetch(`${this.baseUrl}`, {
       method: 'POST',
       headers: {

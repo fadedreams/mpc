@@ -13,8 +13,9 @@ export class OrderController {
   }
 
   public async createOrder(req: Request, res: Response): Promise<void> {
+    //tested
     try {
-      // console.log("ctl createOrder: ", req.body);
+      console.log("ctl createOrder: ", req.body);
       const response = await orderClient.createOrder(req.body);
       // console.log("ctl createOrder response: ", response);
       res.status(StatusCodes.CREATED).json({
@@ -27,6 +28,7 @@ export class OrderController {
   }
 
   public async getOrder(req: Request, res: Response): Promise<void> {
+    //tested
     try {
       const response = await orderClient.getOrder(req.params.iod);
       res.status(StatusCodes.OK).json({
