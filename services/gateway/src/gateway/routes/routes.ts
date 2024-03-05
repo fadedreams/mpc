@@ -7,6 +7,7 @@ import bsRoutes from './buyer_seller_routes';
 import searchRoutes from './search_routes';
 import itemRoutes from './item_routes';
 import orderRoutes from './order_routes';
+import reviewRoutes from './review_routes';
 
 import { Server } from 'socket.io';
 const router: Router = express.Router();
@@ -23,6 +24,7 @@ export function initRoutes(app: Application, socketIO: Server) {
   router.use('/item', itemRoutes);
 
   router.use('/order', orderRoutes);
+  router.use('/review', reviewRoutes);
 
   //testing events socket
   // router.get('/event', async (_req: Request, res: Response) => {

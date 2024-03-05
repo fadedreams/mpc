@@ -24,7 +24,7 @@ export function initRoutes(app: Application) {
     await reviewController.addReview(req, res);
   });
 
-  router.get('/item/:itemId', async (req: Request, res: Response) => {
+  router.get('/review/:reviewId', async (req: Request, res: Response) => {
     await reviewController.getReviewByItemId(req, res);
   });
 
