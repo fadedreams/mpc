@@ -1,6 +1,7 @@
 networks:
   my_network:
     driver: bridge
+
 volumes:
   docker-volumes:
 
@@ -59,7 +60,8 @@ services:
   
   postgres:
     # container_name: postgres_container
-    image: postgres:16.2
+    # image: postgres:16.2
+    image: postgres:12
     restart: always
     environment:
       - POSTGRES_USER=mpc
@@ -108,7 +110,7 @@ services:
       - my_network
   
   kibana:
-    container_name: kibana_container
+    # container_name: kibana_container
     image: docker.elastic.co/kibana/kibana:8.11.0
     restart: always
     environment:
@@ -120,6 +122,27 @@ services:
     volumes:
       - ./kibana.yml/:/usr/share/kibana/config/kibana.yml:ro
     depends_on:
+      - elasticsearch
+
+
+  metricbeat:
+    # container_name: metricbeat_container
+    image: docker.elastic.co/beats/metricbeat:8.11.0
+    user: root
+    ports:
+      - 5066:5066
+    networks:
+      - my_network
+    volumes:
+      - ./metricbeat.yml/:/usr/share/metricbeat/metricbeat.yml:ro
+      # docker module
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # system module
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    depends_on: 
       - elasticsearch
 
   # alert:

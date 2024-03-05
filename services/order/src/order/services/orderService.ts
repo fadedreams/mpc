@@ -108,7 +108,7 @@ class OrderService {
     };
     if (this.rabbitMQManager) {
       await this.rabbitMQManager.publishDirectMessage(
-        'jobber-seller-update',
+        'mpc-seller-update',
         'user-seller',
         JSON.stringify(messageDetails),
         'Details sent to users service'
