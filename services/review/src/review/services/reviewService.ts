@@ -76,6 +76,12 @@ class ReviewService {
     const result = Object.fromEntries(
       Object.entries(rows[0]).map(([key, value]) => [this.objKeys[key] || key, value])
     );
+
+    await this.rabbitMQManager?.publishFanoutMessage(
+      'mpc-review',
+      JSON.stringify(data),
+      'Review details sent to order and users services'
+    );
     return result;
   }
 

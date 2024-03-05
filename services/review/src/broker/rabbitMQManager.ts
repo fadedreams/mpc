@@ -124,5 +124,23 @@ export class RabbitMQManager {
   };
 
 
+  public async publishFanoutMessage(
+    exchangeName: string,
+    message: string,
+    logMessage: string
+  ): Promise<void> {
+    try {
+      if (!this.channel) {
+        this.connection = await connect(this.rabbitmqEndpoint);
+        this.channel = await this.connection.createChannel();
+      }
+
+      await this.channel.assertExchange(exchangeName, 'fanout');
+      this.channel.publish(exchangeName, '', Buffer.from(message));
+      this.log.info(logMessage);
+    } catch (error) {
+      this.log.error('RabbitMQManager publishFanoutMessage() method error:', error);
+    }
+  }
 
 }
