@@ -12,7 +12,6 @@ export class ElasticSearchService {
 
   constructor() {
     // console.log('config.ELASTIC_SEARCH_URL: ', config.ELASTIC_SEARCH_URL);
-
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'msgElasticSearchServer', 'debug');
     this.initElasticSearchClient();
   }
