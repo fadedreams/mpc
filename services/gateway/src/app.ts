@@ -3,7 +3,7 @@ import { Logger } from 'winston';
 import express, { Express } from 'express';
 import { Config } from '@gateway/config';
 import { gatewayServer } from './gateway/gatewayServer';
-import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
+// import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
 import { EmailConsumer } from './broker/emailConsumer';
 
 class gatewayApp {
@@ -11,9 +11,11 @@ class gatewayApp {
   private readonly gatewayServer: gatewayServer;
   private readonly log: Logger;
 
-  constructor(config: Config, elasticSearchService: ElasticSearchService, emailConsumer: EmailConsumer) {
+  // constructor(config: Config, elasticSearchService: ElasticSearchService, emailConsumer: EmailConsumer) {
+  constructor(config: Config, emailConsumer: EmailConsumer) {
     this.config = config;
-    this.gatewayServer = new gatewayServer(config, elasticSearchService, emailConsumer);
+    // this.gatewayServer = new gatewayServer(config, elasticSearchService, emailConsumer);
+    this.gatewayServer = new gatewayServer(config, emailConsumer);
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayApp', 'debug');
   }
 
@@ -26,6 +28,7 @@ class gatewayApp {
 
 const config = Config.getInstance();
 const emailConsumer = new EmailConsumer(config);
-const elasticSearchService = new ElasticSearchService(config);
-const gateway_app = new gatewayApp(config, elasticSearchService, emailConsumer);
+// const elasticSearchService = new ElasticSearchService(config);
+// const gateway_app = new gatewayApp(config, elasticSearchService, emailConsumer);
+const gateway_app = new gatewayApp(config, emailConsumer);
 gateway_app.initialize();

@@ -67,7 +67,8 @@ export class RabbitMQManager {
         channel = this.getChannel();
       }
 
-      await channel.assertExchange(exchangeName, 'direct');
+      await channel.assertExchange(exchangeName, 'direct'); // Ensure exchange declaration
+
       const mpcQueue: Replies.AssertQueue = await channel.assertQueue(queueName, { durable: true, autoDelete: false });
       await channel.bindQueue(mpcQueue.queue, exchangeName, routingKey);
 

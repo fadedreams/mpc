@@ -2,7 +2,7 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
 import { isAxiosError } from 'axios';
-import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
+// import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
 import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
 import { EmailConsumer } from '@gateway/broker/emailConsumer';
 import { Config } from '@gateway/config';
@@ -37,7 +37,7 @@ export class gatewayServer {
 
   constructor(
     private readonly config: Config,
-    private readonly elasticSearchService: ElasticSearchService,
+    // private readonly elasticSearchService: ElasticSearchService,
     private readonly emailConsumer: EmailConsumer,
 
   ) {
@@ -51,7 +51,7 @@ export class gatewayServer {
 
   start(app: Application): void {
     this.startQueues();
-    this.startElasticSearch();
+    // this.startElasticSearch();
     this.startRedis();
     // this.routesMiddleware(app);
     // this.initMiddleware(app);
@@ -154,9 +154,9 @@ export class gatewayServer {
     // await consumeorderEmailMessages(emailChannel);
   }
 
-  private startElasticSearch(): void {
-    this.elasticSearchService.checkConnection();
-  }
+  // private startElasticSearch(): void {
+  // this.elasticSearchService.checkConnection();
+  // }
 
   private startRedis(): void {
     this.redisConnection.connect();

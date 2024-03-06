@@ -16,7 +16,10 @@ export class ElasticSearchService {
     this.initElasticSearchClient();
   }
 
-  public getElasticSearchClient(): Client | null {
+  public getElasticSearchClient(): Client {
+    if (!this.elasticSearchClient) {
+      throw new Error('ElasticSearch client not initialized');
+    }
     return this.elasticSearchClient;
   }
 

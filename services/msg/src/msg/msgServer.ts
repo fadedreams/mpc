@@ -18,7 +18,7 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload‌ } from '@msg/dto/auth.d';
+import { IAuthPayload } from '@msg/dto/';
 import { DatabaseConnector } from '@msg/config';
 import MsgService from '@msg/msg/services/msgService';
 import { Server } from 'socket.io';
