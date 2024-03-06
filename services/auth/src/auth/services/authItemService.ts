@@ -27,7 +27,11 @@ class AuthItemService extends ElasticSearchService {
         }
       }
     ];
-    const result: SearchResponse = await this.getElasticSearchClient().search({
+    const elasticSearchClient = this.getElasticSearchClient();
+    if (!elasticSearchClient) {
+      throw new Error('ElasticSearch client is not initialized.');
+    }
+    const result: SearchResponse = await elasticSearchClient.search({
       index: 'items',
       size,
       query: {

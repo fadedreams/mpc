@@ -23,16 +23,17 @@ export class ElasticSearchService {
   private async initElasticSearchClient(): Promise<void> {
     try {
       this.elasticSearchClient = new Client({
-        node: 'https://localhost:9200/', // Use 'http' instead of 'https' for non-SSL connection
+        // node: 'https://localhost:9200/', // Use 'http' instead of 'https' for non-SSL connection
+        node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200/',
         auth: {
-          username: 'elastic',
-          password: 'changeme',
+          username: process.env.ELASTICSEARCH_USERNAME || 'elastic',
+          password: process.env.ELASTICSEARCH_PWD || 'changeme',
         },
-        tls: {
-          requestCert: true,
-          ca: await fs.readFile('../../certs/ca/ca.crt', 'utf-8'),
-          rejectUnauthorized: true,
-        },
+        // tls: {
+        //   requestCert: true,
+        //   ca: await fs.readFile('../../certs/ca/ca.crt', 'utf-8'),
+        //   rejectUnauthorized: true,
+        // },
       });
       // this.run();
       // After initializing the client, check the connection
