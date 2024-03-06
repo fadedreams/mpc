@@ -13,8 +13,8 @@ export class ElasticSearchService {
   constructor() {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'usersElasticSearchServer', 'debug');
     this.elasticSearchClient = new Client({
-      // node: `${config.ELASTIC_SEARCH_URL}`
-      node: 'http://localhost:9200'
+      node: `${config.ELASTIC_SEARCH_URL}`
+      // node: 'http://localhost:9200'
     });
   }
 

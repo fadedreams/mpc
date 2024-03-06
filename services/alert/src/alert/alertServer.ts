@@ -29,10 +29,10 @@ export class AlertServer {
   }
 
   start(app: Application): void {
-    this.startServer(app);
     app.use('', healthRoutes());
     this.startQueues();
     this.startElasticSearch();
+    this.startServer(app);
   }
 
   private async startQueues(): Promise<void> {

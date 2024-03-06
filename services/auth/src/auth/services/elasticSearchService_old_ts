@@ -5,49 +5,28 @@ import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { Logger } from 'winston';
 import { ISellerDocument } from "@auth/dto/seller.d";
 import { ISellerItem } from "@auth/dto/item.d";
-import fs from 'fs/promises';
 
 export class ElasticSearchService {
   private readonly log: Logger;
-  private elasticSearchClient: Client | null = null;
+  private readonly elasticSearchClient: Client;
 
   constructor() {
     this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'authElasticSearchServer', 'debug');
-    this.initElasticSearchClient();
+    this.elasticSearchClient = new Client({
+      node: `${config.ELASTIC_SEARCH_URL}`
+      // node: 'http://localhost:9200'
+    });
   }
 
-  public getElasticSearchClient(): Client | null {
+  public getElasticSearchClient(): Client {
     return this.elasticSearchClient;
-  }
-
-  private async initElasticSearchClient(): Promise<void> {
-    try {
-      this.elasticSearchClient = new Client({
-        node: 'https://localhost:9200/', // Use 'http' instead of 'https' for non-SSL connection
-        auth: {
-          username: 'elastic',
-          password: 'changeme',
-        },
-        tls: {
-          requestCert: true,
-          ca: await fs.readFile('../../certs/ca/ca.crt', 'utf-8'),
-          rejectUnauthorized: true,
-        },
-      });
-      // this.run();
-      // After initializing the client, check the connection
-      await this.checkConnection();
-    } catch (error) {
-      console.log(error);
-      this.log.error('Error initializing ElasticSearch client:', error);
-    }
   }
 
   async checkConnection(): Promise<void> {
     let isConnected = false;
     while (!isConnected) {
       try {
-        const health: ClusterHealthResponse = await this.elasticSearchClient!.cluster.health({});
+        const health: ClusterHealthResponse = await this.elasticSearchClient.cluster.health({});
         this.log.info(`authService Elasticsearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
@@ -58,7 +37,7 @@ export class ElasticSearchService {
   }
 
   async checkIfIndexExist(indexName: string): Promise<boolean> {
-    const result: boolean = await this.elasticSearchClient!.indices.exists({ index: indexName });
+    const result: boolean = await this.elasticSearchClient.indices.exists({ index: indexName });
     return result;
   }
 
@@ -68,8 +47,8 @@ export class ElasticSearchService {
       if (result) {
         this.log.info(`Index "${indexName}" already exist.`);
       } else {
-        await this.elasticSearchClient!.indices.create({ index: indexName });
-        await this.elasticSearchClient!.indices.refresh({ index: indexName });
+        await this.elasticSearchClient.indices.create({ index: indexName });
+        await this.elasticSearchClient.indices.refresh({ index: indexName });
         this.log.info(`Created index ${indexName}`);
       }
     } catch (error) {
@@ -80,7 +59,7 @@ export class ElasticSearchService {
 
   async getDocumentById(index: string, itemId: string): Promise<ISellerItem> {
     try {
-      const result: GetResponse = await this.elasticSearchClient!.get({
+      const result: GetResponse = await this.elasticSearchClient.get({
         index,
         id: itemId
       });

@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@elastic/elasticsearch':
-    specifier: ^8.12.2
+    specifier: ^8.12.1
     version: 8.12.2
   '@fadedreams7org1/mpclib':
     specifier: ^0.1.2
@@ -15,10 +15,10 @@ dependencies:
     specifier: ^0.10.3
     version: 0.10.3
   dotenv:
-    specifier: ^16.4.5
+    specifier: ^16.4.1
     version: 16.4.5
   express:
-    specifier: ^4.18.3
+    specifier: ^4.18.2
     version: 4.18.3
   express-async-errors:
     specifier: ^3.1.1
@@ -27,7 +27,7 @@ dependencies:
     specifier: ^2.3.0
     version: 2.3.0
   nodemailer:
-    specifier: ^6.9.11
+    specifier: ^6.9.9
     version: 6.9.11
   pino-pretty:
     specifier: ^10.3.1
@@ -42,13 +42,13 @@ dependencies:
     specifier: ^4.2.0
     version: 4.2.0
   tsx:
-    specifier: ^4.7.1
+    specifier: ^4.7.0
     version: 4.7.1
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
   typescript-transform-paths:
-    specifier: ^3.4.7
+    specifier: ^3.4.6
     version: 3.4.7(typescript@5.3.3)
   winston:
     specifier: ^3.11.0
@@ -59,7 +59,7 @@ devDependencies:
     specifier: ^29.6.3
     version: 29.6.3
   '@types/amqplib':
-    specifier: ^0.10.5
+    specifier: ^0.10.4
     version: 0.10.5
   '@types/express':
     specifier: ^4.17.21
@@ -77,7 +77,7 @@ devDependencies:
     specifier: ^6.21.0
     version: 6.21.0(eslint@8.57.0)(typescript@5.3.3)
   eslint:
-    specifier: ^8.57.0
+    specifier: ^8.56.0
     version: 8.57.0
   jest:
     specifier: ^29.7.0
