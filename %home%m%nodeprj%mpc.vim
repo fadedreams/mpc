@@ -13,14 +13,19 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +8 services/users/src/broker/rabbitMQManager.ts
-badd +0 services/users/src/users/usersServer.ts
+badd +70 ~/nodeprj/mpc/docker-compose.yml
 argglobal
 %argdel
 $argadd .
-edit services/users/src/users/usersServer.ts
+edit ~/nodeprj/mpc/docker-compose.yml
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
 argglobal
-balt services/users/src/broker/rabbitMQManager.ts
 setlocal fdm=indent
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -29,13 +34,17 @@ setlocal fdl=99
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-24
+27
 normal! zo
-let s:l = 9 - ((8 * winheight(0) + 15) / 31)
+32
+normal! zo
+33
+normal! zo
+let s:l = 49 - ((13 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 9
+keepjumps 49
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
@@ -44,13 +53,14 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
+let &winminheight = s:save_winminheight
+let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

@@ -1,0 +1,83 @@
+
+
+heartbeat.config.monitors:
+  path: ${path.config}/monitors.d/*.yml
+  reload.enabled: false
+  reload.period: 5s
+
+heartbeat.monitors:
+  - type: http
+    id: mpc-api-gateway
+    name: mpc API Gateway Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3000/gateway-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-alert
+    name: mpc Notification Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3001/notification-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-auth
+    name: mpc Auth Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3002/auth-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-users
+    name: mpc Users Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3003/user-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-items
+    name: mpc Gigs Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3004/gig-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-msg
+    name: mpc Chat Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3005/chat-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-orders
+    name: mpc Orders Service
+    schedule: '@every 5s'
+    hosts: ["http://localhost:3006/order-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+  - type: http
+    id: mpc-reviews
+    name: mpc Reviews Service
+    schedule: '@every 5s'
+    urls: ["http://localhost:3007/review-health"]
+    check.request.method: GET
+    check.response.status: [200]
+
+processors:
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+
+monitoring.enabled: true
+
+output.elasticsearch:
+  # hosts: ['http://elasticsearch_container:9200']
+  hosts: ['http://elasticsearch:9200']
+  # username: 'elastic'
+  # password: 'admin1234'
