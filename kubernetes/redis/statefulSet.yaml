@@ -1,0 +1,85 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mpc-redis
+  namespace: production
+spec:
+  serviceName: mpc-redis #from service.yaml
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpc-redis #The ReplicaSet uses the matchLabels field to select the Pods that belong to the StatefulSet
+  template:
+    metadata:
+      labels:
+        app: mpc-redis
+    spec:
+      initContainers: #first time starts only
+      - name: config
+        image: redis:alpine
+        command: [ "sh", "-c" ]
+          # the script determines whether the current pod should act as a master or a slave based on the availability
+          # of a Redis sentinel, updating the Redis configuration accordingly.
+        args:
+          - |
+            cp /tmp/redis/redis.conf /etc/redis/redis.conf
+            
+            echo "finding master..."
+            MASTER_FQDN=`hostname  -f | sed -e 's/mpc-redis-[0-9]\./mpc-redis-0./'`
+            if [ "$(redis-cli -h sentinel -p 5000 ping)" != "PONG" ]; then
+              echo "master not found, defaulting to mpc-redis-0"
+
+              if [ "$(hostname)" == "mpc-redis-0" ]; then
+                echo "this is mpc-redis-0, not updating config..."
+              else
+                echo "updating redis.conf..."
+                echo "slaveof $MASTER_FQDN 6379" >> /etc/redis/redis.conf
+              fi
+            else
+              echo "sentinel found, finding master"
+              MASTER="$(redis-cli -h sentinel -p 5000 sentinel get-master-addr-by-name mymaster | grep -E '(^mpc-redis-\d{1,})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})')"
+              echo "master found : $MASTER, updating redis.conf"
+              echo "slaveof $MASTER 6379" >> /etc/redis/redis.conf
+            fi
+        volumeMounts:
+        - name: redis-config #from configMap
+          mountPath: /etc/redis/
+        - name: config
+          mountPath: /tmp/redis/
+      containers:
+      - name: mpc-redis
+        image: redis:alpine
+        command: ["redis-server"]
+        args: ["/etc/redis/redis.conf"]
+        ports:
+        - containerPort: 6379
+          name: mpc-redis
+        readinessProbe:
+          periodSeconds: 10
+          tcpSocket:
+            port: mpc-redis
+        livenessProbe:
+          periodSeconds: 10
+          tcpSocket:
+            port: mpc-redis
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /etc/redis/
+      volumes:
+      - name: redis-config
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: redis-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "redis-local-storage"
+      resources:
+        requests:
+          storage: 500Mi
