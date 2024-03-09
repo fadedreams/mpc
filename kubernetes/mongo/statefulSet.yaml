@@ -1,0 +1,30 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mpc-mongo
+  namespace: production
+spec:
+  selector:
+    matchLabels:
+      app: mpc-mongo
+  serviceName: mpc-mongo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mpc-mongo
+    spec:
+      containers:
+      - name: mpc-mongo
+        image: mongo:jammy
+        ports:
+        - containerPort: 27017
+          name: mpc-mongo
+        volumeMounts:
+        - name: mongo-local-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-local-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
