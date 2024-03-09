@@ -42,4 +42,4 @@ spec:
       volumes:
         - name: rabbittmq-local-storage
           persistentVolumeClaim:
-            claimName: rabbitmq-pvc
+            claimName: rabbitmq-pvc #from pv.yaml

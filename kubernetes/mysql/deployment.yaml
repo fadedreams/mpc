@@ -1,0 +1,68 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpc-mysql
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpc-mysql
+  template:
+    metadata:
+      labels:
+        app: mpc-mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mpc-mysql
+        image: mysql:8.0.35
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: mpc
+        - name: MYSQL_PASSWORD
+          value: mpc
+        - name: MYSQL_DATABASE
+          value: mpc-auth
+        - name: MYSQL_USER
+          value: 'mpc'
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "0.5"
+          requests:
+            cpu: 100m
+            memory: 150Mi
+        ports:
+        - name: mpc-mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: mysql-local-storage
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        readinessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - |
+                mysql -h127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD -e'SELECT 1'
+          initialDelaySeconds: 120 #the probe will not be run for the first 120 seconds after the Pod is created.
+          periodSeconds: 300 
+          timeoutSeconds: 60
+        livenessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - |
+                mysqladmin -u$MYSQL_USER -p$MYSQL_PASSWORD ping
+          initialDelaySeconds: 120
+          periodSeconds: 300
+          timeoutSeconds: 60
+      volumes:
+      - name: mysql-local-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+
