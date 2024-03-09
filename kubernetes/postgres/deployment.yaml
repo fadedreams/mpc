@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpc-postgres
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpc-postgres
+  template:
+    metadata:
+      labels:
+        app: mpc-postgres
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mpc-postgres
+        image: postgres:12
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_USER
+          value: mpc
+        - name: POSTGRES_PASSWORD
+          value: mpc
+        - name: POSTGRES_DB
+          value: mpc_reviews
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "0.5"
+          requests:
+            cpu: 100m
+            memory: 150Mi
+        ports:
+        - name: mpc-postgres
+          containerPort: 5432
+        volumeMounts:
+        - name: postgres-local-storage
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+        readinessProbe:
+          exec:
+            command: ["psql", "-w", "-U", "mpc", "-d", "mpc_reviews", "-c", "SELECT 1"]
+          initialDelaySeconds: 120
+          periodSeconds: 300
+          timeoutSeconds: 60
+        livenessProbe:
+          exec:
+            command: ["psql", "-w", "-U", "mpc", "-d", "mpc_reviews", "-c", "SELECT 1"]
+          initialDelaySeconds: 120
+          periodSeconds: 300
+          timeoutSeconds: 60
+      volumes:
+      - name: postgres-local-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
