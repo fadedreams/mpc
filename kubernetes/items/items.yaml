@@ -2,13 +2,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mpc-auth
+  name: mpc-items
   namespace: production
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mpc-auth
+      app: mpc-items
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,11 +17,11 @@ spec:
   template:
     metadata:
       labels:
-        app: mpc-auth
+        app: mpc-items
     spec:
       containers:
-      - name: mpc-auth
-        image: fadedreams7/mpc-auth:stable #local image
+      - name: mpc-items
+        image: fadedreams7/mpc-items:stable #local image
         imagePullPolicy: Always
         resources:
           limits:
@@ -31,8 +31,8 @@ spec:
             cpu: 100m
             memory: 150Mi
         ports:
-        - name: auth
-          containerPort: 3002
+        - name: items
+          containerPort: 3004
         env:
           - name: ENABLE_APM
             value: '1'
@@ -53,15 +53,18 @@ spec:
               secretKeyRef:
                 name: mpc-backend-secret
                 key: mpc-rabbitmq-endpoint
-          - name: MYSQL_DB
+          - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
                 name: mpc-backend-secret
-                key: mpc-mysql-db
-          - name: CLIENT_URL
-            value: 'https://mpcapp.live'
+                key: mongo-database-url
           - name: API_GATEWAY_URL
-            value: 'http://mpc-gateway.production.svc.cluster.local:3000'
+            value: 'http://mpc-gateway.production.svc.cluster.local:4000'
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: mpc-redis-host
           - name: ELASTIC_SEARCH_URL
             valueFrom:
               secretKeyRef:
@@ -82,14 +85,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mpc-auth
+  name: mpc-items
   namespace: production
 spec:
   type: ClusterIP
   selector:
-    app: mpc-auth
+    app: mpc-items
   ports:
-  - name: auth
-    port: 3002
-    targetPort: 3002
+  - name: items
+    port: 3004
+    targetPort: 3004
     protocol: TCP
