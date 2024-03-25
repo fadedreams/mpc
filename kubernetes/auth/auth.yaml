@@ -1,0 +1,95 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mpc-auth
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mpc-auth
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25% 
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: mpc-auth
+    spec:
+      containers:
+      - name: mpc-auth
+        image: uzochukwueddie/mpc-auth:stable
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: '0.5'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 150Mi
+        ports:
+        - name: auth
+          containerPort: 3002
+        env:
+          - name: ENABLE_APM
+            value: '1'
+          - name: NODE_ENV
+            value: 'production'
+          - name: GATEWAY_JWT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: gateway-jwt-token
+          - name: JWT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: jwt-token
+          - name: RABBITMQ_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: mpc-rabbitmq-endpoint
+          - name: MYSQL_DB
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: mpc-mysql-db
+          - name: CLIENT_URL
+            value: 'https://mpcapp.live'
+          - name: API_GATEWAY_URL
+            value: 'http://mpc-gateway.production.svc.cluster.local:3000'
+          - name: ELASTIC_SEARCH_URL
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: mpc-elasticsearch-url
+          - name: ELASTIC_APM_SERVER_URL
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key:  mpc-elastic-apm-server-url
+          - name: ELASTIC_APM_SECRET_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: mpc-backend-secret
+                key: mpc-elastic-apm-secret-token
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mpc-auth
+  namespace: production
+spec:
+  type: ClusterIP
+  selector:
+    app: mpc-auth
+  ports:
+  - name: auth
+    port: 3002
+    targetPort: 3002
+    protocol: TCP

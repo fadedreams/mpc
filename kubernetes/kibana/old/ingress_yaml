@@ -8,13 +8,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: kibana.jobberapp.com
+  - host: kibana.mpcapp.com
     http:
       paths:
       - pathType: Prefix
         path: /
         backend:
           service:
-            name: jobber-kibana
+            name: mpc-kibana
             port: 
               number: 5601

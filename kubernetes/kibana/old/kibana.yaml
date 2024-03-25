@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,34 +16,30 @@ spec:
     spec:
       containers:
         - name: mpc-kibana
-          # image: kibana:8.7.1
           # image: docker.elastic.co/kibana/kibana:8.11.0
           image: kibana:8.11.0
-          # image: kibana:7.16.2
-          imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "1Gi"
-              # memory: "512Mi"
+              # memory: "1Gi"
+              memory: "512Mi"
               cpu: "1500m"
             requests:
               cpu: 250m
-              memory: "1Gi"
-              # memory: 512Mi
+              # memory: 1Gi
+              memory: 512Mi
           ports:
           - name: mpc-kibana
             containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS
-              # http://<service-name>.<namespace>.svc.cluster.local:<port-number>
               # value: http://mpc-elastic:9200 # only in the same namespace
+              # http://<service-name>.<namespace>.svc.cluster.local:<port-number>
               value: http://mpc-elastic.production.svc.cluster.local:9200
-            # - name: ELASTICSEARCH_USERNAME
-            #   value: kibana_system
-            # - name: ELASTICSEARCH_PASSWORD
-            - name: ELASTIC_PASSWORD
+            - name: ELASTICSEARCH_USERNAME
+              value: kibana_system
+            - name: ELASTICSEARCH_PASSWORD
               # add to secret file
-              value: 'changeme'
+              value: kibana
             # - name: ELASTICSEARCH_SERVICEACCOUNT_TOKEN
             #   value: AAEAAWVsYXN0aWMva2liYW5hL2pvYmJlci1raWJhbmE6b1dZRjBpd3JTUG1NejNtb1ZQbHFaZw
           volumeMounts:
