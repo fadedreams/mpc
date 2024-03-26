@@ -1,0 +1,50 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  selector:
+    matchLabels: 
+      app: elasticsearch
+  replicas: 1
+  template:
+    metadata:
+      name: elasticsearch
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        # image: elasticsearch:8.7.1
+        # image:  docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+        image: elasticsearch:7.16.2
+        env:
+         - name: "discovery.type"
+           value: "single-node"
+        ports:
+        - name: es-9200
+          containerPort: 9200
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "2Gi"  # Adjust memory limit as per your requirements
+            cpu: "1"       # Adjust CPU limit as per your requirements
+          requests:
+            memory: "1Gi"  # Adjust memory request as per your requirements
+            cpu: "0.5"     # Adjust CPU request as per your requirements
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    app: elasticsearch
+spec:
+  type: NodePort
+  ports:
+  - name: es-9200
+    port: 9200
+  selector:
+    app: elasticsearch
+
