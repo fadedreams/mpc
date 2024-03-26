@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: mpc-users
-        image: fadedreams7/mpc-users:stable #local image
+        image: fadedreams7/mpc-users:latest #local image
         imagePullPolicy: Always
         resources:
           limits:

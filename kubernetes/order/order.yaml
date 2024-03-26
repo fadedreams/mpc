@@ -1,38 +1,37 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mpc-auth
+  name: mpc-order
   namespace: production
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mpc-auth
+      app: mpc-order
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 25% 
       maxSurge: 25%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
-        app: mpc-auth
+        app: mpc-order
     spec:
       containers:
-      - name: mpc-auth
-        image: fadedreams7/mpc-auth:latest #local image
+      - name: mpc-order
+        image: fadedreams7/mpc-order:latest #local image
         imagePullPolicy: Always
         resources:
           limits:
-            cpu: '0.5'
-            memory: 1Gi
+            memory: "1Gi"
+            cpu: "0.5"
           requests:
             cpu: 100m
             memory: 150Mi
         ports:
-        - name: auth
-          containerPort: 3002
+        - name: order
+          containerPort: 3006
         env:
           - name: ENABLE_APM
             value: '1'
@@ -53,15 +52,15 @@ spec:
               secretKeyRef:
                 name: mpc-backend-secret
                 key: mpc-rabbitmq-endpoint
-          - name: MYSQL_DB
+          - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
                 name: mpc-backend-secret
-                key: mpc-mysql-db
-          - name: CLIENT_URL
-            value: 'https://mpcapp.live'
+                key: mongo-database-url
           - name: API_GATEWAY_URL
-            value: 'http://mpc-gateway.production.svc.cluster.local:3000'
+            value: 'http://mpc-gateway:3000'
+          - name: CLIENT_URL
+            value: 'http://mpcapp.live'
           - name: ELASTIC_SEARCH_URL
             valueFrom:
               secretKeyRef:
@@ -79,17 +78,18 @@ spec:
                 key: mpc-elastic-apm-secret-token
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: mpc-auth
+  name: mpc-order
   namespace: production
 spec:
   type: ClusterIP
   selector:
-    app: mpc-auth
+    app: mpc-order
   ports:
-  - name: auth
-    port: 3002
-    targetPort: 3002
+  - name: order
+    port: 3006
+    targetPort: 3006
     protocol: TCP

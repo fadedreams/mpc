@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: mpc-items
-        image: fadedreams7/mpc-items:stable #local image
+        image: fadedreams7/mpc-items:latest #local image
         imagePullPolicy: Always
         resources:
           limits:
@@ -59,7 +59,7 @@ spec:
                 name: mpc-backend-secret
                 key: mongo-database-url
           - name: API_GATEWAY_URL
-            value: 'http://mpc-gateway.production.svc.cluster.local:4000'
+            value: 'http://mpc-gateway.production.svc.cluster.local:3000'
           - name: REDIS_HOST
             valueFrom:
               secretKeyRef:
