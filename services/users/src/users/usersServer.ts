@@ -17,7 +17,7 @@ import compression from 'compression';
 import { initRoutes } from './routes';
 import { StatusCodes } from 'http-status-codes';
 import { verify } from 'jsonwebtoken';
-import { IAuthPayload‌ } from '@users/dto/auth.d';
+import { IAuthPayload } from '@users/dto/auth.d';
 import { DatabaseConnector } from '@users/config';
 
 export class UsersServer {
