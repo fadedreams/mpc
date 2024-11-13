@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: keydb
+  namespace: production
+spec:
+  serviceName: keydb
+  replicas: 3
+  selector:
+    matchLabels:
+      app: keydb
+  template:
+    metadata:
+      labels:
+        app: keydb
+    spec:
+      containers:
+      - name: keydb
+        image: eqalpha/keydb
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /etc/keydb.conf
+          subPath: keydb.conf
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: keydb-pvc
+      - name: config
+        configMap:
+          name: keydb-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: keydb-storage
+      resources:
+        requests:
+          storage: 5Gi

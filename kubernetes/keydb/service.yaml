@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keydb
+  namespace: production
+spec:
+  selector:
+    app: keydb
+  ports:
+  - port: 6379
+    targetPort: 6379
