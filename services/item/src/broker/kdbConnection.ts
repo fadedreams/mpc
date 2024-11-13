@@ -1,15 +1,16 @@
-import { configInstance as config } from '@order/config';
-import { winstonLogger } from '@fadedreams7org1/mpclib';
-import { createClient } from 'redis';
-import { Logger } from 'winston';
-type RedisClientType = ReturnType<typeof createClient>;
 
-export class RedisConnection {
-    private readonly client: RedisClientType;
+import { configInstance as config } from '@item/config';
+import { winstonLogger } from '@fadedreams7org1/mpclib';
+import { createClient } from 'keydb';
+import { Logger } from 'winston';
+type KeyDBClientType = ReturnType<typeof createClient>;
+
+export class KeyDBConnection {
+    private readonly client: KeyDBClientType;
     private readonly log: Logger;
 
     constructor() {
-        this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'orderRedisConnection', 'debug');
+        this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'itemKeyDBConnection', 'debug');
         this.client = createClient({ url: `${config.REDIS_HOST}` });
         console.log(config.REDIS_HOST);
         // this.client = createClient({ url: `redis://localhost:6379` });
@@ -19,7 +20,7 @@ export class RedisConnection {
 
     private cacheError(): void {
         this.client.on('error', (error: unknown) => {
-            this.log.error('orderService redisConnect() method error:', error);
+            this.log.error('ItemService redisConnect() method error:', error);
         });
     }
 
@@ -33,9 +34,9 @@ export class RedisConnection {
         console.log(config.REDIS_HOST);
         try {
             await this.client.connect();
-            this.log.info(`orderService Redis Connection: ${await this.client.ping()}`);
+            this.log.info(`ItemService Redis Connection: ${await this.client.ping()}`);
         } catch (error) {
-            this.log.error('orderService redisConnect() method error:', error);
+            this.log.error('ItemService redisConnect() method error:', error);
         }
     }
 
@@ -43,8 +44,8 @@ export class RedisConnection {
         return this.client;
     }
 }
-const redisService = new RedisConnection();
-export const redisConnect = async (): Promise<void> => {
-    await redisService.connect();
+const keydbService = new KeyDBConnection();
+export const keydbConnect = async (): Promise<void> => {
+    await keydbService.connect();
 };
-export const redisClient: RedisClientType = redisService.getClient();
+export const keydbClient: KeyDBClientType = keydbService.getClient();

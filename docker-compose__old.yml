@@ -163,7 +163,7 @@ services:
     command: redis-server --loglevel warning
     volumes:
       - ./docker-volumes/cache:/data
-
+  
   redis-commander:
     container_name: redis-commander
     image: ghcr.io/joeferner/redis-commander:latest
@@ -172,7 +172,7 @@ services:
       - '8081:8081'
     environment:
     - REDIS_HOSTS=local:redis_container:6379
-
+  
   mongodb:
     # container_name: mongodb_container
     image: mongo:jammy
@@ -181,6 +181,8 @@ services:
       - 27017:27017
     volumes:
       - ./docker-volumes/data:/data/db
+ 
+
 
   mysql:
     # container_name: mysql_container
@@ -201,7 +203,7 @@ services:
       # - ./init.sql:/data/application/init.sql
       # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     # command: --default-authentication-plugin=mysql_native_password --init-file ./init.sql
-
+  
   postgres:
     # container_name: postgres_container
     # image: postgres:16.2
@@ -215,7 +217,7 @@ services:
       - '5432:5432'
     volumes:
       - ./docker-volumes/postgres:/var/lib/postgresql
-
+  
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.13-rc-management-alpine
@@ -229,13 +231,5 @@ services:
       # Management UI
       - '15672:15672'
 
-  keydb:
-    image: eqalpha/keydb:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - ./docker-volumes/keydb:/data
-    command: ["keydb-server", "/etc/keydb/keydb.conf"]
-    environment:
-      - KEYDB_REPLICATION=false
-      - KEYDB_REQUIREPASS=your_keydb_password
+
+
