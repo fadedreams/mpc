@@ -2,31 +2,37 @@ import 'express-async-errors';
 import http from 'http';
 import { winstonLogger, IErrorResponse, CustomError } from '@fadedreams7org1/mpclib';
 import { isAxiosError } from 'axios';
+// import { ElasticSearchService } from '@gateway/gateway/services/elasticSearchService';
 import { gatewayQueueConnection } from '@gateway/broker/gatewayQueueConnection';
 import { EmailConsumer } from '@gateway/broker/emailConsumer';
 import { Config } from '@gateway/config';
 import { Logger } from 'winston';
+import client, { Channel, Connection } from 'amqplib';
 import { Application, Request, Response, json, urlencoded, NextFunction } from 'express';
 import cookieSession from 'cookie-session';
 import cors from 'cors';
 import hpp from 'hpp';
+import helmet from 'helmet';
 import compression from 'compression';
 import { initRoutes } from '@gateway/gateway/routes/routes';
 import { StatusCodes } from 'http-status-codes';
-import { KeyvConnection } from '@gateway/broker/keyvConnection';
+import { RedisConnection } from '@gateway/broker/redisConnection';
+
+import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { SocketIOAppHandler } from '@gateway/broker/sockets';
 import { Server } from 'socket.io';
 import session from 'express-session';
-import Keyv from 'keyv';
+// import { authClient, authAxios } from '@gateway/utils/authClient';
+
 
 export class gatewayServer {
     private readonly log: Logger;
     // private readonly elasticSearchService: ElasticSearchService;
     private readonly SERVER_PORT: number;
     private readonly gatewayQueueConnection: gatewayQueueConnection;
-    private readonly keyvConnection: KeyvConnection;
-    public socketIO: Server = {} as Server; // will be init in createSocketIO
+    private readonly redisConnection: RedisConnection
+    public socketIO: Server = {} as Server //will be init in createSocketIO
     // private readonly emailConsumer: EmailConsumer;
 
     constructor(
@@ -46,8 +52,7 @@ export class gatewayServer {
     start(app: Application): void {
         this.startQueues();
         // this.startElasticSearch();
-        // this.startRedis();
-        this.startKeyv();
+        this.startRedis();
         // this.routesMiddleware(app);
         // this.initMiddleware(app);
         // this.errorHandler(app);
@@ -137,8 +142,6 @@ export class gatewayServer {
         });
     }
 
-
-
     private async startQueues(): Promise<void> {
         const emailChannel: Channel = await this.gatewayQueueConnection.createConnection() as Channel;
         // const emailChannel: Channel = await createConnection() as Channel;
@@ -155,11 +158,8 @@ export class gatewayServer {
     // this.elasticSearchService.checkConnection();
     // }
 
-    // private startRedis(): void {
-    //     this.redisConnection.connect();
-    // }
-    private startKeyv(): void {
-        this.keyvConnection.connect();
+    private startRedis(): void {
+        this.redisConnection.connect();
     }
 
 
@@ -217,14 +217,15 @@ export class gatewayServer {
     private async createSocketIO(httpServer: http.Server): Promise<Server> {
         const io: Server = new Server(httpServer, {
             cors: {
+                // origin: `${this.config.CLIENT_URL}`,
                 origin: `*`,
                 methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
             },
+            // transports: ['websocket'], // explicitly set transports
         });
-
-        const pubClient = this.keyvConnection.getClient();
-        const subClient = new Keyv(`${this.config.REDIS_HOST}`);
-
+        const pubClient = createClient({ url: this.config.REDIS_HOST });
+        const subClient = pubClient.duplicate();
+        await Promise.all([pubClient.connect(), subClient.connect()]);
         io.adapter(createAdapter(pubClient, subClient));
         this.socketIO = io;
 

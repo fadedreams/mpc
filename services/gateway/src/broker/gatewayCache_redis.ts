@@ -1,7 +1,8 @@
+
 import { winstonLogger } from '@fadedreams7org1/mpclib';
 import { configInstance as config } from '@gateway/config';
 import { Logger } from 'winston';
-import { keyvClient } from '@gateway/broker/keyvConnection';
+import { redisClient } from '@gateway/broker/redisConnection';
 
 export class GatewayCache {
     private log: Logger;
@@ -10,9 +11,16 @@ export class GatewayCache {
         this.log = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'gatewayCache', 'debug');
     }
 
+    private async connectToRedis(): Promise<void> {
+        if (!redisClient.isOpen) {
+            await redisClient.connect();
+        }
+    }
+
     public async saveUserSelectedItemCategory(key: string, value: string): Promise<void> {
         try {
-            await keyvClient.set(key, value);
+            await this.connectToRedis();
+            await redisClient.SET(key, value);
         } catch (error) {
             this.log.error('gatewayService GatewayCache saveUserSelectedItemCategory() method error:', error);
         }
@@ -20,12 +28,14 @@ export class GatewayCache {
 
     public async saveLoggedInUser2Cache(key: string, value: string): Promise<string[]> {
         try {
-            const users = await keyvClient.get(key) as string[] | undefined;
-            if (!users || !users.includes(value)) {
-                await keyvClient.set(key, [...(users || []), value]);
+            await this.connectToRedis();
+            const index: number | null = await redisClient.LPOS(key, value);
+            if (index == null) {
+                await redisClient.LPUSH(key, value);
                 this.log.info('User+:', key, value);
             }
-            return (await keyvClient.get(key)) as string[];
+            const response: string[] = await redisClient.LRANGE(key, 0, -1);
+            return response;
         } catch (error) {
             this.log.error('gatewayService GatewayCache saveLoggedInUser2Cache() method error:', error);
             return [];
@@ -34,7 +44,9 @@ export class GatewayCache {
 
     public async getLoggedInUserFromCache(key: string): Promise<string[]> {
         try {
-            return (await keyvClient.get(key)) as string[] || [];
+            await this.connectToRedis();
+            const response: string[] = await redisClient.LRANGE(key, 0, -1);
+            return response;
         } catch (error) {
             this.log.error('gatewayService GatewayCache getLoggedInUserFromCache() method error:', error);
             return [];
@@ -43,20 +55,17 @@ export class GatewayCache {
 
     public async removeLoggedInUserFromCache(key: string, value: string): Promise<string[]> {
         try {
-            const users = await keyvClient.get(key) as string[] | undefined;
-            if (users && users.includes(value)) {
-                await keyvClient.set(
-                    key,
-                    users.filter((user) => user !== value)
-                );
-                this.log.info('User-:', key, value);
-            }
-            return (await keyvClient.get(key)) as string[];
+            await this.connectToRedis();
+            await redisClient.LREM(key, 1, value);
+            this.log.info('User-:', key, value);
+            const response: string[] = await redisClient.LRANGE(key, 0, -1);
+            return response;
         } catch (error) {
             this.log.error('gatewayService GatewayCache removeLoggedInUserFromCache() method error:', error);
             return [];
         }
     }
+
 }
 
 const gatewayCacheInstance = new GatewayCache();
