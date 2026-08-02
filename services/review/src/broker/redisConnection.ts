@@ -137,3 +137,4 @@ export const redisConnect = async (): Promise<void> => {
 };
 
 export const redisClient: RedisClientType = redisService.getClient();
+
